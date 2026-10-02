@@ -1,0 +1,91 @@
+# THROWAWAY: measures the spikes on a Linux runner with Mandrel (no GraalVM is installed on developer machines).
+name: native-spikes (throwaway)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  spike2-native-parse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          distribution: mandrel
+          java-version: '21'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Runner and toolchain
+        run: |
+          mkdir -p out
+          {
+            echo "## Runner"
+            echo '```'
+            uname -a; echo "cpus: $(nproc)"; free -m; df -h / | tail -1
+            echo "image: ${ImageOS:-?} ${ImageVersion:-?}"
+            java -version 2>&1; native-image --version 2>&1 | head -2; mvn -v | head -1
+            echo '```'
+          } | tee out/runner.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Build shared parser and the app (JVM)
+        run: |
+          mvn -B -q -f spikes/shared-parser install
+          mvn -B -q -f spikes/spike2-native-parse package -DskipTests
+
+      - name: Run on the JVM, capture
+        working-directory: spikes/spike2-native-parse
+        run: |
+          (java -jar target/quarkus-app/quarkus-run.jar > ../../out/jvm-run.log 2>&1 &)
+          for i in $(seq 1 60); do curl -sf localhost:8080/status > ../../out/jvm-status.json && break; sleep 1; done
+          curl -sf localhost:8080/results > ../../out/jvm-results.txt
+          cat ../../out/jvm-status.json
+          pkill -f quarkus-run.jar || true
+
+      - name: Build the native image
+        working-directory: spikes/spike2-native-parse
+        run: |
+          /usr/bin/time -v mvn -B package -Dnative -DskipTests -Dquarkus.native.enable-reports=true \
+            > ../../out/native-build.log 2> ../../out/native-build-time.txt
+          grep -E "Elapsed \(wall clock\)|Maximum resident" ../../out/native-build-time.txt | tee ../../out/native-build-summary.txt
+          ls -l target/*-runner | tee ../../out/native-size.txt
+          grep -E "reflect|Reflection" ../../out/native-build.log | head -20 > ../../out/native-reflection-mentions.txt || true
+          ls src/main/resources/META-INF/native-image 2>/dev/null || echo "no native-image config files in the project" | tee -a ../../out/native-size.txt
+
+      - name: Run the native binary, resources read from a folder outside the binary
+        working-directory: spikes/spike2-native-parse
+        run: |
+          mkdir -p /tmp/mq-res && cp -r ../shared-resources/valid ../shared-resources/invalid /tmp/mq-res/
+          START=$(date +%s%N)
+          (MQ_RESOURCES_DIRS=/tmp/mq-res/valid,/tmp/mq-res/invalid ./target/*-runner > ../../out/native-run.log 2>&1 &)
+          for i in $(seq 1 200); do curl -sf localhost:8080/status > ../../out/native-status.json && break; sleep 0.05; done
+          END=$(date +%s%N)
+          echo "process start to first successful /status: $(( (END-START)/1000000 )) ms" | tee ../../out/native-first-response.txt
+          curl -sf localhost:8080/results > ../../out/native-results.txt
+          cat ../../out/native-status.json
+          ps -o rss= -p "$(pgrep -f -- '-runner' | head -1)" | tee ../../out/native-rss-kb.txt
+          pkill -f -- '-runner' || true
+
+      - name: Compare JVM and native
+        run: |
+          cd out
+          if diff -u jvm-results.txt native-results.txt > results-diff.txt; then echo "IDENTICAL results for $(wc -l < jvm-results.txt) files" | tee compare.txt; else echo "DIFFERENT" | tee compare.txt; cat results-diff.txt; exit 1; fi
+          {
+            echo "## Spike 2: StAX parser + validator, JVM vs native"
+            echo '```'
+            echo "JVM:    $(cat jvm-status.json)"
+            echo "native: $(cat native-status.json)"
+            cat native-first-response.txt compare.txt native-build-summary.txt native-size.txt
+            echo "native RSS after boot (kB): $(cat native-rss-kb.txt)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: spike2-results
+          path: |
+            out/
+            spikes/spike2-native-parse/target/*-native-image-source-jar/reports/
+          if-no-files-found: warn

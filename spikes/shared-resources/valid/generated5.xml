@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Resource xmlns="http://xml.metamug.net/resource/1.0" v="1.5">
+  <Desc>Generated resource 5, only here to bring the set to 20 files.</Desc>
+  <Request method="GET"><Sql id="all5" when="$q ne 'x'">SELECT id, name FROM thing5 ORDER BY id</Sql></Request>
+  <Request method="GET" item="true"><Sql id="one5">SELECT id, name FROM thing5 WHERE id = $id</Sql></Request>
+  <Request method="POST" status="201">
+    <Script id="calc5" file="calc5" output="false"/>
+    <Transaction when="$[calc5].ok eq true">
+      <Sql id="ins5" type="update">INSERT INTO thing5 (name) VALUES ($name)</Sql>
+      <Sql id="log5" type="update">INSERT INTO audit (what) VALUES ('thing5')</Sql>
+    </Transaction>
+  </Request>
+</Resource>

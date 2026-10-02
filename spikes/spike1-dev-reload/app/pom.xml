@@ -114,5 +114,19 @@
                 <quarkus.native.enabled>true</quarkus.native.enabled>
             </properties>
         </profile>
+        <profile>
+            <!-- -Pextra-root -Dextra.root=<dir> : a folder outside src/main/resources becomes a resource root (it must contain an mq/ folder) -->
+            <id>extra-root</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                    </resource>
+                    <resource>
+                        <directory>${extra.root}</directory>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
     </profiles>
 </project>

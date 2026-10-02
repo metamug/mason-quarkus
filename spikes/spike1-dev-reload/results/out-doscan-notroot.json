@@ -1,0 +1,76 @@
+[
+ {
+  "scenario": "1 edit existing",
+  "ms": [
+   -1,
+   -1,
+   -1,
+   -1,
+   -1
+  ],
+  "restarted": false
+ },
+ {
+  "scenario": "2 create new",
+  "ms": [
+   -1,
+   -1,
+   -1,
+   -1,
+   -1
+  ],
+  "restarted": false
+ },
+ {
+  "scenario": "3 delete",
+  "ms": [
+   2,
+   2,
+   2,
+   2,
+   2
+  ],
+  "restarted": false
+ },
+ {
+  "scenario": "4 rename",
+  "ms": -1,
+  "restarted": false
+ },
+ {
+  "scenario": "5 twenty files at once",
+  "ms": -1,
+  "writeMs": 15013,
+  "distinctVisibleCounts": [
+   0
+  ],
+  "restarted": false
+ },
+ {
+  "scenario": "6 invalid xml",
+  "detectMs": -1,
+  "oldModelStillServed": false,
+  "lastError": "",
+  "restarted": false
+ },
+ {
+  "scenario": "6b recovery after fix",
+  "ms": -1
+ },
+ {
+  "scenario": "7 two edits in 50 ms",
+  "ms": -1,
+  "finalValue": "first-v1",
+  "restarted": false
+ },
+ {
+  "scenario": "9 first request after 1.5 s of silence",
+  "ms": -1
+ },
+ {
+  "scenario": "final",
+  "reloadCount": 0,
+  "restarted": false,
+  "lastReloadMicros": 2763
+ }
+]

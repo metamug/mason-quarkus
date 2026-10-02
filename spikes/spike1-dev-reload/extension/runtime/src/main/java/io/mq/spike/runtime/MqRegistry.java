@@ -47,7 +47,11 @@ public final class MqRegistry {
         loadAll();
         String watch = System.getProperty("mq.watch", "false");
         if (!watch.equals("false")) {
-            startWatcher(roots.get(0).resolve(folderName), watch.equals("doscan"));
+            for (Path root : roots) {
+                if (Files.isDirectory(root.resolve(folderName))) {
+                    startWatcher(root.resolve(folderName), watch.equals("doscan"));
+                }
+            }
         }
     }
 

@@ -56,6 +56,16 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <!-- the 20 shared valid resources are baked into the application under mq/ -->
+                <directory>../../shared-resources/valid</directory>
+                <targetPath>mq</targetPath>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>${quarkus.platform.group-id}</groupId>

@@ -1,0 +1,77 @@
+[
+ {
+  "scenario": "1 edit existing",
+  "ms": [
+   2005,
+   2007,
+   2029,
+   1990,
+   2012
+  ],
+  "restarted": false
+ },
+ {
+  "scenario": "2 create new",
+  "ms": [
+   2007,
+   2001,
+   2016,
+   2015,
+   2005
+  ],
+  "restarted": false
+ },
+ {
+  "scenario": "3 delete",
+  "ms": [
+   -1,
+   -1,
+   -1,
+   -1,
+   -1
+  ],
+  "restarted": false
+ },
+ {
+  "scenario": "4 rename",
+  "ms": -1,
+  "restarted": false
+ },
+ {
+  "scenario": "5 twenty files at once",
+  "ms": 1093,
+  "writeMs": 19,
+  "distinctVisibleCounts": [
+   0,
+   20
+  ],
+  "restarted": false
+ },
+ {
+  "scenario": "6 invalid xml",
+  "detectMs": 2017,
+  "oldModelStillServed": true,
+  "lastError": "first: ParseError at [row,col]:[1,23] Message: XML document structures must start and end within the same entity.",
+  "restarted": false
+ },
+ {
+  "scenario": "6b recovery after fix",
+  "ms": 1983
+ },
+ {
+  "scenario": "7 two edits in 50 ms",
+  "ms": 1944,
+  "finalValue": "rapid-2",
+  "restarted": false
+ },
+ {
+  "scenario": "9 first request after 1.5 s of silence",
+  "ms": 177
+ },
+ {
+  "scenario": "final",
+  "reloadCount": 18,
+  "restarted": false,
+  "lastReloadMicros": 2554
+ }
+]

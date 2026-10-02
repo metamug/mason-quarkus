@@ -4,3 +4,4 @@ node_modules/
 *.iml
 # raw logs contain local paths: commit scrubbed copies by hand
 spikes/**/results/raw/
+spikes/spike1-dev-reload/outside/
