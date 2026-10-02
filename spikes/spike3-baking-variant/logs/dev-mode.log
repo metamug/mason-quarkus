@@ -1,0 +1,261 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------------< io.mq:app >------------------------------
+[INFO] Building app 1.0.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] ------------------------------[ quarkus ]-------------------------------
+[INFO] 
+[INFO] --- quarkus:3.40.1:dev (default-cli) @ app ---
+[INFO] Invoking quarkus:3.40.1:generate-code (default-generate-code) @ app
+[INFO] Invoking resources:3.3.1:resources (default-resources) @ app
+[INFO] Copying 4 resources from src\main\resources to target\classes
+[INFO] Invoking compiler:3.15.0:compile (default-compile) @ app
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] Invoking quarkus:3.40.1:generate-code-tests (default-generate-code-tests) @ app
+[INFO] Invoking resources:3.3.1:testResources (default-testResources) @ app
+[INFO] skip non existing resourceDirectory <spike>\app\src\test\resources
+[INFO] Invoking compiler:3.15.0:testCompile (default-testCompile) @ app
+[INFO] No sources to compile
+__  ____  __  _____   ___  __ ____  ______ 
+ --/ __ \/ / / / _ | / _ \/ //_/ / / / __/ 
+ -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \   
+--\___\_\____/_/ |_/_/|_/_/|_|\____/___/   
+2026-10-03 04:39:59,531 INFO  [io.quarkus] (Quarkus Main Thread) app 1.0.0-SNAPSHOT on JVM (powered by Quarkus 3.40.1) started in 3.338s. Listening on: http://localhost:8096
+2026-10-03 04:39:59,533 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2026-10-03 04:39:59,533 INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, compose, jdbc-h2, mq, narayana-jta, reactive-routes, smallrye-context-propagation, vertx]
+2026-10-03 04:40:03,636 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-1) File change detected: <spike>\app\src\main\resources\mq\hello.xml
+2026-10-03 04:40:03,640 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-1) Restarting quarkus due to changes in hello.xml.
+2026-10-03 04:40:03,703 INFO  [io.quarkus] (Quarkus Main Thread) app stopped in 0.059s
+__  ____  __  _____   ___  __ ____  ______ 
+ --/ __ \/ / / / _ | / _ \/ //_/ / / / __/ 
+ -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \   
+--\___\_\____/_/ |_/_/|_/_/|_|\____/___/   
+2026-10-03 04:40:04,300 INFO  [io.quarkus] (Quarkus Main Thread) app 1.0.0-SNAPSHOT on JVM (powered by Quarkus 3.40.1) started in 0.597s. Listening on: http://localhost:8096
+2026-10-03 04:40:04,301 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2026-10-03 04:40:04,301 INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, compose, jdbc-h2, mq, narayana-jta, reactive-routes, smallrye-context-propagation, vertx]
+2026-10-03 04:40:04,301 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-1) Live reload total time: 0.668s 
+2026-10-03 04:40:05,648 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-3) File change detected: <spike>\app\src\main\resources\mq\hello.xml
+2026-10-03 04:40:05,651 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-3) Restarting quarkus due to changes in hello.xml.
+2026-10-03 04:40:05,687 INFO  [io.quarkus] (Quarkus Main Thread) app stopped in 0.036s
+__  ____  __  _____   ___  __ ____  ______ 
+ --/ __ \/ / / / _ | / _ \/ //_/ / / / __/ 
+ -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \   
+--\___\_\____/_/ |_/_/|_/_/|_|\____/___/   
+2026-10-03 04:40:06,270 INFO  [io.quarkus] (Quarkus Main Thread) app 1.0.0-SNAPSHOT on JVM (powered by Quarkus 3.40.1) started in 0.582s. Listening on: http://localhost:8096
+2026-10-03 04:40:06,270 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2026-10-03 04:40:06,270 INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, compose, jdbc-h2, mq, narayana-jta, reactive-routes, smallrye-context-propagation, vertx]
+2026-10-03 04:40:06,270 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-3) Live reload total time: 0.629s 
+2026-10-03 04:40:07,657 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-5) File change detected: <spike>\app\src\main\resources\mq\hello.xml
+2026-10-03 04:40:07,660 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-5) Restarting quarkus due to changes in hello.xml.
+2026-10-03 04:40:07,697 INFO  [io.quarkus] (Quarkus Main Thread) app stopped in 0.036s
+__  ____  __  _____   ___  __ ____  ______ 
+ --/ __ \/ / / / _ | / _ \/ //_/ / / / __/ 
+ -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \   
+--\___\_\____/_/ |_/_/|_/_/|_|\____/___/   
+2026-10-03 04:40:08,214 INFO  [io.quarkus] (Quarkus Main Thread) app 1.0.0-SNAPSHOT on JVM (powered by Quarkus 3.40.1) started in 0.517s. Listening on: http://localhost:8096
+2026-10-03 04:40:08,214 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2026-10-03 04:40:08,214 INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, compose, jdbc-h2, mq, narayana-jta, reactive-routes, smallrye-context-propagation, vertx]
+2026-10-03 04:40:08,214 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-5) Live reload total time: 0.561s 
+2026-10-03 04:40:09,663 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-7) File change detected: <spike>\app\src\main\resources\mq\hello.xml
+2026-10-03 04:40:09,668 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-7) Restarting quarkus due to changes in hello.xml.
+2026-10-03 04:40:09,721 INFO  [io.quarkus] (Quarkus Main Thread) app stopped in 0.053s
+__  ____  __  _____   ___  __ ____  ______ 
+ --/ __ \/ / / / _ | / _ \/ //_/ / / / __/ 
+ -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \   
+--\___\_\____/_/ |_/_/|_/_/|_|\____/___/   
+2026-10-03 04:40:10,330 INFO  [io.quarkus] (Quarkus Main Thread) app 1.0.0-SNAPSHOT on JVM (powered by Quarkus 3.40.1) started in 0.608s. Listening on: http://localhost:8096
+2026-10-03 04:40:10,331 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2026-10-03 04:40:10,331 INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, compose, jdbc-h2, mq, narayana-jta, reactive-routes, smallrye-context-propagation, vertx]
+2026-10-03 04:40:10,331 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-7) Live reload total time: 0.675s 
+2026-10-03 04:40:11,685 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-9) Restarting quarkus due to changes in n1.xml.
+2026-10-03 04:40:11,714 INFO  [io.quarkus] (Quarkus Main Thread) app stopped in 0.028s
+__  ____  __  _____   ___  __ ____  ______ 
+ --/ __ \/ / / / _ | / _ \/ //_/ / / / __/ 
+ -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \   
+--\___\_\____/_/ |_/_/|_/_/|_|\____/___/   
+2026-10-03 04:40:12,222 INFO  [io.quarkus] (Quarkus Main Thread) app 1.0.0-SNAPSHOT on JVM (powered by Quarkus 3.40.1) started in 0.508s. Listening on: http://localhost:8096
+2026-10-03 04:40:12,222 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2026-10-03 04:40:12,222 INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, compose, jdbc-h2, mq, narayana-jta, reactive-routes, smallrye-context-propagation, vertx]
+2026-10-03 04:40:12,222 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-9) Live reload total time: 0.553s 
+2026-10-03 04:40:13,682 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-11) Restarting quarkus due to changes in n2.xml.
+2026-10-03 04:40:13,725 INFO  [io.quarkus] (Quarkus Main Thread) app stopped in 0.042s
+__  ____  __  _____   ___  __ ____  ______ 
+ --/ __ \/ / / / _ | / _ \/ //_/ / / / __/ 
+ -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \   
+--\___\_\____/_/ |_/_/|_/_/|_|\____/___/   
+2026-10-03 04:40:14,203 INFO  [io.quarkus] (Quarkus Main Thread) app 1.0.0-SNAPSHOT on JVM (powered by Quarkus 3.40.1) started in 0.477s. Listening on: http://localhost:8096
+2026-10-03 04:40:14,203 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2026-10-03 04:40:14,203 INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, compose, jdbc-h2, mq, narayana-jta, reactive-routes, smallrye-context-propagation, vertx]
+2026-10-03 04:40:14,203 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-11) Live reload total time: 0.531s 
+2026-10-03 04:40:15,690 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-13) Restarting quarkus due to changes in n3.xml.
+2026-10-03 04:40:15,726 INFO  [io.quarkus] (Quarkus Main Thread) app stopped in 0.036s
+__  ____  __  _____   ___  __ ____  ______ 
+ --/ __ \/ / / / _ | / _ \/ //_/ / / / __/ 
+ -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \   
+--\___\_\____/_/ |_/_/|_/_/|_|\____/___/   
+2026-10-03 04:40:16,198 INFO  [io.quarkus] (Quarkus Main Thread) app 1.0.0-SNAPSHOT on JVM (powered by Quarkus 3.40.1) started in 0.471s. Listening on: http://localhost:8096
+2026-10-03 04:40:16,198 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2026-10-03 04:40:16,198 INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, compose, jdbc-h2, mq, narayana-jta, reactive-routes, smallrye-context-propagation, vertx]
+2026-10-03 04:40:16,198 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-13) Live reload total time: 0.516s 
+2026-10-03 04:40:17,700 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-15) Restarting quarkus due to changes in n1.xml.
+2026-10-03 04:40:17,719 INFO  [io.quarkus] (Quarkus Main Thread) app stopped in 0.019s
+__  ____  __  _____   ___  __ ____  ______ 
+ --/ __ \/ / / / _ | / _ \/ //_/ / / / __/ 
+ -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \   
+--\___\_\____/_/ |_/_/|_/_/|_|\____/___/   
+2026-10-03 04:40:18,184 INFO  [io.quarkus] (Quarkus Main Thread) app 1.0.0-SNAPSHOT on JVM (powered by Quarkus 3.40.1) started in 0.465s. Listening on: http://localhost:8096
+2026-10-03 04:40:18,185 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2026-10-03 04:40:18,185 INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, compose, jdbc-h2, mq, narayana-jta, reactive-routes, smallrye-context-propagation, vertx]
+2026-10-03 04:40:18,185 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-15) Live reload total time: 0.488s 
+2026-10-03 04:40:19,715 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-17) Restarting quarkus due to changes in n2.xml.
+2026-10-03 04:40:19,768 INFO  [io.quarkus] (Quarkus Main Thread) app stopped in 0.053s
+__  ____  __  _____   ___  __ ____  ______ 
+ --/ __ \/ / / / _ | / _ \/ //_/ / / / __/ 
+ -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \   
+--\___\_\____/_/ |_/_/|_/_/|_|\____/___/   
+2026-10-03 04:40:20,240 INFO  [io.quarkus] (Quarkus Main Thread) app 1.0.0-SNAPSHOT on JVM (powered by Quarkus 3.40.1) started in 0.470s. Listening on: http://localhost:8096
+2026-10-03 04:40:20,241 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2026-10-03 04:40:20,241 INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, compose, jdbc-h2, mq, narayana-jta, reactive-routes, smallrye-context-propagation, vertx]
+2026-10-03 04:40:20,241 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-17) Live reload total time: 0.535s 
+2026-10-03 04:40:21,723 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-19) Restarting quarkus due to changes in n3.xml.
+2026-10-03 04:40:21,781 INFO  [io.quarkus] (Quarkus Main Thread) app stopped in 0.056s
+__  ____  __  _____   ___  __ ____  ______ 
+ --/ __ \/ / / / _ | / _ \/ //_/ / / / __/ 
+ -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \   
+--\___\_\____/_/ |_/_/|_/_/|_|\____/___/   
+2026-10-03 04:40:22,254 INFO  [io.quarkus] (Quarkus Main Thread) app 1.0.0-SNAPSHOT on JVM (powered by Quarkus 3.40.1) started in 0.472s. Listening on: http://localhost:8096
+2026-10-03 04:40:22,254 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2026-10-03 04:40:22,254 INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, compose, jdbc-h2, mq, narayana-jta, reactive-routes, smallrye-context-propagation, vertx]
+2026-10-03 04:40:22,254 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-19) Live reload total time: 0.538s 
+2026-10-03 04:40:24,777 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-21) File change detected: <spike>\app\src\main\resources\mq\hello.xml
+2026-10-03 04:40:24,782 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-21) Restarting quarkus due to changes in hello.xml.
+2026-10-03 04:40:24,834 INFO  [io.quarkus] (Quarkus Main Thread) app stopped in 0.052s
+2026-10-03 04:40:25,159 ERROR [io.quarkus.deployment.dev.IsolatedDevModeMain] (vert.x-worker-thread-21) Failed to start quarkus [Error Occurred After Shutdown]: java.lang.RuntimeException: io.quarkus.builder.BuildException: Build failure: Build failed due to errors
+	[error]: Build step io.mq.deployment.MqProcessor#routes threw an exception: java.lang.IllegalStateException: Invalid resource file hello.xml: Unsupported element <Bogus> in hello.xml
+	at io.mq.deployment.MqProcessor.lambda$routes$2(MqProcessor.java:68)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:183)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.stream.SortedOps$RefSortingSink.end(SortedOps.java:395)
+	at java.base/java.util.stream.Sink$ChainedReference.end(Sink.java:258)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:510)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:150)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:173)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at io.mq.deployment.MqProcessor.lambda$routes$3(MqProcessor.java:64)
+	at io.quarkus.deployment.ApplicationArchiveImpl.accept(ApplicationArchiveImpl.java:76)
+	at io.mq.deployment.MqProcessor.routes(MqProcessor.java:58)
+	at java.base/java.lang.invoke.MethodHandle.invokeWithArguments(MethodHandle.java:732)
+	at io.quarkus.deployment.ExtensionLoader$3.execute(ExtensionLoader.java:811)
+	at io.quarkus.builder.BuildContext.run(BuildContext.java:242)
+	at org.jboss.threads.ContextHandler$1.runWith(ContextHandler.java:18)
+	at org.jboss.threads.EnhancedQueueExecutor$Task.doRunWith(EnhancedQueueExecutor.java:2651)
+	at org.jboss.threads.EnhancedQueueExecutor$Task.run(EnhancedQueueExecutor.java:2630)
+	at org.jboss.threads.EnhancedQueueExecutor.runThreadBody(EnhancedQueueExecutor.java:1622)
+	at org.jboss.threads.EnhancedQueueExecutor$ThreadBody.run(EnhancedQueueExecutor.java:1589)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+	at org.jboss.threads.JBossThread.run(JBossThread.java:501)
+Caused by: javax.xml.stream.XMLStreamException: Unsupported element <Bogus> in hello.xml
+	at io.mq.deployment.MqProcessor.parse(MqProcessor.java:126)
+	at io.mq.deployment.MqProcessor.lambda$routes$2(MqProcessor.java:66)
+	... 23 more
+
+	at io.quarkus.runner.bootstrap.AugmentActionImpl.runAugment(AugmentActionImpl.java:433)
+	at io.quarkus.runner.bootstrap.AugmentActionImpl.reloadExistingApplication(AugmentActionImpl.java:361)
+	at io.quarkus.runner.bootstrap.AugmentActionImpl.reloadExistingApplication(AugmentActionImpl.java:66)
+	at io.quarkus.deployment.dev.IsolatedDevModeMain.restartApp(IsolatedDevModeMain.java:205)
+	at io.quarkus.deployment.dev.IsolatedDevModeMain.restartCallback(IsolatedDevModeMain.java:188)
+	at io.quarkus.deployment.dev.RuntimeUpdatesProcessor.doScan(RuntimeUpdatesProcessor.java:573)
+	at io.quarkus.deployment.dev.RuntimeUpdatesProcessor.doScan(RuntimeUpdatesProcessor.java:467)
+	at io.quarkus.vertx.http.runtime.devmode.VertxHttpHotReplacementSetup$6.call(VertxHttpHotReplacementSetup.java:171)
+	at io.quarkus.vertx.http.runtime.devmode.VertxHttpHotReplacementSetup$6.call(VertxHttpHotReplacementSetup.java:159)
+	at io.vertx.core.impl.ContextImpl.lambda$executeBlocking$4(ContextImpl.java:192)
+	at io.vertx.core.impl.ContextInternal.dispatch(ContextInternal.java:270)
+	at io.vertx.core.impl.ContextImpl$1.execute(ContextImpl.java:221)
+	at io.vertx.core.impl.WorkerTask.run(WorkerTask.java:56)
+	at org.jboss.threads.ContextHandler$1.runWith(ContextHandler.java:18)
+	at org.jboss.threads.EnhancedQueueExecutor$Task.doRunWith(EnhancedQueueExecutor.java:2651)
+	at org.jboss.threads.EnhancedQueueExecutor$Task.run(EnhancedQueueExecutor.java:2630)
+	at org.jboss.threads.EnhancedQueueExecutor$ThreadBody.run(EnhancedQueueExecutor.java:1586)
+	at org.jboss.threads.DelegatingRunnable.run(DelegatingRunnable.java:11)
+	at org.jboss.threads.ThreadLocalResettingRunnable.run(ThreadLocalResettingRunnable.java:11)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+Caused by: io.quarkus.builder.BuildException: Build failure: Build failed due to errors
+	[error]: Build step io.mq.deployment.MqProcessor#routes threw an exception: java.lang.IllegalStateException: Invalid resource file hello.xml: Unsupported element <Bogus> in hello.xml
+	at io.mq.deployment.MqProcessor.lambda$routes$2(MqProcessor.java:68)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:183)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.stream.SortedOps$RefSortingSink.end(SortedOps.java:395)
+	at java.base/java.util.stream.Sink$ChainedReference.end(Sink.java:258)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:510)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:150)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:173)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at io.mq.deployment.MqProcessor.lambda$routes$3(MqProcessor.java:64)
+	at io.quarkus.deployment.ApplicationArchiveImpl.accept(ApplicationArchiveImpl.java:76)
+	at io.mq.deployment.MqProcessor.routes(MqProcessor.java:58)
+	at java.base/java.lang.invoke.MethodHandle.invokeWithArguments(MethodHandle.java:732)
+	at io.quarkus.deployment.ExtensionLoader$3.execute(ExtensionLoader.java:811)
+	at io.quarkus.builder.BuildContext.run(BuildContext.java:242)
+	at org.jboss.threads.ContextHandler$1.runWith(ContextHandler.java:18)
+	at org.jboss.threads.EnhancedQueueExecutor$Task.doRunWith(EnhancedQueueExecutor.java:2651)
+	at org.jboss.threads.EnhancedQueueExecutor$Task.run(EnhancedQueueExecutor.java:2630)
+	at org.jboss.threads.EnhancedQueueExecutor.runThreadBody(EnhancedQueueExecutor.java:1622)
+	at org.jboss.threads.EnhancedQueueExecutor$ThreadBody.run(EnhancedQueueExecutor.java:1589)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+	at org.jboss.threads.JBossThread.run(JBossThread.java:501)
+Caused by: javax.xml.stream.XMLStreamException: Unsupported element <Bogus> in hello.xml
+	at io.mq.deployment.MqProcessor.parse(MqProcessor.java:126)
+	at io.mq.deployment.MqProcessor.lambda$routes$2(MqProcessor.java:66)
+	... 23 more
+
+	at io.quarkus.builder.Execution.run(Execution.java:139)
+	at io.quarkus.builder.BuildExecutionBuilder.execute(BuildExecutionBuilder.java:76)
+	at io.quarkus.deployment.QuarkusAugmentor.run(QuarkusAugmentor.java:182)
+	at io.quarkus.runner.bootstrap.AugmentActionImpl.runAugment(AugmentActionImpl.java:429)
+	... 20 more
+Caused by: java.lang.IllegalStateException: Invalid resource file hello.xml: Unsupported element <Bogus> in hello.xml
+	at io.mq.deployment.MqProcessor.lambda$routes$2(MqProcessor.java:68)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:183)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.stream.SortedOps$RefSortingSink.end(SortedOps.java:395)
+	at java.base/java.util.stream.Sink$ChainedReference.end(Sink.java:258)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:510)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:150)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:173)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at io.mq.deployment.MqProcessor.lambda$routes$3(MqProcessor.java:64)
+	at io.quarkus.deployment.ApplicationArchiveImpl.accept(ApplicationArchiveImpl.java:76)
+	at io.mq.deployment.MqProcessor.routes(MqProcessor.java:58)
+	at java.base/java.lang.invoke.MethodHandle.invokeWithArguments(MethodHandle.java:732)
+	at io.quarkus.deployment.ExtensionLoader$3.execute(ExtensionLoader.java:811)
+	at io.quarkus.builder.BuildContext.run(BuildContext.java:242)
+	at org.jboss.threads.ContextHandler$1.runWith(ContextHandler.java:18)
+	at org.jboss.threads.EnhancedQueueExecutor$Task.doRunWith(EnhancedQueueExecutor.java:2651)
+	at org.jboss.threads.EnhancedQueueExecutor$Task.run(EnhancedQueueExecutor.java:2630)
+	at org.jboss.threads.EnhancedQueueExecutor.runThreadBody(EnhancedQueueExecutor.java:1622)
+	at org.jboss.threads.EnhancedQueueExecutor$ThreadBody.run(EnhancedQueueExecutor.java:1589)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+	at org.jboss.threads.JBossThread.run(JBossThread.java:501)
+Caused by: javax.xml.stream.XMLStreamException: Unsupported element <Bogus> in hello.xml
+	at io.mq.deployment.MqProcessor.parse(MqProcessor.java:126)
+	at io.mq.deployment.MqProcessor.lambda$routes$2(MqProcessor.java:66)
+	... 23 more
+
+2026-10-03 04:40:25,165 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-21) Live reload total time: 0.395s 
+2026-10-03 04:40:26,781 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-21) File change detected: <spike>\app\src\main\resources\mq\hello.xml
+2026-10-03 04:40:26,785 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-21) Restarting quarkus due to changes in hello.xml.
+__  ____  __  _____   ___  __ ____  ______ 
+ --/ __ \/ / / / _ | / _ \/ //_/ / / / __/ 
+ -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \   
+--\___\_\____/_/ |_/_/|_/_/|_|\____/___/   
+2026-10-03 04:40:27,305 INFO  [io.quarkus] (Quarkus Main Thread) app 1.0.0-SNAPSHOT on JVM (powered by Quarkus 3.40.1) started in 0.521s. Listening on: http://localhost:8096
+2026-10-03 04:40:27,305 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2026-10-03 04:40:27,306 INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, compose, jdbc-h2, mq, narayana-jta, reactive-routes, smallrye-context-propagation, vertx]
+2026-10-03 04:40:27,306 INFO  [io.quarkus.deployment.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-21) Live reload total time: 0.532s 
