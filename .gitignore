@@ -1,0 +1,6 @@
+target/
+node_modules/
+.idea/
+*.iml
+# raw logs contain local paths: commit scrubbed copies by hand
+spikes/**/results/raw/
