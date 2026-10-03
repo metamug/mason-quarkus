@@ -70,7 +70,7 @@ jobs:
 
       - name: XML parser code in the native binary (rough, from strings)
         run: |
-          echo "runtime-parse: $(strings -a spikes/spike2-native-parse/target/spike2-native-parse-1.0.0-SNAPSHOT-runner | grep -c 'XMLStreamReader|xerces') matching strings" | tee out/runtime-xml-strings.txt
+          echo "runtime-parse: $(strings -a spikes/spike2-native-parse/target/spike2-native-parse-1.0.0-SNAPSHOT-runner | grep -cE 'XMLStreamReader|xerces') matching strings" | tee out/runtime-xml-strings.txt
 
       - name: Compare JVM and native
         run: |
