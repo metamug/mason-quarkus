@@ -1,0 +1,76 @@
+{
+ "label": "linux-jvm",
+ "files": 37,
+ "runs": 7,
+ "median": {
+  "processStartToFirstResponseMs": 1000,
+  "quarkusStartedInMs": 861,
+  "parseMicros": 78489,
+  "rssKb": 124160
+ },
+ "rows": [
+  {
+   "run": 1,
+   "processStartToFirstResponseMs": 1080,
+   "quarkusStartedInMs": 926,
+   "parseMicros": 98267,
+   "loaded": 20,
+   "withProblems": 17,
+   "rssKb": 124116
+  },
+  {
+   "run": 2,
+   "processStartToFirstResponseMs": 1000,
+   "quarkusStartedInMs": 862,
+   "parseMicros": 75246,
+   "loaded": 20,
+   "withProblems": 17,
+   "rssKb": 123636
+  },
+  {
+   "run": 3,
+   "processStartToFirstResponseMs": 1000,
+   "quarkusStartedInMs": 855,
+   "parseMicros": 78076,
+   "loaded": 20,
+   "withProblems": 17,
+   "rssKb": 124660
+  },
+  {
+   "run": 4,
+   "processStartToFirstResponseMs": 995,
+   "quarkusStartedInMs": 861,
+   "parseMicros": 78489,
+   "loaded": 20,
+   "withProblems": 17,
+   "rssKb": 124528
+  },
+  {
+   "run": 5,
+   "processStartToFirstResponseMs": 985,
+   "quarkusStartedInMs": 857,
+   "parseMicros": 85342,
+   "loaded": 20,
+   "withProblems": 17,
+   "rssKb": 124564
+  },
+  {
+   "run": 6,
+   "processStartToFirstResponseMs": 1004,
+   "quarkusStartedInMs": 861,
+   "parseMicros": 73949,
+   "loaded": 20,
+   "withProblems": 17,
+   "rssKb": 124112
+  },
+  {
+   "run": 7,
+   "processStartToFirstResponseMs": 989,
+   "quarkusStartedInMs": 862,
+   "parseMicros": 82092,
+   "loaded": 20,
+   "withProblems": 17,
+   "rssKb": 124160
+  }
+ ]
+}
