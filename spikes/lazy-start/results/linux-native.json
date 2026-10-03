@@ -1,0 +1,40 @@
+{
+ "label": "linux-native",
+ "command": "out/runner -Dquarkus.http.port={port} -Dquarkus.mq.dir={dir}",
+ "idleMs": 1500,
+ "A_firstRequestMs": [
+  136,
+  52,
+  48,
+  43,
+  38
+ ],
+ "A_readyMs": [
+  118,
+  37,
+  36,
+  32,
+  27
+ ],
+ "A_rssKb": [
+  56148,
+  54420,
+  54428,
+  55312,
+  54416
+ ],
+ "B_warmMedianMs": 1.51,
+ "B_warmMaxMs": 5.38,
+ "C_lastRequestToStoppedMs": 1535,
+ "C_stopMs": 3,
+ "C_exitCode": 143,
+ "D_allFiveMs": 105,
+ "D_eachMs": [
+  105,
+  85,
+  98,
+  93,
+  98
+ ],
+ "D_rssKbTotal": 226184
+}

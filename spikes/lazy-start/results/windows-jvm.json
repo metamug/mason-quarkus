@@ -1,6 +1,6 @@
 {
- "label": "local-jvm",
- "command": "java -Dquarkus.http.port={port} -Dquarkus.mq.dir={dir} -jar D:/projects/mason-quarkus/examples/reload/target/quarkus-app/quarkus-run.jar",
+ "label": "windows-jvm",
+ "command": "java ... -jar quarkus-run.jar (Windows 10, JDK 17.0.17, local; no ps, so no memory figures)",
  "idleMs": 1500,
  "A_firstRequestMs": [
   1448,
@@ -16,13 +16,6 @@
   1366,
   1370
  ],
- "A_rssKb": [
-  -1,
-  -1,
-  -1,
-  -1,
-  -1
- ],
  "B_warmMedianMs": 2.51,
  "B_warmMaxMs": 6.2,
  "C_lastRequestToStoppedMs": 1566,
@@ -35,6 +28,5 @@
   7065,
   6990,
   6530
- ],
- "D_rssKbTotal": -5
+ ]
 }

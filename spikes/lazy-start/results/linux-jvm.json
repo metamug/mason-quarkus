@@ -1,0 +1,40 @@
+{
+ "label": "linux-jvm",
+ "command": "java -Dquarkus.http.port={port} -Dquarkus.mq.dir={dir} -jar out/jvm-app/quarkus-run.jar",
+ "idleMs": 1500,
+ "A_firstRequestMs": [
+  1208,
+  1099,
+  1034,
+  1050,
+  1089
+ ],
+ "A_readyMs": [
+  1175,
+  1072,
+  1011,
+  1027,
+  1063
+ ],
+ "A_rssKb": [
+  100604,
+  100280,
+  100780,
+  101876,
+  100260
+ ],
+ "B_warmMedianMs": 2.4,
+ "B_warmMaxMs": 6.9,
+ "C_lastRequestToStoppedMs": 1591,
+ "C_stopMs": 40,
+ "C_exitCode": 143,
+ "D_allFiveMs": 4356,
+ "D_eachMs": [
+  3693,
+  4134,
+  4356,
+  4265,
+  4352
+ ],
+ "D_rssKbTotal": 526672
+}

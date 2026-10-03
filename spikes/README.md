@@ -10,6 +10,7 @@ on it. It is not the product, it is not maintained, and it does not follow the p
 | `spike2-native-parse/` | Do the StAX parser and validator build into a native image and give identical results? Also boot cost of parsing vs baking | done: pass with one native setting (REPORT.md) |
 | `spike3-hosting/` | How does the Dev server host several backends, and can datasources come from backend.yaml (JVM and native)? | done: one process per backend; datasources pass (REPORT.md) |
 | `spike3-baking-variant/` | Question C: build-time object model recorded into the startup bytecode, compared with parsing at boot | done: works, not recommended (REPORT.md) |
+| `lazy-start/` | First-request latency of a lazily started backend (native and JVM) and the time to stop an idle one | done: native about 40 ms, JVM about 1 s (docs/reports/lazy-start.md) |
 
 Environment of the first measurements: Quarkus 3.40.1, JDK 17.0.17 (Temurin), Maven 3.9.16, Windows 10, H2 in memory.
 Paths in the scripts are relative or taken from environment variables.
