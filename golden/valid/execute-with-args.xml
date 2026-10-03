@@ -3,7 +3,7 @@
   <Request method="GET">
     <Execute id="e" classname="com.example.Run" requires="a" when="$q eq 1" onerror="x" verbose="true" output="true" status="200">
     <Arg name="a" value="1"/>
-    <Arg name="b" path="$[prev].x"/>
+    <Arg name="b" path="$q"/>
   </Execute>
   </Request>
 </Resource>

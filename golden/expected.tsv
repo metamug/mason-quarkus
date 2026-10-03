@@ -1,0 +1,176 @@
+desc-after-request	INVALID	1	6	<Desc> must come before the <Request> elements
+desc-empty	VALID
+desc-in-request	VALID
+desc-tag-unknown-attribute	INVALID	1	3	unknown attribute 'size' on <Tag>
+desc-text	VALID
+desc-twice	INVALID	1	4	<Resource> may have only one <Desc>
+desc-unknown-child	INVALID	1	3	unexpected element <b> in <Desc>
+desc-with-tag	VALID
+document-child-without-namespace	INVALID	2	3	<Request> in <Resource> must be in the namespace http://xml.metamug.net/resource/1.0
+document-duplicate-attribute	INVALID	1	2	not well-formed: http://www.w3.org/TR/1999/REC-xml-names-19990114#AttributeNotUnique?Resource&v
+document-empty-file	INVALID	1	1	not well-formed: Premature end of file.
+document-no-namespace	INVALID	1	2	the root element must be in the namespace http://xml.metamug.net/resource/1.0
+document-not-well-formed-mismatched	INVALID	1	4	not well-formed: The element type "Request" must be terminated by the matching end-tag "</Request>".
+document-not-well-formed-truncated	INVALID	1	4	not well-formed: XML document structures must start and end within the same entity.
+document-not-xml	INVALID	1	1	not well-formed: Content is not allowed in prolog.
+document-prolog-only	INVALID	1	2	not well-formed: Premature end of file.
+document-text-in-request	INVALID	1	5	character data is not allowed in <Request>
+document-text-in-resource	INVALID	1	4	character data is not allowed in <Resource>
+document-wrong-namespace	INVALID	1	2	the root element is in the namespace http://example.com/other but must be in http://xml.metamug.net/resource/1.0
+document-wrong-root	INVALID	1	2	the root element must be <Resource>, found <Thing>
+execute-arg-without-name	INVALID	1	4	<Arg> needs the attribute 'name'
+execute-id-missing	INVALID	1	4	<Execute> needs the attribute 'id'
+execute-minimal	VALID
+execute-unknown-child	INVALID	1	4	unexpected element <Param> in <Execute>
+execute-with-args	VALID
+header-minimal	VALID
+header-name-missing	INVALID	1	4	<Header> needs the attribute 'name'
+header-value-missing	INVALID	1	4	<Header> needs the attribute 'value'
+id-100-characters	VALID
+id-101-characters	INVALID	1	4	attribute 'id' of <Text> must have at most 100 characters, found 101
+id-duplicate-across-requests	INVALID	1	7	duplicate id 'a' (first used on line 4); a step id is unique in the whole resource
+id-duplicate-inside-transaction	INVALID	1	6	duplicate id 'a' (first used on line 5); a step id is unique in the whole resource
+id-duplicate-same-request	INVALID	1	5	duplicate id 'a' (first used on line 4); a step id is unique in the whole resource
+id-duplicate-script-xrequest	INVALID	1	5	duplicate id 'a' (first used on line 4); a step id is unique in the whole resource
+id-duplicate-sql-and-text	INVALID	1	5	duplicate id 'a' (first used on line 4); a step id is unique in the whole resource
+id-empty	INVALID	1	4	attribute 'id' of <Text> must not be empty
+id-transaction-sql-collides-with-step	INVALID	1	6	duplicate id 'a' (first used on line 4); a step id is unique in the whole resource
+mpath-earlier-step	VALID
+mpath-forward-reference	INVALID	1	4	mpath $[b] in the text of <Sql> does not name a step defined before it in the same <Request>
+mpath-in-text	VALID
+mpath-in-transaction-earlier	VALID
+mpath-in-transaction-unknown	INVALID	1	4	mpath $[ghost] in the text of <Sql> does not name a step defined before it in the same <Request>
+mpath-in-when-earlier	VALID
+mpath-in-when-unknown	INVALID	1	4	mpath $[ghost] in the when condition of <Sql> does not name a step defined before it in the same <Request>
+mpath-in-xrequest-body	VALID
+mpath-in-xrequest-url-unknown	INVALID	1	4	mpath $[ghost] in the url of <XRequest> does not name a step defined before it in the same <Request>
+mpath-other-request	INVALID	1	7	mpath $[a] in the text of <Sql> does not name a step defined before it in the same <Request>
+mpath-self-reference	INVALID	1	4	mpath $[a] in the text of <Sql> does not name a step defined before it in the same <Request>
+mpath-unknown-id	INVALID	1	4	mpath $[nosuch] in the text of <Sql> does not name a step defined before it in the same <Request>
+param-all-attributes	VALID
+param-exists-too-short	INVALID	1	4	attribute 'exists' of <Param> must have at least 3 characters, found 'ab'
+param-max-not-a-number	INVALID	1	4	attribute 'max' of <Param> must be a number, found 'lots'
+param-maxlength-decimal	INVALID	1	4	attribute 'maxlength' of <Param> must be a whole number, found '1.5'
+param-minlength-negative	INVALID	1	4	attribute 'minlength' of <Param> must be 0 or more, found '-1'
+param-name-empty	INVALID	1	4	attribute 'name' of <Param> must not be empty
+param-name-missing	INVALID	1	4	<Param> needs the attribute 'name'
+param-required-not-boolean	INVALID	1	4	attribute 'required' of <Param> must be true or false, found 'sometimes'
+param-type-date	VALID
+param-type-datetime	VALID
+param-type-email	VALID
+param-type-missing	INVALID	1	4	<Param> needs the attribute 'type'
+param-type-number	VALID
+param-type-string	INVALID	1	4	attribute 'type' of <Param> must be one of date, datetime, email, number, text, time, url, found 'string'
+param-type-text	VALID
+param-type-time	VALID
+param-type-url	VALID
+param-unknown-attribute	INVALID	1	4	unknown attribute 'default' on <Param>
+request-collection-and-item	VALID
+request-duplicate-method-without-item-is-not-checked	VALID
+request-item-any-string	VALID
+request-item-false-is-still-an-item	VALID
+request-item-true	VALID
+request-method-delete	VALID
+request-method-empty	INVALID	1	3	attribute 'method' of <Request> must be one of HEAD, GET, POST, PUT, DELETE, found ''
+request-method-get	VALID
+request-method-head	VALID
+request-method-item-different	VALID
+request-method-item-duplicate	INVALID	1	6	duplicate <Request> with method GET and item 'true' (first on line 3)
+request-method-item-duplicate-named	INVALID	1	6	duplicate <Request> with method GET and item 'x' (first on line 3)
+request-method-lowercase	INVALID	1	3	attribute 'method' of <Request> must be one of HEAD, GET, POST, PUT, DELETE, found 'get'
+request-method-missing	INVALID	1	3	<Request> needs the attribute 'method'
+request-method-patch	INVALID	1	3	attribute 'method' of <Request> must be one of HEAD, GET, POST, PUT, DELETE, found 'PATCH'
+request-method-post	VALID
+request-method-put	VALID
+request-method-unknown	INVALID	1	3	attribute 'method' of <Request> must be one of HEAD, GET, POST, PUT, DELETE, found 'FETCH'
+request-status-created	VALID
+request-status-decimal	INVALID	1	3	attribute 'status' of <Request> must be a whole number, found '201.5'
+request-status-lower-bound	VALID
+request-status-text	INVALID	1	3	attribute 'status' of <Request> must be a whole number, found 'ok'
+request-status-too-high	INVALID	1	3	attribute 'status' of <Request> must be from 100 to 599, found '600'
+request-status-too-low	INVALID	1	3	attribute 'status' of <Request> must be from 100 to 599, found '99'
+request-status-upper-bound	VALID
+request-unknown-attribute	INVALID	1	3	unknown attribute 'cache' on <Request>
+request-unknown-child	INVALID	1	4	unexpected element <Frobnicate> in <Request>
+resource-auth	VALID
+resource-auth-digit-first	INVALID	1	2	attribute 'auth' of <Resource> must start with a letter, found '1abc'
+resource-auth-empty	INVALID	1	2	attribute 'auth' of <Resource> must start with a letter, found ''
+resource-comments	VALID
+resource-empty-request	VALID
+resource-minimal	VALID
+resource-no-request	INVALID	1	2	<Resource> needs at least one <Request>
+resource-no-xml-declaration	VALID
+resource-only-desc	INVALID	1	2	<Resource> needs at least one <Request>
+resource-parent	VALID
+resource-parent-empty	INVALID	1	2	attribute 'parent' of <Resource> must not be empty
+resource-sql-cdata	VALID
+resource-sql-entities	VALID
+resource-two-requests	VALID
+resource-unknown-attribute	INVALID	1	2	unknown attribute 'colour' on <Resource>
+resource-unknown-child	INVALID	1	6	unexpected element <Thing> in <Resource>
+resource-version-decimal	VALID
+resource-version-empty	INVALID	1	2	attribute 'v' of <Resource> must be a number, found ''
+resource-version-fraction	VALID
+resource-version-integer	VALID
+resource-version-missing	INVALID	1	2	<Resource> needs the attribute 'v'
+resource-version-negative	INVALID	1	2	attribute 'v' of <Resource> must be greater than 0, found '-1.0'
+resource-version-text	INVALID	1	2	attribute 'v' of <Resource> must be a number, found 'one'
+resource-version-three-parts	INVALID	1	2	attribute 'v' of <Resource> must be a number, found '1.0.1'
+resource-version-zero	INVALID	1	2	attribute 'v' of <Resource> must be greater than 0, found '0'
+resource-xml-declaration-latin1	VALID
+script-all-attributes	VALID
+script-file-empty	INVALID	1	4	attribute 'file' of <Script> must not be empty
+script-file-missing	INVALID	1	4	<Script> needs the attribute 'file'
+script-id-missing	INVALID	1	4	<Script> needs the attribute 'id'
+script-minimal	VALID
+script-output-maybe	INVALID	1	4	attribute 'output' of <Script> must be true or false, found 'maybe'
+script-unknown-attribute	INVALID	1	4	unknown attribute 'language' on <Script>
+script-with-child	INVALID	1	4	<Script> must be empty, found <Arg>
+sql-all-attributes	VALID
+sql-boolean-numeric	VALID
+sql-classname-empty	INVALID	1	4	attribute 'classname' of <Sql> must not be empty
+sql-empty-body	VALID
+sql-id-missing	INVALID	1	4	<Sql> needs the attribute 'id'
+sql-limit-offset-query	VALID
+sql-limit-on-update	INVALID	1	4	attribute 'limit' of <Sql> is only allowed on a query, not on type="update"
+sql-limit-starts-with-digit	INVALID	1	4	attribute 'limit' of <Sql> must start with a letter, found '10'
+sql-offset-on-update	INVALID	1	4	attribute 'offset' of <Sql> is only allowed on a query, not on type="update"
+sql-offset-starts-with-digit	INVALID	1	4	attribute 'offset' of <Sql> must start with a letter, found '5'
+sql-output-not-boolean	INVALID	1	4	attribute 'output' of <Sql> must be true or false, found 'maybe'
+sql-query-default	VALID
+sql-requires-empty	INVALID	1	4	attribute 'requires' of <Sql> must not be empty
+sql-status-out-of-range	INVALID	1	4	attribute 'status' of <Sql> must be from 100 to 599, found '600'
+sql-type-delete	INVALID	1	4	attribute 'type' of <Sql> must be one of query, update, found 'delete'
+sql-type-query	VALID
+sql-type-update	VALID
+sql-type-uppercase	INVALID	1	4	attribute 'type' of <Sql> must be one of query, update, found 'UPDATE'
+sql-unknown-attribute-persist	INVALID	1	4	unknown attribute 'persist' on <Sql>
+sql-verbose-not-boolean	INVALID	1	4	attribute 'verbose' of <Sql> must be true or false, found 'yes'
+sql-with-child-element	INVALID	1	4	<Sql> may contain only text, found <b>
+text-attributes	VALID
+text-empty	VALID
+text-id-missing	INVALID	1	4	<Text> needs the attribute 'id'
+text-minimal	VALID
+text-with-child	INVALID	1	4	<Text> may contain only text, found <b>
+transaction-attributes	VALID
+transaction-empty	VALID
+transaction-sql-without-id	INVALID	1	4	<Sql> needs the attribute 'id'
+transaction-two-sql	VALID
+transaction-unknown-attribute	INVALID	1	4	unknown attribute 'isolation' on <Transaction>
+transaction-with-script	INVALID	1	4	only <Sql> is allowed in <Transaction>, found <Script>
+transaction-with-text	INVALID	1	4	only <Sql> is allowed in <Transaction>, found <Text>
+xrequest-all-attributes	VALID
+xrequest-header-empty-name	INVALID	1	4	attribute 'name' of <Header> must not be empty
+xrequest-header-without-name	INVALID	1	4	<Header> needs the attribute 'name'
+xrequest-id-missing	INVALID	1	4	<XRequest> needs the attribute 'id'
+xrequest-method-delete	VALID
+xrequest-method-missing	INVALID	1	4	<XRequest> needs the attribute 'method'
+xrequest-method-patch	INVALID	1	4	attribute 'method' of <XRequest> must be one of HEAD, GET, POST, PUT, DELETE, found 'PATCH'
+xrequest-minimal	VALID
+xrequest-output-headers	VALID
+xrequest-output-maybe	INVALID	1	4	attribute 'output' of <XRequest> must be one of true, false, headers, found 'maybe'
+xrequest-param-without-value	INVALID	1	4	<Param> needs the attribute 'value'
+xrequest-unknown-attribute-persist	INVALID	1	4	unknown attribute 'persist' on <XRequest>
+xrequest-unknown-child	INVALID	1	4	unexpected element <Cookie> in <XRequest>
+xrequest-url-missing	INVALID	1	4	<XRequest> needs the attribute 'url'
+xrequest-with-children	VALID

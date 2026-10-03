@@ -30,16 +30,14 @@ The subset validator agrees with the XSD on **114 of 177** golden cases. It **ac
 
 Cause: the spike validator checks the elements and attributes it needs to build a route and ignores the rest. It has no attribute whitelist, no datatype checks, no namespace check and no cross-step checks.
 
-## 4. Valid input the subset rejects: 4
+## 4. Valid input the subset rejects: 3 (a 4th, duplicate ids inside a Transaction, is valid for the XSD but MQ rejects it on purpose: golden case `id-duplicate-inside-transaction`, kind invalid-mq)
 
 | Case | Why it is valid | Spike behaviour |
 |---|---|---|
 | `resource-version-integer` | `v` may be an integer such as `2` | requires `\d+\.\d+` |
 | `request-method-head` | HEAD is in the method list | rejected |
-| `id-duplicate-inside-transaction-is-not-checked` | the schema's `xsd:unique` covers `Request/*` only, so ids inside a Transaction are not checked | rejected as duplicate |
 | `execute-with-args` | `Arg` children of Execute are allowed | rejected |
 
-The Transaction case follows the XSD literally. Whether the Phase 2 validator should be stricter than the XSD there is an open question (below).
 
 ## 5. Surprises
 
@@ -48,7 +46,7 @@ The Transaction case follows the XSD literally. Whether the Phase 2 validator sh
 
 ## 6. Open questions
 
-1. Should the Phase 2 validator reject duplicate ids inside a Transaction (stricter than the XSD, safer for mpath resolution), or follow the XSD exactly? Default: follow the XSD, flag a warning.
+1. (Settled in Phase 2) MQ rejects duplicate ids inside a Transaction, and a Transaction Sql id that collides with another step: stricter than the XSD, so that an mpath names exactly one step.
 2. The golden manifest carries the XSD-derived expectation; the first error message and line for each case still need to be stored as `.expected` files (Phase 2).
 
 ## 7. Recommended change to the R2 Next spec

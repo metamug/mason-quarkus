@@ -76,7 +76,6 @@ id-duplicate-across-requests	invalid-xsd	ids are unique across all requests
 id-duplicate-sql-and-text	invalid-xsd	a Sql and a Text with the same id
 id-duplicate-same-request	invalid-xsd	two steps with the same id in one request
 id-duplicate-script-xrequest	invalid-xsd	a Script and an XRequest with the same id
-id-duplicate-inside-transaction-is-not-checked	valid	ids of Sql inside Transaction are not Request/* so the schema does not check them
 id-duplicate-inside-transaction	invalid-mq	MQ rejects what the schema misses: the same id inside a Transaction twice (mpath could not tell them apart)
 id-transaction-sql-collides-with-step	invalid-mq	MQ rejects a Sql inside a Transaction that reuses the id of a step outside
 id-100-characters	valid	id of exactly 100 characters

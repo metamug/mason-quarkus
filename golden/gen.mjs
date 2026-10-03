@@ -108,7 +108,6 @@ X('id-duplicate-across-requests', 'ids are unique across all requests', res([...
 X('id-duplicate-sql-and-text', 'a Sql and a Text with the same id', res(get([`<Sql id="a">SELECT 1</Sql>`, text('a')])));
 X('id-duplicate-same-request', 'two steps with the same id in one request', res(get([text('a'), text('a')])));
 X('id-duplicate-script-xrequest', 'a Script and an XRequest with the same id', res(get([`<Script id="a" file="f"/>`, `<XRequest id="a" url="http://x" method="GET"/>`])));
-V('id-duplicate-inside-transaction-is-not-checked', 'ids of Sql inside Transaction are not Request/* so the schema does not check them', res(get([`<Transaction>`, `  <Sql id="a" type="update">UPDATE t SET x = 1</Sql>`, `  <Sql id="a" type="update">UPDATE t SET x = 2</Sql>`, `</Transaction>`])));
 M('id-duplicate-inside-transaction', 'MQ rejects what the schema misses: the same id inside a Transaction twice (mpath could not tell them apart)', res(get([`<Transaction>`, `  <Sql id="a" type="update">UPDATE t SET x = 1</Sql>`, `  <Sql id="a" type="update">UPDATE t SET x = 2</Sql>`, `</Transaction>`])));
 M('id-transaction-sql-collides-with-step', 'MQ rejects a Sql inside a Transaction that reuses the id of a step outside', res(get([text('a'), `<Transaction>`, `  <Sql id="a" type="update">UPDATE t SET x = 1</Sql>`, `</Transaction>`])));
 V('id-100-characters', 'id of exactly 100 characters', res(get([`<Text id="${'a'.repeat(100)}">x</Text>`])));
@@ -179,7 +178,7 @@ V('text-empty', 'empty Text', one('<Text id="t"/>'));
 X('text-id-missing', 'id is required', one('<Text>hello</Text>'));
 X('text-with-child', 'Text holds text only', one('<Text id="t"><b>x</b></Text>'));
 V('execute-minimal', 'Execute with classname', one('<Execute id="e" classname="com.example.Run"/>'));
-V('execute-with-args', 'Arg children', one('<Execute id="e" classname="com.example.Run" requires="a" when="$q eq 1" onerror="x" verbose="true" output="true" status="200">\n    <Arg name="a" value="1"/>\n    <Arg name="b" path="$[prev].x"/>\n  </Execute>'));
+V('execute-with-args', 'Arg children', one('<Execute id="e" classname="com.example.Run" requires="a" when="$q eq 1" onerror="x" verbose="true" output="true" status="200">\n    <Arg name="a" value="1"/>\n    <Arg name="b" path="$q"/>\n  </Execute>'));
 X('execute-id-missing', 'id is required', one('<Execute classname="com.example.Run"/>'));
 X('execute-arg-without-name', 'Arg needs a name', one('<Execute id="e"><Arg value="1"/></Execute>'));
 X('execute-unknown-child', 'unknown child of Execute', one('<Execute id="e"><Param name="a"/></Execute>'));
