@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Resource xmlns="http://xml.metamug.net/resource/1.0" v="1.0">
+  <Desc>Probe: an XRequest over https (needs the backend property tls, for example https://postman-echo.com). Shows whether TLS works in the native binary.</Desc>
+  <Request method="GET">
+    <XRequest id="e" method="GET" url="{{tls}}/get?probe=1" output="false"/>
+    <Text id="status">$[e].statusCode</Text>
+  </Request>
+</Resource>

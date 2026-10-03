@@ -99,10 +99,11 @@ jobs:
           /usr/bin/time -v -o out/native-build-time.txt mvn -q -B -f examples/shop-kt/pom.xml clean package -Pcompiled -Dnative
           grep -E "Elapsed|Maximum resident" out/native-build-time.txt
           ls -l examples/shop-kt/target/*-runner
-          examples/shop-kt/target/mq-example-shop-kt-0.1.0-SNAPSHOT-runner -Dquarkus.http.port=8080 -Dquarkus.mq.properties.self=http://127.0.0.1:8080 -Dquarkus.mq.properties.stub=http://127.0.0.1:9999 > out/native-run.log 2>&1 &
+          examples/shop-kt/target/mq-example-shop-kt-0.1.0-SNAPSHOT-runner -Dquarkus.http.port=8080 -Dquarkus.mq.properties.self=http://127.0.0.1:8080 -Dquarkus.mq.properties.stub=http://127.0.0.1:9999 -Dquarkus.mq.properties.tls=https://postman-echo.com > out/native-run.log 2>&1 &
           PID=$!
           for i in $(seq 1 120); do curl -s -o /dev/null http://localhost:8080/v1.0/product && break; sleep 0.2; done
           node examples/shop-kt/http-test.mjs http://localhost:8080 | tee out/native-result.txt
+          echo "tls probe (informational, needs the internet):"; curl -s -m 20 http://localhost:8080/v1.0/tlsprobe | tee out/native-tls-probe.txt; echo
           ps -o rss= -p $PID | awk '{print "native rss_kb", $1}'
           grep "MQ runs" out/native-run.log || true
           kill $PID
