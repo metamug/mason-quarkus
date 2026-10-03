@@ -4,13 +4,13 @@ MQ runs [R2](https://github.com/metamug/R2) resource XML directly on [Quarkus](h
 (StAX), validated, held as an in-memory model, and executed by plain Java executors, replacing the XML to JSP to Tomcat
 translation layer of the original Mason. MQ is built on Quarkus (Apache 2.0); it is not affiliated with or endorsed by the Quarkus project.
 
-A web API in MQ is a folder with four kinds of artifact:
+A web API in MQ is a folder with four kinds of artifact; code is Kotlin (scripts are the one extension mechanism):
 
 | | |
 |---|---|
 | **XML** | what the API is: routes, SQL, steps, parameters, conditions (`mq/*.xml`) |
 | **Scripts** | small logic between steps, in Kotlin (`scripts/*.kts`, shared code in `lib/*.kt`) |
-| **Plugins** | Java classes for heavy logic and extension points (jars, planned on the `com.metamug:mtg-api` interfaces) |
+| **Libraries** | heavy or reusable logic kept testable: Kotlin classes in `lib/`, jars declared in `libs` (plugins exist only as a compatibility feature) |
 | **`mq.yaml`** | where and how it runs: datasources, settings, declared libraries and drivers |
 
 Two products come out of it: a **Dev server** (JVM; reads the folder, hot-deploys, compiles scripts) and a **CLI** (validates, compiles
@@ -21,12 +21,12 @@ scripts ahead of time, builds a native binary). The project layout and every set
 Working and tested (JVM and native, PostgreSQL and HSQLDB; Linux, macOS, Windows in CI):
 
 - Parser and validator (`mq-core`): all of R2's `resource.xsd` plus MQ rules, every error with file and line, identical results on the JVM and in native (189 generated cases and 35 real R2 resources as golden cases).
-- Executors (`mq-engine`): `Sql` with typed parameter binding, `Transaction`, `XRequest`, `Script` (Kotlin), `Execute` (Java plugin classes), `Text`, `when` conditions, mpath, request routing including item and parent resources.
+- Executors (`mq-engine`): `Sql` with typed parameter binding, `Transaction`, `XRequest`, `Script` (Kotlin), `Execute` (compatibility plugin classes), `Text`, `when` conditions, mpath, request routing including item and parent resources.
 - Quarkus extension (`quarkus-mq`): serves the resources over HTTP; dev-mode reload in 20 to 90 ms with an atomic swap and the last good version kept; the XML parser's native settings are built in.
 - Kotlin scripts interpreted by the Dev server and compiled ahead of time for production and native; shared `lib/` code; libraries such as commons-text.
 - The R2 shop scenario runs end to end: 40 HTTP checks give the same result on the Dev server loader, on compiled scripts (JVM) and in the native binary.
 
-Not built yet: the `mq.yaml` reader, authentication, database migrations, response shaping (nesting), the CLI and the Dev server as products, the shared scripting host in the Dev server (measured, experimental code exists), and migrating the plugin API to mtg-api. See the open [issues](https://github.com/metamug/mason-quarkus/issues).
+Not built yet: the `mq.yaml` reader, authentication, database migrations, response shaping (nesting), the CLI and the Dev server as products, the shared scripting host in the Dev server (measured, experimental code exists), and a `db` object, raw responses and script-backed auth for scripts. See the open [issues](https://github.com/metamug/mason-quarkus/issues).
 
 ## Where to read
 
@@ -55,7 +55,7 @@ The runnable examples are `examples/reload` (dev reload), `examples/shop` (SQL o
 |---|---|
 | `mq-core/` | parser, validator, model, `when`/mpath expressions, folder store and watcher (plain Java, no Quarkus) |
 | `mq-engine/` | routing and the step executors (plain Java over JDBC) |
-| `mq-plugin-api/` | the current plugin interface (to be replaced by mtg-api) |
+| `mq-plugin-api/` | the compatibility plugin interface (not part of v1) |
 | `mq-script/` | Kotlin script definition, Dev server script loader, experimental shared scripting host |
 | `quarkus-mq/` | the Quarkus extension (runtime and deployment) |
 | `examples/`, `samples/` | runnable applications and sample projects (`shop`, `shop-sql`, `bookstore`, `shop-plugin`) |

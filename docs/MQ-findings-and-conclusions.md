@@ -133,6 +133,10 @@ Break-even about 2 backends. Warm script calls are 3 to 5 times faster remote (2
 - **R2 plugin adapter:** not now. Check done: of 35 distinct real resources only `execute.xml` (a parser test fixture) uses `Execute`; no real application resource does.
 - **Provisional semantics accepted**, including the 0-based mpath row index.
 
+## 10d. Scripts-first (owner decision after the plugin question)
+
+Scripts are the one code mechanism of v1 (see docs/decisions.md and docs/spec/project-spec.md section 5). Plugins stay as a compatibility feature; an mtg-api adapter only if real R2 plugins turn up. Reasons: a script is an edit and a save, a plugin is a project, a build and a jar; a Sql step already passes every row to the next step, so result and response processors are a Sql step followed by a Script. Needed to make this hold (issues #48 to #53 and #21): a db object for scripts, raw responses, script-backed auth and parameter types and hooks, editor support, a lib-object state pattern, platform capabilities declared in mq.yaml.
+
 ## 11. Real resources (test 6)
 
 80 resource files in the R2, Mason and spike folders reduce to 35 distinct; 31 accepted, 4 rejected: two old-dialect fixtures (`persist` attribute, `Query` element) that R2 own XSD also rejects, and two Groovy references. 12 accepted files contain a Transaction and none has a duplicate step id, so the MQ Transaction id rule rejects nothing real and stays. (The instruction for this item was cut off; read as "stays if no real resource breaks".)

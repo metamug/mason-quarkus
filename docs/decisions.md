@@ -33,3 +33,11 @@ Decisions taken by the owner after the spikes and Phase 3. Newest at the bottom 
 - **R2 plugin adapter.** Not now. Check done: of the 35 distinct real resources, one contains an `Execute` (`execute.xml`, a parser test fixture, not an application) and one more (`persist.xml`, rejected old dialect). No real application resource uses `Execute`, so there is no evidence for an adapter.
 - **Provisional semantics accepted** (Sql output default, `requires`, item requests, error mapping), including the 0-based mpath row index. No real resource uses a numeric index.
 - **Memory.** About 600 MB per Dev-server backend with interpreted scripts is too heavy at 20 backends (about 12 GB). Build a shared scripting host across backends, but **measure first** (see `docs/reports/shared-host.md`).
+
+## Scripts are the one code mechanism of v1 (plugins are compatibility only)
+
+- **Decision.** Code in a project is Kotlin: scripts for glue, `lib/` classes and declared `libs` for heavy or reusable logic. The plugin API is not part of v1; the existing `io.mq.plugin.Plugin` loader stays as a compatibility feature without new work, and an `mtg-api` adapter is built only if real R2 plugins turn up.
+- **Why.** A plugin is a separate project, a build and a jar to copy; a script is an edit and a save (0.4 to 0.8 s to recompile). `Sql` already passes every row on (`steps["id"]` is a list of maps), so result and response processors (`classname` on `Sql` and `XRequest`) are a `Sql` step followed by a `Script`. Of 35 distinct real resources only a parser test fixture uses `Execute`.
+- **What scripts need so that this holds** (issues): a `db` object (query, update, transaction with typed binding), raw responses, script-backed extension points (auth, custom parameter types, start/stop hooks), editor support, a documented pattern for state in `lib/` objects, and platform capabilities (mail, queue) declared in `mq.yaml`.
+- **Open check.** Whether any real plugins exist outside the repositories searched; if a team has them, the adapter moves toward v1.
+- **Backlog changes.** #7 now the optional compatibility adapter (future); #8 and #45 closed; #21 now script-backed extension points; new #48 to #53 (`db` in scripts, raw responses, editor support, lib state pattern, capabilities, transform sugar).

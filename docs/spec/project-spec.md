@@ -1,15 +1,15 @@
 # MQ project specification (draft 1)
 
-A web API in MQ is a folder with four kinds of artifact and nothing else:
+A web API in MQ is a folder with four kinds of artifact and nothing else (plugins are an optional compatibility feature, section 5):
 
 | Artifact | Says | Where |
 |---|---|---|
 | **XML** | what the API is: routes, SQL, steps, parameters, conditions | `mq/*.xml` |
 | **Scripts** | small logic between steps (Kotlin) | `scripts/*.kts`, shared code in `lib/*.kt` |
-| **Plugins** | heavy or reusable Java logic and extension points | `plugins/*.jar` |
+| **Libraries** | heavy or reusable logic, kept testable | `lib/*.kt` (Kotlin classes), `libs` in `mq.yaml` (jars) |
 | **`mq.yaml`** | where and how it runs: datasources, settings, declared libraries and drivers | project root |
 
-Rule: a new need becomes **a section in `mq.yaml`** or **an extension point in the plugin API**, never a fifth kind of artifact.
+Rule: a new need becomes **a section in `mq.yaml`**, **a script or `lib/` class**, or **a capability object offered to scripts**, never a fifth kind of artifact.
 
 Status marks: **[built]** exists and is tested; **[partial]** partly; **[planned]** specified here, not built. Evidence for the built parts is in `docs/reports/`.
 
@@ -21,7 +21,7 @@ my-api/
   mq/                     resource XML, one file per resource, not recursive          [built]
   scripts/                Kotlin scripts, name.kts                                    [built]
   lib/                    ordinary Kotlin shared by the scripts                       [built]
-  plugins/                plugin jars (Execute classes, processors, providers)        [built, own API; mtg-api planned]
+  plugins/                optional: jars for <Execute classname>, compatibility only    [built]
   db/migrations/          V1__create_tables.sql, V2__...  run in order, once          [planned]
   db/seed/                optional sample data for development                        [planned]
 ```
@@ -50,18 +50,24 @@ properties:                     # {{name}} in an XRequest url                   
 
 scripts: scripts                # folders, defaults shown                          [built]
 lib: lib
-plugins: plugins                # or a list of jars / Maven coordinates            [partial]
+plugins: plugins                # optional, compatibility only                       [built]
 
 libs:                           # libraries scripts may import                     [partial: a pom file]
   - org.apache.commons:commons-text:1.13.1
 drivers: [postgresql]           # JDBC drivers, each a known recipe                [partial]
 
 auth:                           # who may call what                                [planned]
+paramTypes:                     # custom <Param type="..."> as scripts                [planned]
+  isbn: { type: script, file: types/isbn }
+on:                             # start and stop hooks as scripts                  [planned]
+  start: [ hooks/warmup ]
+capabilities:                   # services offered to scripts as objects            [planned]
+  mail: { smtp: ${SMTP_URL} }
   default: none                 # none | the name of a provider below
   providers:
     jwt:       { type: jwt, issuer: https://id.example, jwks: https://id.example/.well-known/jwks.json }
     apikey:    { type: apikey, header: X-Api-Key, keys: ${API_KEYS} }
-    custom:    { type: plugin, class: com.example.MyAuth }
+    custom:    { type: script, file: auth/custom }   # a script returns the principal or refuses
 
 http:                           #                                                  [planned]
   cors: { origins: ["https://app.example"], methods: [GET, POST, PUT, DELETE], credentials: false }
@@ -89,22 +95,28 @@ The resource XML is defined by `resource.xsd` plus the MQ rules in `docs/validat
 
 A script sees `params` (text), `steps` (results by id), `response` (map to fill), `request` (`id`, `pid`, `uid`, `method`). `lib/` is ordinary Kotlin (no `params`): pass arguments. The Dev server compiles on change; the CLI compiles ahead of time. Libraries come from `libs`. Not supported in the native binary: full Kotlin reflection (`kotlin-reflect`).
 
-## 5. Plugins
+## 5. Code: scripts, lib and libs (plugins are optional)
 
-One plugin API: **`com.metamug:mtg-api`** (Apache 2.0, no dependencies, already used by R2 plugins) **[planned: today MQ has its own `io.mq.plugin.Plugin`]**. A plugin is a public class with a no-argument constructor in a jar in `plugins/`; it needs no registration file (the CLI scans declared jars at build time, the Dev server loads classes by name).
+Decision (after the plugin question, see `docs/decisions.md`): **scripts are the one code mechanism of v1.** A plugin is a separate Maven project, a build and a jar to copy; a script is an edit and a save. Real resources do not use plugins (of 35 distinct R2 resources only a parser test fixture has an `Execute`). So:
 
-| Kind | Interface | Used for |
-|---|---|---|
-| Request processor | `RequestProcessable.process(Request, DataSource, args)` | `<Execute classname="...">`: any business logic |
-| Result processor | `ResultProcessable.process(Result)` | `classname` on `Sql`: reshape a query result |
-| Response processor | `ResponseProcessable.process(Response)` | `classname` on `XRequest`: reshape what another API returned |
-| Database | `DatabaseProcessable.process(DataSource)` | maintenance tasks |
-| Application listener | `ApplicationListener` | start and stop hooks |
-| Upload listener | `UploadListener` | files received |
-| **Auth provider** | MQ addition: `AuthProvider.authenticate(Request)` returns a principal or refuses | `auth: { type: plugin }` **[planned]** |
-| **Param type** | MQ addition: `ParamType.validate(String)` | custom `<Param type="...">` **[planned]** |
+| Need | How |
+|---|---|
+| Glue between steps, reshape rows, decide | a script in `scripts/`; `Sql` already passes every row on: `steps["orders"]` is a list of maps |
+| Post-process a query or an API answer | `<Sql id="raw" output="false">` then `<Script id="orders" file="shape"/>` with output on: no processor API needed |
+| Heavy or reusable logic, unit tests, IDE, debugger | ordinary Kotlin classes in `lib/`, or a Java/Kotlin library in `libs`; scripts stay thin |
+| State that outlives a request (a client, a cache) | a Kotlin `object` in `lib/` (lost when the lib recompiles in the Dev server; kept in production) |
+| Business logic that loops over queries or runs its own transaction | `db` in scripts **[planned]**: `db.query(sql, params)`, `db.update(...)`, `db.transaction { }`, with the same typed binding as `Sql` and the datasource of the step (or a named one) |
+| A non-JSON response (a file, an image) | `response.raw(contentType, bytes)` **[planned]** |
+| Things that are not request steps: authentication, custom `Param` types, start and stop hooks | scripts too, declared in `mq.yaml`: `auth: { type: script, file: auth/jwt }`, `paramTypes:`, `on: { start: ..., stop: ... }` **[planned]**, so they hot-reload like everything else |
+| Platform services (mail, a queue, a cache) | a **capability** declared in `mq.yaml` and exposed to scripts as an object (`mail.send(...)`), built into MQ; neither scripts nor jars can inject Quarkus beans in native **[planned]** |
 
-Rules: a result must be JSON-ready (String, Number, Boolean, null, List, Map with String keys), else a 500 naming the step, the class and the path **[built]**; classes are never loaded by name in the native binary, only registered ones **[built]**; a changed jar is picked up by the Dev server without a restart **[built]**.
+A script sees `params` (text), `steps` (results by id), `response` (map to fill), `request` (`id`, `pid`, `uid`, `method`). The Dev server compiles on change; the CLI compiles ahead of time. Libraries come from `libs`; shared code from `lib/`. Not supported in the native binary: full Kotlin reflection (`kotlin-reflect`). **[built]** (except where marked)
+
+**Setting up an editor [planned]:** publish the script definition (`mq-script`) so an IDE understands `params`, `steps`, `response` and `request` in `.kts` files, and generate a small project stub that puts `lib/` and `libs` on the editor class path.
+
+### Plugins (compatibility only, not part of v1)
+
+MQ has a small plugin loader for `<Execute classname="...">` **[built, `io.mq.plugin.Plugin`, tested on the JVM and in native]**: a public class with a no-argument constructor in a jar in `plugins/`, result must be JSON-ready (else a 500 naming the step, class and path), jars hot-reload in the Dev server. It is not advertised and gets no new features. If real R2 plugins turn up, the path is an adapter for `com.metamug:mtg-api` (`RequestProcessable`, `ResultProcessable`, `ResponseProcessable`), not a new API; see the compatibility issue.
 
 ## 6. Database schema **[planned]**
 
@@ -122,4 +134,4 @@ Rules: a result must be JSON-ready (String, Number, Boolean, null, List, Map wit
 
 ## 9. Not in this version
 
-Scheduled jobs, caching, rate limiting, webhooks and events, multi-tenancy, Oracle and SQL Server, pagination helpers, observability. Each, when added, must fit rule 1: a `mq.yaml` section or a plugin extension point.
+Scheduled jobs, caching, rate limiting, webhooks and events, multi-tenancy, Oracle and SQL Server, pagination helpers, observability. Each, when added, must fit the rule above: a `mq.yaml` section, a script or `lib/` class, or a capability.
