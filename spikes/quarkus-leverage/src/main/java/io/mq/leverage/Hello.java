@@ -33,12 +33,12 @@ public class Hello {
             rc.response().putHeader("Content-Type", "application/json").end("{\"hello\":\"open\"}");
         });
         // /secure/* is protected by quarkus.http.auth.permission.secured: a route added by code is covered like any other
-        router.get("/secure/hello").handler(rc -> {
+        router.get("/secure/hello").blockingHandler(rc -> {
             registry.counter("mq_requests", "route", "secure").increment();
-            var identity = io.quarkus.vertx.http.runtime.security.QuarkusHttpUser.getSecurityIdentity(rc, null);
+            var identity = io.quarkus.vertx.http.runtime.security.QuarkusHttpUser.getSecurityIdentity(rc, null).await().indefinitely();
             String who = identity == null ? "?" : identity.getPrincipal().getName();
             rc.response().putHeader("Content-Type", "application/json").end("{\"hello\":\"secure\",\"user\":\"" + who + "\"}");
-        });
+        }, false);
         // a datasource chosen by name at run time, the way a step with datasource="reports" would
         router.get("/db/:name").blockingHandler(rc -> {
             String name = rc.pathParam("name");
