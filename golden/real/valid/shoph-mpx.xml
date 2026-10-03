@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Resource xmlns="http://xml.metamug.net/resource/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://xml.metamug.net/resource/1.0 http://xml.metamug.net/schema/resource.xsd" v="1.0">
+  <Request method="GET">
+    <XRequest id="prod" method="GET" url="http://localhost:7000/shoph/v1.0/product/1" output="false"/>
+    <Sql id="a" output="true">SELECT $[prod].one[0].SKU AS sku_a FROM product WHERE id = 1</Sql>
+    <Sql id="b" output="true">SELECT $[prod].body.one[0].SKU AS sku_b FROM product WHERE id = 1</Sql>
+  </Request>
+</Resource>

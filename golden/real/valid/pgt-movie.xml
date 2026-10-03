@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Resource xmlns="http://xml.metamug.net/resource/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://xml.metamug.net/resource/1.0 http://xml.metamug.net/schema/resource.xsd" v="1.0">
+  <Request method="GET"><Sql id="list">SELECT id,name,rating,seen,ok FROM movie ORDER BY id</Sql></Request>
+  <Request method="GET" item="true"><Sql id="one">SELECT id,name,rating,seen,ok FROM movie WHERE id=$id</Sql></Request>
+  <Request method="POST" status="201"><Sql id="add" type="update">INSERT INTO movie (name, rating, seen, ok) VALUES ($name, $rating, $seen, $ok)</Sql></Request>
+  <Request method="PUT" status="202" item="true"><Sql id="upd" type="update">UPDATE movie SET rating=$rating WHERE id=$id</Sql></Request>
+  <Request method="DELETE" status="410" item="true"><Sql id="del" type="update">DELETE FROM movie WHERE id=$id</Sql></Request>
+</Resource>

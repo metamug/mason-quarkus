@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Resource xmlns="http://xml.metamug.net/resource/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://xml.metamug.net/resource/1.0 http://xml.metamug.net/schema/resource.xsd" v="1.0">
+  <Request method="POST"><Sql id="ins" type="update">INSERT INTO product (sku, name, price, stock) VALUES ($sku, $name, 1, 1)</Sql></Request>
+</Resource>

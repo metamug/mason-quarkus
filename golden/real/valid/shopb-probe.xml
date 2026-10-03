@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Resource xmlns="http://xml.metamug.net/resource/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://xml.metamug.net/resource/1.0 http://xml.metamug.net/schema/resource.xsd" v="1.0">
+  <Request method="GET">
+    <XRequest id="prod" method="GET" url="http://localhost:7000/shopb/v1.0/product/1" output="false"><Header name="Accept" value="application/json"/></XRequest>
+    <Sql id="rows" output="false">SELECT id, email FROM customer ORDER BY id</Sql>
+    <Script id="dump" file="dump" output="true"/>
+  </Request>
+</Resource>
