@@ -1,5 +1,6 @@
 package io.mq.script
 
+import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.concurrent.ConcurrentHashMap
@@ -10,7 +11,9 @@ import kotlin.script.experimental.api.ResultWithDiagnostics
 import kotlin.script.experimental.api.ScriptEvaluationConfiguration
 import kotlin.script.experimental.api.providedProperties
 import kotlin.script.experimental.host.toScriptSource
+import kotlin.script.experimental.jvm.baseClassLoader
 import kotlin.script.experimental.jvm.dependenciesFromCurrentContext
+import kotlin.script.experimental.jvm.updateClasspath
 import kotlin.script.experimental.jvm.jvm
 import kotlin.script.experimental.jvmhost.BasicJvmScriptingHost
 import kotlin.script.experimental.jvmhost.createJvmCompilationConfigurationFromTemplate
@@ -20,14 +23,15 @@ import kotlinx.coroutines.runBlocking
  * The Dev server's loader: compiles `<dir>/<name>.kts` on first use and again when the file changes (compile once per version, call
  * per request), then evaluates it with the four names. What a script may import is what is on the Dev server's class path.
  */
-class DevScriptLoader(private val dir: Path) : ScriptLoader {
+class DevScriptLoader @JvmOverloads constructor(private val dir: Path, private val classpath: List<File>? = null) : ScriptLoader {
 
     private class Compiled(val modified: Long, val script: CompiledScript)
 
     private val host = BasicJvmScriptingHost()
     private val cache = ConcurrentHashMap<String, Compiled>()
     private val compilation = createJvmCompilationConfigurationFromTemplate<MqScript> {
-        jvm { dependenciesFromCurrentContext(wholeClasspath = true) }
+        // inside Quarkus the jars are not on java.class.path: the application passes the list it knows
+        jvm { if (classpath != null) updateClasspath(classpath) else dependenciesFromCurrentContext(wholeClasspath = true) }
     }
 
     override fun has(name: String): Boolean = Files.isRegularFile(dir.resolve("$name.kts"))
@@ -47,6 +51,7 @@ class DevScriptLoader(private val dir: Path) : ScriptLoader {
         }
         val evaluation = ScriptEvaluationConfiguration {
             providedProperties("params" to params, "steps" to steps, "response" to response, "request" to request)
+            jvm { baseClassLoader(DevScriptLoader::class.java.classLoader) }
         }
         val result = runBlocking { host.evaluator(compiled!!.script, evaluation) }
         when (result) {

@@ -60,6 +60,13 @@ public final class Engine {
         };
     }
 
+    private volatile java.util.function.BiConsumer<String, Throwable> errorListener;
+
+    /** called with the errorId and the exception of every failed request, for the server log */
+    public void onError(java.util.function.BiConsumer<String, Throwable> listener) {
+        this.errorListener = listener;
+    }
+
     public String errorDetail(String errorId) {
         synchronized (errors) {
             return errors.get(errorId);
@@ -111,6 +118,10 @@ public final class Engine {
         }
         synchronized (errors) {
             errors.put(id, detail.toString());
+        }
+        java.util.function.BiConsumer<String, Throwable> l = errorListener;
+        if (l != null && status >= 500) {
+            l.accept(id, cause);
         }
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("errorId", id);

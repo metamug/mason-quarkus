@@ -58,7 +58,8 @@ public class MqHttp {
                     if (interpret) {
                         try {
                             Class<?> c = Class.forName(ScriptLoader.class.getPackageName() + ".DevScriptLoader");
-                            chosen = (ScriptLoader) c.getConstructor(java.nio.file.Path.class).newInstance(java.nio.file.Path.of(config.scriptsDir()));
+                            chosen = (ScriptLoader) c.getConstructor(java.nio.file.Path.class, java.util.List.class)
+                                    .newInstance(java.nio.file.Path.of(config.scriptsDir()), applicationClasspath());
                             LOG.infof("MQ interprets scripts from %s", config.scriptsDir());
                         } catch (ReflectiveOperationException | LinkageError e) {
                             if (mode.equals("interpreted")) {
@@ -78,6 +79,29 @@ public class MqHttp {
         return l;
     }
 
+    /**
+     * The jars the scripts are compiled against. A Quarkus fast-jar keeps them in lib/main next to quarkus-run.jar; they are not on
+     * java.class.path. Returns null (use java.class.path) when this is not a fast-jar.
+     */
+    private static java.util.List<java.io.File> applicationClasspath() {
+        String first = System.getProperty("java.class.path", "").split(java.io.File.pathSeparator)[0];
+        java.io.File runner = new java.io.File(first).getAbsoluteFile();
+        java.io.File lib = new java.io.File(runner.getParentFile(), "lib/main");
+        if (!lib.isDirectory()) {
+            return null;
+        }
+        java.util.List<java.io.File> out = new java.util.ArrayList<>();
+        java.io.File[] jars = lib.listFiles((d, n) -> n.endsWith(".jar"));
+        if (jars != null) {
+            java.util.Collections.addAll(out, jars);
+        }
+        java.io.File[] app = new java.io.File(runner.getParentFile(), "app").listFiles((d, n) -> n.endsWith(".jar"));
+        if (app != null) {
+            java.util.Collections.addAll(out, app);
+        }
+        return out;
+    }
+
     private volatile Dispatcher dispatcher;
 
     private Dispatcher dispatcher() {
@@ -86,7 +110,9 @@ public class MqHttp {
             synchronized (this) {
                 if (dispatcher == null) {
                     // the default datasource of the application; a step with a datasource name is not supported yet
-                    dispatcher = new Dispatcher(resources::current, new Engine(name -> dataSource.isResolvable() ? dataSource.get() : null, new ScriptHandler(this::loader), null, null));
+                    Engine engine = new Engine(name -> dataSource.isResolvable() ? dataSource.get() : null, new ScriptHandler(this::loader), null, null);
+                    engine.onError((id, t) -> LOG.errorf(t, "MQ request failed, errorId %s", id));
+                    dispatcher = new Dispatcher(resources::current, engine);
                 }
                 d = dispatcher;
             }
