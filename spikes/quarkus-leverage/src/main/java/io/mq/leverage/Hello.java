@@ -35,8 +35,9 @@ public class Hello {
         // /secure/* is protected by quarkus.http.auth.permission.secured: a route added by code is covered like any other
         router.get("/secure/hello").handler(rc -> {
             registry.counter("mq_requests", "route", "secure").increment();
-            var user = rc.user();
-            rc.response().putHeader("Content-Type", "application/json").end("{\"hello\":\"secure\",\"user\":\"" + (user == null ? "?" : user.principal().getString("upn", user.principal().getString("sub", "?"))) + "\"}");
+            var identity = io.quarkus.vertx.http.runtime.security.QuarkusHttpUser.getSecurityIdentity(rc, null);
+            String who = identity == null ? "?" : identity.getPrincipal().getName();
+            rc.response().putHeader("Content-Type", "application/json").end("{\"hello\":\"secure\",\"user\":\"" + who + "\"}");
         });
         // a datasource chosen by name at run time, the way a step with datasource="reports" would
         router.get("/db/:name").blockingHandler(rc -> {
@@ -53,11 +54,21 @@ public class Hello {
                 rc.response().setStatusCode(500).end(e.toString());
             }
         }, false);
-        router.get("/cached/:n").handler(rc -> {
+        router.get("/exists/:table").blockingHandler(rc -> {
+            try (Connection c = Arc.container().instance(AgroalDataSource.class).get().getConnection(); Statement st = c.createStatement();
+                    ResultSet rs = st.executeQuery("SELECT to_regclass('public." + rc.pathParam("table").replaceAll("[^a-z_]", "") + "') IS NOT NULL")) {
+                rs.next();
+                rc.response().end("{\"exists\":" + rs.getBoolean(1) + "}");
+            } catch (Exception e) {
+                rc.response().setStatusCode(500).end(e.toString());
+            }
+        }, false);
+        // a method with @CacheResult blocks while it loads: it must not run on the event loop, so it is a blocking handler (MQ handlers are)
+        router.get("/cached/:n").blockingHandler(rc -> {
             int n = Integer.parseInt(rc.pathParam("n"));
             int v = squares.square(n);
             rc.response().putHeader("Content-Type", "application/json").end("{\"square\":" + v + ",\"computed\":" + squares.calls.get() + "}");
-        });
+        }, false);
     }
 
     @Scheduled(every = "1s")

@@ -14,10 +14,12 @@ quarkus:
         url: ${REPORTS_URL:jdbc:postgresql://localhost:5432/reports}
   flyway:
     migrate-at-start: true
-    locations: classpath:db/migration
+    locations:
+      - classpath:db/migration
     reports:
       migrate-at-start: true
-      locations: filesystem:${REPORT_MIGRATIONS:db/reports}
+      locations:
+        - filesystem:${REPORT_MIGRATIONS:db/reports}
   http:
     port: ${PORT:8080}
     limits:

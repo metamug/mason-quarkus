@@ -27,6 +27,7 @@ check('Flyway (classpath) migrated the default datasource', main.text.includes('
 const rep = await get('/db/reports');
 check('Flyway (filesystem folder) migrated the named datasource, chosen by name at run time', rep.text.includes('"rows":2'), rep.text);
 
+check('named flyway locations do not leak into the default datasource (report_rows is not in main)', (await get('/exists/report_rows')).text.includes('false'), (await get('/exists/report_rows')).text);
 const c1 = await get('/cached/7'); const c2 = await get('/cached/7'); const c3 = await get('/cached/8');
 check('cache: the second call does not compute again', c1.text.includes('"square":49') && c2.text.includes('"computed":1') && c3.text.includes('"computed":2'), c1.text + c2.text + c3.text);
 
