@@ -1,0 +1,27 @@
+{
+ "label": "inprocess-1-capped",
+ "mode": "inprocess",
+ "backends": 1,
+ "flags": "-XX:+UseSerialGC -Xmx400m -XX:MaxMetaspaceSize=256m",
+ "startupMs": 1206,
+ "backendIdleMbEach": 160,
+ "backendAfterScriptsMbEach": 514,
+ "backendAfterScriptsMbMax": 514,
+ "hostMb": 0,
+ "totalMb": 514,
+ "firstCallMsBackend0": [
+  4637,
+  479,
+  822,
+  405,
+  431
+ ],
+ "secondCallMsBackend0": [
+  17,
+  16,
+  14,
+  14,
+  10
+ ],
+ "failures": 0
+}

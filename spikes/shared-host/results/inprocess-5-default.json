@@ -1,0 +1,27 @@
+{
+ "label": "inprocess-5-default",
+ "mode": "inprocess",
+ "backends": 5,
+ "flags": "default",
+ "startupMs": 4541,
+ "backendIdleMbEach": 118,
+ "backendAfterScriptsMbEach": 693,
+ "backendAfterScriptsMbMax": 784,
+ "hostMb": 0,
+ "totalMb": 3466,
+ "firstCallMsBackend0": [
+  20439,
+  2542,
+  3144,
+  2143,
+  1752
+ ],
+ "secondCallMsBackend0": [
+  25,
+  18,
+  20,
+  26,
+  28
+ ],
+ "failures": 0
+}

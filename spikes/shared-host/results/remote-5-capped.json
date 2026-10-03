@@ -1,0 +1,27 @@
+{
+ "label": "remote-5-capped",
+ "mode": "remote",
+ "backends": 5,
+ "flags": "-XX:+UseSerialGC -Xmx160m -XX:MaxMetaspaceSize=256m",
+ "startupMs": 4130,
+ "backendIdleMbEach": 151,
+ "backendAfterScriptsMbEach": 165,
+ "backendAfterScriptsMbMax": 171,
+ "hostMb": 927,
+ "totalMb": 1752,
+ "firstCallMsBackend0": [
+  6926,
+  958,
+  1643,
+  833,
+  926
+ ],
+ "secondCallMsBackend0": [
+  12,
+  3,
+  2,
+  2,
+  2
+ ],
+ "failures": 0
+}

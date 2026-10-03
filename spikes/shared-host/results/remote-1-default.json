@@ -1,0 +1,27 @@
+{
+ "label": "remote-1-default",
+ "mode": "remote",
+ "backends": 1,
+ "flags": "default",
+ "startupMs": 1262,
+ "backendIdleMbEach": 116,
+ "backendAfterScriptsMbEach": 151,
+ "backendAfterScriptsMbMax": 151,
+ "hostMb": 494,
+ "totalMb": 646,
+ "firstCallMsBackend0": [
+  5245,
+  458,
+  698,
+  511,
+  423
+ ],
+ "secondCallMsBackend0": [
+  6,
+  4,
+  3,
+  3,
+  2
+ ],
+ "failures": 0
+}

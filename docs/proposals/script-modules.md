@@ -1,4 +1,6 @@
-# Proposal (test 5): scripts that share code, and extra libraries. No code written; waiting for your choice.
+# Proposal (test 5): scripts that share code, and extra libraries
+
+> **Decided and built.** The owner chose option 1, then option 2, skipping option 3, with commons-text as the test library. Results: [../reports/script-modules.md](../reports/script-modules.md). The text below is the original proposal.
 
 ## The question
 
