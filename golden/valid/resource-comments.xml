@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<!-- top -->
+<Resource xmlns="http://xml.metamug.net/resource/1.0" v="1.0">
+  <!-- inside -->
+  <?pi data?>
+  <Request method="GET"><Text id="t">x</Text></Request>
+</Resource>
+<!-- end -->

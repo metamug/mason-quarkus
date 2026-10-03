@@ -1,0 +1,178 @@
+name	kind	rule
+resource-minimal	valid	smallest valid resource
+resource-empty-request	valid	a Request may be empty
+resource-xml-declaration-latin1	valid	xml declaration with another encoding
+resource-no-xml-declaration	valid	the xml declaration is optional
+resource-comments	valid	comments and processing instructions anywhere
+resource-sql-cdata	valid	CDATA in Sql
+resource-sql-entities	valid	predefined entities in Sql
+resource-two-requests	valid	several requests
+document-wrong-root	invalid-xsd	root element must be Resource
+document-no-namespace	invalid-xsd	the resource namespace is required
+document-wrong-namespace	invalid-xsd	wrong namespace
+document-child-without-namespace	invalid-xsd	child elements must be in the namespace
+document-not-well-formed-truncated	invalid-xsd	truncated document
+document-not-well-formed-mismatched	invalid-xsd	mismatched end tag
+document-not-xml	invalid-xsd	plain text
+document-empty-file	invalid-xsd	empty file
+document-prolog-only	invalid-xsd	only an xml declaration
+document-text-in-resource	invalid-xsd	character data between elements of Resource
+document-text-in-request	invalid-xsd	character data between elements of Request
+document-duplicate-attribute	invalid-xsd	the same attribute twice (not well-formed)
+resource-version-integer	valid	v may be an integer
+resource-version-decimal	valid	v decimal
+resource-version-fraction	valid	v below 1
+resource-parent	valid	parent attribute
+resource-auth	valid	auth attribute starting with a letter
+resource-version-missing	invalid-xsd	v is required
+resource-version-zero	invalid-xsd	v must be greater than 0
+resource-version-negative	invalid-xsd	v must be greater than 0
+resource-version-text	invalid-xsd	v must be a number
+resource-version-three-parts	invalid-xsd	v must be a number (1.0.1 is not)
+resource-version-empty	invalid-xsd	v must not be empty
+resource-parent-empty	invalid-xsd	parent must not be empty
+resource-auth-digit-first	invalid-xsd	auth must start with a letter
+resource-auth-empty	invalid-xsd	auth must start with a letter (empty has no first letter)
+resource-unknown-attribute	invalid-xsd	unknown attribute on Resource
+resource-no-request	invalid-xsd	at least one Request
+resource-only-desc	invalid-xsd	Desc alone is not enough
+resource-unknown-child	invalid-xsd	unknown child of Resource
+desc-text	valid	Desc with text
+desc-with-tag	valid	Desc with Tag
+desc-empty	valid	empty Desc
+desc-in-request	valid	Desc inside Request
+desc-after-request	invalid-xsd	Desc must come before the Requests
+desc-twice	invalid-xsd	only one Desc before the Requests
+desc-tag-unknown-attribute	invalid-xsd	unknown attribute on Tag
+desc-unknown-child	invalid-xsd	unknown child in Desc
+request-method-head	valid	method HEAD
+request-method-get	valid	method GET
+request-method-post	valid	method POST
+request-method-put	valid	method PUT
+request-method-delete	valid	method DELETE
+request-item-true	valid	item="true"
+request-item-any-string	valid	item is any string, not a boolean
+request-item-false-is-still-an-item	valid	item="false" is accepted by the schema (Mason treats any non-blank value as an item request)
+request-status-lower-bound	valid	status 100
+request-status-upper-bound	valid	status 599
+request-status-created	valid	status 201
+request-method-missing	invalid-xsd	method is required
+request-method-patch	invalid-xsd	PATCH is not in the method list
+request-method-lowercase	invalid-xsd	methods are upper case
+request-method-unknown	invalid-xsd	unknown method
+request-method-empty	invalid-xsd	empty method
+request-status-too-low	invalid-xsd	status below 100
+request-status-too-high	invalid-xsd	status 600
+request-status-text	invalid-xsd	status must be a number
+request-status-decimal	invalid-xsd	status must be an integer
+request-unknown-attribute	invalid-xsd	unknown attribute on Request
+request-unknown-child	invalid-xsd	unknown child of Request
+request-method-item-duplicate	invalid-xsd	same method and item twice (xsd:unique)
+request-method-item-duplicate-named	invalid-xsd	same method and the same item string twice
+request-method-item-different	valid	same method, different item strings
+request-collection-and-item	valid	GET collection and GET item
+request-duplicate-method-without-item-is-not-checked	valid	xsd:unique ignores requests without item: two plain GETs pass the schema
+id-duplicate-across-requests	invalid-xsd	ids are unique across all requests
+id-duplicate-sql-and-text	invalid-xsd	a Sql and a Text with the same id
+id-duplicate-same-request	invalid-xsd	two steps with the same id in one request
+id-duplicate-script-xrequest	invalid-xsd	a Script and an XRequest with the same id
+id-duplicate-inside-transaction-is-not-checked	valid	ids of Sql inside Transaction are not Request/* so the schema does not check them
+id-duplicate-inside-transaction	invalid-mq	MQ rejects what the schema misses: the same id inside a Transaction twice (mpath could not tell them apart)
+id-transaction-sql-collides-with-step	invalid-mq	MQ rejects a Sql inside a Transaction that reuses the id of a step outside
+id-100-characters	valid	id of exactly 100 characters
+id-101-characters	invalid-xsd	id longer than 100 characters
+id-empty	invalid-xsd	empty id
+sql-query-default	valid	Sql without type
+sql-type-query	valid	type query
+sql-type-update	valid	type update
+sql-empty-body	valid	empty Sql element
+sql-all-attributes	valid	every Sql attribute together
+sql-boolean-numeric	valid	xsd:boolean accepts 1 and 0
+sql-limit-offset-query	valid	limit and offset on a query
+sql-id-missing	invalid-xsd	id is required
+sql-type-delete	invalid-xsd	type is query or update
+sql-type-uppercase	invalid-xsd	type is lower case
+sql-verbose-not-boolean	invalid-xsd	verbose must be a boolean
+sql-output-not-boolean	invalid-xsd	output must be a boolean
+sql-limit-starts-with-digit	invalid-xsd	limit must start with a letter
+sql-offset-starts-with-digit	invalid-xsd	offset must start with a letter
+sql-requires-empty	invalid-xsd	requires must not be empty
+sql-classname-empty	invalid-xsd	classname must not be empty
+sql-status-out-of-range	invalid-xsd	status 600
+sql-unknown-attribute-persist	invalid-xsd	persist is not an attribute (old dialect)
+sql-with-child-element	invalid-xsd	Sql holds text only
+sql-limit-on-update	invalid-semantic	limit/offset are only allowed on queries (R2 Java throws SAXException)
+sql-offset-on-update	invalid-semantic	offset on an update
+transaction-two-sql	valid	Transaction with two Sql
+transaction-attributes	valid	when and datasource
+transaction-empty	valid	empty Transaction
+transaction-with-script	invalid-xsd	only Sql inside Transaction
+transaction-with-text	invalid-xsd	only Sql inside Transaction
+transaction-unknown-attribute	invalid-xsd	unknown attribute on Transaction
+transaction-sql-without-id	invalid-xsd	Sql inside Transaction still needs an id
+xrequest-minimal	valid	id, url, method
+xrequest-with-children	valid	Param, Header and Body
+xrequest-output-headers	valid	output="headers"
+xrequest-all-attributes	valid	when, verbose, classname
+xrequest-method-delete	valid	method DELETE
+xrequest-url-missing	invalid-xsd	url is required
+xrequest-method-missing	invalid-xsd	method is required
+xrequest-id-missing	invalid-xsd	id is required
+xrequest-method-patch	invalid-xsd	PATCH is not allowed
+xrequest-output-maybe	invalid-xsd	output is true, false or headers
+xrequest-param-without-value	invalid-xsd	Param needs name and value
+xrequest-header-without-name	invalid-xsd	Header needs a name
+xrequest-header-empty-name	invalid-xsd	Header name must not be empty
+xrequest-unknown-attribute-persist	invalid-xsd	persist is not an attribute
+xrequest-unknown-child	invalid-xsd	unknown child of XRequest
+script-minimal	valid	id and file
+script-all-attributes	valid	output and when
+script-file-missing	invalid-xsd	file is required
+script-id-missing	invalid-xsd	id is required
+script-file-empty	invalid-xsd	file must not be empty
+script-output-maybe	invalid-xsd	output must be a boolean
+script-unknown-attribute	invalid-xsd	unknown attribute on Script
+script-with-child	invalid-xsd	Script is empty
+text-minimal	valid	Text
+text-attributes	valid	when and output
+text-empty	valid	empty Text
+text-id-missing	invalid-xsd	id is required
+text-with-child	invalid-xsd	Text holds text only
+execute-minimal	valid	Execute with classname
+execute-with-args	valid	Arg children
+execute-id-missing	invalid-xsd	id is required
+execute-arg-without-name	invalid-xsd	Arg needs a name
+execute-unknown-child	invalid-xsd	unknown child of Execute
+param-type-date	valid	Param type date
+param-type-datetime	valid	Param type datetime
+param-type-email	valid	Param type email
+param-type-number	valid	Param type number
+param-type-text	valid	Param type text
+param-type-time	valid	Param type time
+param-type-url	valid	Param type url
+param-all-attributes	valid	every Param attribute
+header-minimal	valid	request-level Header
+param-type-missing	invalid-xsd	type is required
+param-type-string	invalid-xsd	string is not a Param type
+param-name-missing	invalid-xsd	name is required
+param-name-empty	invalid-xsd	name must not be empty
+param-max-not-a-number	invalid-xsd	max must be a number
+param-minlength-negative	invalid-xsd	minlength must be 0 or more
+param-maxlength-decimal	invalid-xsd	maxlength must be an integer
+param-exists-too-short	invalid-xsd	exists needs at least 3 characters
+param-required-not-boolean	invalid-xsd	required must be a boolean
+param-unknown-attribute	invalid-xsd	unknown attribute on Param
+header-value-missing	invalid-xsd	Header needs a value
+header-name-missing	invalid-xsd	Header needs a name
+mpath-earlier-step	valid	mpath to an earlier step
+mpath-in-when-earlier	valid	mpath in a when condition to an earlier step
+mpath-in-xrequest-body	valid	mpath in an XRequest body
+mpath-in-text	valid	a request parameter that looks like an mpath-free variable
+mpath-in-transaction-earlier	valid	mpath inside a Transaction to a step before it
+mpath-unknown-id	invalid-semantic	mpath to an id that does not exist (R2: "Could not find element with ID")
+mpath-forward-reference	invalid-semantic	mpath to a step declared later
+mpath-self-reference	invalid-semantic	a step cannot read its own result
+mpath-in-when-unknown	invalid-semantic	mpath in a when condition to an unknown id
+mpath-in-xrequest-url-unknown	invalid-semantic	mpath in an XRequest url to an unknown id
+mpath-in-transaction-unknown	invalid-semantic	mpath in a Transaction Sql to an unknown id
+mpath-other-request	invalid-semantic	mpath to a step of another Request is not available

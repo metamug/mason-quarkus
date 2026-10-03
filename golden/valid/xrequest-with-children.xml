@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Resource xmlns="http://xml.metamug.net/resource/1.0" v="1.0">
+  <Request method="GET">
+    <XRequest id="x" url="http://example.com/a" method="POST" output="true">
+    <Header name="Accept" value="application/json"/>
+    <Param name="p" value="$q"/>
+    <Body>{"a": 1}</Body>
+  </XRequest>
+  </Request>
+</Resource>

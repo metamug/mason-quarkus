@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Resource xmlns="http://xml.metamug.net/resource/1.0" v="1.0">
+  <Desc>a</Desc>
+  <Desc>b</Desc>
+  <Request method="GET">
+    <Text id="t">x</Text>
+  </Request>
+</Resource>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Resource xmlns="http://xml.metamug.net/resource/1.0" v="1.0">
+  <Request method="GET">
+    <Param name="p" type="number" max="lots"/>
+  </Request>
+</Resource>

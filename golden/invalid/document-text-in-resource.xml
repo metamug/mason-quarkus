@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<Resource xmlns="http://xml.metamug.net/resource/1.0" v="1.0">
+  stray text
+  <Request method="GET"/>
+</Resource>

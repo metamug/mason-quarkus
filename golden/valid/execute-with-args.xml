@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Resource xmlns="http://xml.metamug.net/resource/1.0" v="1.0">
+  <Request method="GET">
+    <Execute id="e" classname="com.example.Run" requires="a" when="$q eq 1" onerror="x" verbose="true" output="true" status="200">
+    <Arg name="a" value="1"/>
+    <Arg name="b" path="$[prev].x"/>
+  </Execute>
+  </Request>
+</Resource>

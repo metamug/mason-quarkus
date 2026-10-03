@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Resource xmlns="http://example.com/other" v="1.0">
+  <Request method="GET">
+    <Text id="t">x</Text>
+  </Request>
+</Resource>

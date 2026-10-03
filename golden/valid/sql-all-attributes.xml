@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Resource xmlns="http://xml.metamug.net/resource/1.0" v="1.0">
+  <Request method="GET">
+    <Sql id="a" type="query" datasource="main" requires="x,y" ref="saved" when="$q eq 1" onblank="none" onerror="oops" verbose="true" output="true" limit="count" offset="skip" classname="a.B" status="200">SELECT 1</Sql>
+  </Request>
+</Resource>

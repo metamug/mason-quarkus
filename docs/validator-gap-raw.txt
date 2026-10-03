@@ -1,0 +1,66 @@
+spike subset ACCEPTS but should reject: 59
+   document-no-namespace [invalid-xsd] the resource namespace is required
+   document-wrong-namespace [invalid-xsd] wrong namespace
+   document-child-without-namespace [invalid-xsd] child elements must be in the namespace
+   document-text-in-resource [invalid-xsd] character data between elements of Resource
+   document-text-in-request [invalid-xsd] character data between elements of Request
+   resource-parent-empty [invalid-xsd] parent must not be empty
+   resource-auth-digit-first [invalid-xsd] auth must start with a letter
+   resource-auth-empty [invalid-xsd] auth must start with a letter (empty has no first letter)
+   resource-unknown-attribute [invalid-xsd] unknown attribute on Resource
+   desc-after-request [invalid-xsd] Desc must come before the Requests
+   desc-twice [invalid-xsd] only one Desc before the Requests
+   desc-tag-unknown-attribute [invalid-xsd] unknown attribute on Tag
+   desc-unknown-child [invalid-xsd] unknown child in Desc
+   request-method-patch [invalid-xsd] PATCH is not in the method list
+   request-unknown-attribute [invalid-xsd] unknown attribute on Request
+   request-method-item-duplicate [invalid-xsd] same method and item twice (xsd:unique)
+   request-method-item-duplicate-named [invalid-xsd] same method and the same item string twice
+   id-101-characters [invalid-xsd] id longer than 100 characters
+   id-empty [invalid-xsd] empty id
+   sql-verbose-not-boolean [invalid-xsd] verbose must be a boolean
+   sql-output-not-boolean [invalid-xsd] output must be a boolean
+   sql-limit-starts-with-digit [invalid-xsd] limit must start with a letter
+   sql-offset-starts-with-digit [invalid-xsd] offset must start with a letter
+   sql-requires-empty [invalid-xsd] requires must not be empty
+   sql-classname-empty [invalid-xsd] classname must not be empty
+   sql-status-out-of-range [invalid-xsd] status 600
+   sql-unknown-attribute-persist [invalid-xsd] persist is not an attribute (old dialect)
+   sql-limit-on-update [invalid-semantic] limit/offset are only allowed on queries (R2 Java throws SAXException)
+   sql-offset-on-update [invalid-semantic] offset on an update
+   transaction-unknown-attribute [invalid-xsd] unknown attribute on Transaction
+   xrequest-method-patch [invalid-xsd] PATCH is not allowed
+   xrequest-output-maybe [invalid-xsd] output is true, false or headers
+   xrequest-param-without-value [invalid-xsd] Param needs name and value
+   xrequest-header-without-name [invalid-xsd] Header needs a name
+   xrequest-header-empty-name [invalid-xsd] Header name must not be empty
+   xrequest-unknown-attribute-persist [invalid-xsd] persist is not an attribute
+   script-file-empty [invalid-xsd] file must not be empty
+   script-output-maybe [invalid-xsd] output must be a boolean
+   script-unknown-attribute [invalid-xsd] unknown attribute on Script
+   execute-unknown-child [invalid-xsd] unknown child of Execute
+   param-type-missing [invalid-xsd] type is required
+   param-type-string [invalid-xsd] string is not a Param type
+   param-name-missing [invalid-xsd] name is required
+   param-name-empty [invalid-xsd] name must not be empty
+   param-max-not-a-number [invalid-xsd] max must be a number
+   param-minlength-negative [invalid-xsd] minlength must be 0 or more
+   param-maxlength-decimal [invalid-xsd] maxlength must be an integer
+   param-exists-too-short [invalid-xsd] exists needs at least 3 characters
+   param-required-not-boolean [invalid-xsd] required must be a boolean
+   param-unknown-attribute [invalid-xsd] unknown attribute on Param
+   header-value-missing [invalid-xsd] Header needs a value
+   header-name-missing [invalid-xsd] Header needs a name
+   mpath-unknown-id [invalid-semantic] mpath to an id that does not exist (R2: "Could not find element with ID")
+   mpath-forward-reference [invalid-semantic] mpath to a step declared later
+   mpath-self-reference [invalid-semantic] a step cannot read its own result
+   mpath-in-when-unknown [invalid-semantic] mpath in a when condition to an unknown id
+   mpath-in-xrequest-url-unknown [invalid-semantic] mpath in an XRequest url to an unknown id
+   mpath-in-transaction-unknown [invalid-semantic] mpath in a Transaction Sql to an unknown id
+   mpath-other-request [invalid-semantic] mpath to a step of another Request is not available
+spike subset REJECTS (or crashes on) valid input: 4
+   resource-version-integer [valid] INVALID v may be an integer
+   request-method-head [valid] INVALID method HEAD
+   id-duplicate-inside-transaction-is-not-checked [valid] INVALID ids of Sql inside Transaction are not Request/* so the schema does not check them
+   execute-with-args [valid] INVALID Arg children
+total 177 ; spike agrees on 114

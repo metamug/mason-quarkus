@@ -1,0 +1,8 @@
+Mason for Quarkus (MQ)
+Copyright 2026 Metamug
+
+This product includes material from R2 (https://github.com/metamug/R2), Copyright Metamug Technologies LLP, which its author
+confirms is open source under the Apache License 2.0: the XML Schema of the resource format (tools/xsd-oracle/resource.xsd,
+used as a test oracle) and example resource files used as test input.
+
+Built on Quarkus (https://quarkus.io), Apache License 2.0. Not affiliated with or endorsed by the Quarkus project.
