@@ -1,0 +1,77 @@
+[
+ {
+  "scenario": "1 edit existing",
+  "ms": [
+   26,
+   32,
+   31,
+   30,
+   31
+  ],
+  "restarted": false
+ },
+ {
+  "scenario": "2 create new",
+  "ms": [
+   28,
+   31,
+   31,
+   30,
+   30
+  ],
+  "restarted": false
+ },
+ {
+  "scenario": "3 delete",
+  "ms": [
+   26,
+   32,
+   32,
+   30,
+   31
+  ],
+  "restarted": false
+ },
+ {
+  "scenario": "4 rename",
+  "ms": 32,
+  "restarted": false
+ },
+ {
+  "scenario": "5 twenty files at once",
+  "ms": 63,
+  "writeMs": 11,
+  "distinctVisibleCounts": [
+   0,
+   20
+  ],
+  "restarted": false
+ },
+ {
+  "scenario": "6 invalid xml",
+  "detectMs": 46,
+  "oldModelStillServed": true,
+  "lastError": "first.xml:1: not well-formed: XML document structures must start and end within the same entity.",
+  "restarted": false
+ },
+ {
+  "scenario": "6b recovery after fix",
+  "ms": 24
+ },
+ {
+  "scenario": "7 two edits in 50 ms",
+  "ms": 35,
+  "finalValue": "rapid-2",
+  "restarted": false
+ },
+ {
+  "scenario": "9 first request after 1.5 s of silence",
+  "ms": 13
+ },
+ {
+  "scenario": "final",
+  "generation": 26,
+  "restarted": false,
+  "lastReloadMicros": 3614
+ }
+]

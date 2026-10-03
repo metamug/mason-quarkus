@@ -1,0 +1,11 @@
+watcher: native-events
+{"scenario":"1 edit existing","ms":[136,145,122,103,133],"restarted":false}
+{"scenario":"2 create new","ms":[41,127,137,152,147],"restarted":false}
+{"scenario":"3 delete","ms":[114,156,148,148,91],"restarted":false}
+{"scenario":"4 rename","ms":132,"restarted":false}
+{"scenario":"5 twenty files at once","ms":108,"writeMs":6,"distinctVisibleCounts":[0,20],"restarted":false}
+{"scenario":"6 invalid xml","detectMs":57,"oldModelStillServed":true,"lastError":"first.xml:1: not well-formed: XML document structures must start and end within the same entity.","restarted":false}
+{"scenario":"6b recovery after fix","ms":90}
+{"scenario":"7 two edits in 50 ms","ms":77,"finalValue":"rapid-2","restarted":false}
+{"scenario":"9 first request after 1.5 s of silence","ms":4}
+{"scenario":"final","generation":25,"restarted":false,"lastReloadMicros":1239}

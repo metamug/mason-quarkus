@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Resource xmlns="http://xml.metamug.net/resource/1.0" v="1.0">
+
+    <Request method="GET">
+        <XRequest id="xreqvalue" url="https://postman-echo.com/get?foo1=bar1&amp;foo2=bar2"
+                  method="GET" output="true" >
+            <Header name="Accept" value="application/json" />
+        </XRequest>
+    </Request>
+    
+<!--    <Request method="POST">-->
+<!--        <XRequest output="true" id="xreqvalue2" url="https://postman-echo.com/post" method="POST" >-->
+<!--            <Header name="Content-Type" value="application/json"/>-->
+<!--            <Body>-->
+<!--                {-->
+<!--                "foo1": "$foo1",-->
+<!--                "foo2": $foo2-->
+<!--                }-->
+<!--            </Body>-->
+<!--        </XRequest>-->
+<!--    </Request>-->
+
+    <Request method="POST">
+        <XRequest output="true" id="xreqvalue2" url="https://postman-echo.com/post" method="POST" >
+            <Header name="Content-Type" value="application/x-www-urlencoded"/>
+            <Param name="foo1" value="$foo1" />
+            <Param name="foo2" value="$foo2" />
+        </XRequest>
+    </Request>
+    
+</Resource>

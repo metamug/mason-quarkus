@@ -1,0 +1,11 @@
+watcher: jdk
+{"scenario":"1 edit existing","ms":[20,20,18,17,18],"restarted":false}
+{"scenario":"2 create new","ms":[19,19,21,18,22],"restarted":false}
+{"scenario":"3 delete","ms":[21,20,18,18,17],"restarted":false}
+{"scenario":"4 rename","ms":18,"restarted":false}
+{"scenario":"5 twenty files at once","ms":23,"writeMs":1,"distinctVisibleCounts":[0,20],"restarted":false}
+{"scenario":"6 invalid xml","detectMs":39,"oldModelStillServed":true,"lastError":"first.xml:1: not well-formed: XML document structures must start and end within the same entity.","restarted":false}
+{"scenario":"6b recovery after fix","ms":18}
+{"scenario":"7 two edits in 50 ms","ms":19,"finalValue":"rapid-2","restarted":false}
+{"scenario":"9 first request after 1.5 s of silence","ms":3}
+{"scenario":"final","generation":26,"restarted":false,"lastReloadMicros":753}

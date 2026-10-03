@@ -136,16 +136,16 @@ Dev server: JVM, builds and hot-deploys, interprets Kotlin scripts (hot deploy n
 
 Challenges: (1) native toolchain: Mandrel, about 3 GB RAM, 2.5 min; macOS/Windows need a builder container and only produce Linux binaries; (2) two artifact kinds: no scripts/drivers/Execute classes → prebuilt native MQ + XML folder (no rebuild, "thin image"); otherwise a project-specific native build; (3) script parity: compile with the same Kotlin compiler and bindings in Dev and CLI; scripts using reflection, `javax.crypto`, serialization or resources can compile yet fail only in the native binary, so the CLI must smoke-test the built binary; (4) Groovy is dynamic: Dev-server-only or dropped; (5) `Execute` classes and JDBC drivers are fixed at build time and need a declaration mechanism; (6) the XML stays unchanged and read from a folder at boot; (7) dev/production drift is controlled by a standing JVM-vs-native conformance matrix (exists for the SQL slice). **Assumed, not verified:** Kotlin scripting at build time into native image works for the shop scripts. Verify first.
 
-## 13. Open questions for a human
+## 13. Owner decisions on the open questions (details in docs/decisions.md)
 
-1. Accept `directory-watcher` + JNA on the Dev server's JVM classpath (macOS reload 2 s without it)?
-2. Idle time for lazy stop (1.5 s used for measuring)? Is about 1 s first-request on a lazily started JVM backend acceptable, or warm backends on project open?
-3. Keep MQ's stricter rule (duplicate ids inside a Transaction invalid)?
-4. Should one invalid file in a multi-file change block the whole change (all-or-nothing)? Today the other files still apply.
-5. Plain-JDBC executors acceptable instead of "bind to Quarkus APIs"?
-6. Confirm the chosen semantics in section 10.
-7. Is 2.5 GB for 20 JVM backends acceptable for the Dev server, or is option 2 (many in one process) needed for constrained machines?
-8. Windows in CI for all matrices?
+1. directory-watcher + JNA on the Dev server: yes (dev-only, optional, never in the native binary).
+2. Lazy stop idle time: 10-15 minutes; start the backend in the background when a project opens, so the 1 s JVM first request is rarely seen.
+3. Transaction id rule: kept, because all real resources pass (78 of 80 found; the 2 failures are old-dialect fixtures that R2's XSD rejects too). Real files are now in golden/real and tested.
+4. One invalid file in a multi-file change: apply the valid files, keep the last good version of the invalid one, report the error. The CLI build refuses on any error.
+5. Plain-JDBC executors: yes.
+6. Phase 3 semantics: provisional; the shop acceptance suite decides, especially the 0-based mpath index (no real resource uses a numeric mpath index; shop scripts read rows with 0-based Kotlin list access; only R2's docs use [1], inconsistently).
+7. 2.5 GB for 20 JVM backends: acceptable for a dev machine with lazy stop; many-in-one stays a fallback.
+8. Windows in CI: yes; mq-core, mq-engine and the reload scenarios run green on windows-latest.
 
 ## 14. Recommended next steps
 
