@@ -1,0 +1,4 @@
+mq/*.xml
+!mq/.gitkeep
+results/raw/
+target/

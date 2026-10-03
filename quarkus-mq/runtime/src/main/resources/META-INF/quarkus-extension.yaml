@@ -1,0 +1,8 @@
+name: MQ
+description: Serves R2 resource XML (StAX parser and validator from mq-core), with dev-mode reload.
+metadata:
+  keywords:
+    - mq
+    - r2
+    - xml
+  status: "experimental"

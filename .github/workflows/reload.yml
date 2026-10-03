@@ -1,0 +1,95 @@
+name: reload
+
+on:
+  push:
+    paths: ['mq-core/**', 'quarkus-mq/**', 'examples/**', '.github/workflows/reload.yml', 'pom.xml']
+  pull_request:
+    paths: ['mq-core/**', 'quarkus-mq/**', 'examples/**', '.github/workflows/reload.yml', 'pom.xml']
+  workflow_dispatch:
+
+jobs:
+  scenarios:
+    name: Reload scenarios (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Runner
+        run: |
+          uname -a; java -version 2>&1
+          (sysctl -n hw.ncpu hw.memsize 2>/dev/null || (nproc; free -m)) || true
+      - name: Install the modules
+        run: mvn -B -ntp install -DskipTests
+      - name: Run the scenarios against Quarkus dev mode
+        working-directory: examples/reload
+        run: ./run.sh ${{ matrix.os }} | tee results/${{ matrix.os }}.txt
+      - name: Quarkus dev log (tail)
+        if: always()
+        working-directory: examples/reload
+        run: tail -n 40 results/raw/dev-${{ matrix.os }}.log || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reload-${{ matrix.os }}
+          path: |
+            examples/reload/results/*.json
+            examples/reload/results/*.txt
+            examples/reload/results/raw/*.log
+
+  native-extension:
+    name: Native binary with the extension's own native settings
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '25'
+          distribution: mandrel
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Runner
+        run: |
+          nproc; free -m; native-image --version
+      - name: Install mq-core and the extension
+        run: mvn -B -ntp install -DskipTests -pl quarkus-mq/runtime,quarkus-mq/deployment -am
+      - name: Build the example as a native binary (no native settings in the example)
+        working-directory: examples/reload
+        run: |
+          grep -i "native\|bundle" src/main/resources/application.properties || echo "application.properties has no native settings"
+          /usr/bin/time -v -o native-build-time.txt mvn -B -ntp package -Dnative
+          grep -E "Elapsed|Maximum resident" native-build-time.txt
+          ls -l target/*-runner
+      - name: Start it on a folder with a valid and a malformed file; it must report the problem, not crash
+        working-directory: examples/reload
+        run: |
+          mkdir -p /tmp/mqdir
+          cp seed/first.xml /tmp/mqdir/first.xml
+          printf '<Resource><Desc>broken' > /tmp/mqdir/broken.xml
+          QUARKUS_MQ_DIR=/tmp/mqdir ./target/mq-example-reload-0.1.0-SNAPSHOT-runner > native-run.log 2>&1 &
+          PID=$!
+          for i in $(seq 1 50); do curl -s -o /dev/null http://localhost:8080/status && break; sleep 0.2; done
+          curl -s http://localhost:8080/status | tee native-status.json; echo
+          curl -s http://localhost:8080/r/first; echo
+          kill -0 $PID && echo "process alive"
+          grep -q 'broken.xml' native-status.json
+          grep -q 'MissingResource' native-run.log && { echo "MissingResourceException"; exit 1; } || true
+          ps -o rss= -p $PID | awk '{print "rss_kb", $1}'
+          kill $PID
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-extension
+          path: |
+            examples/reload/native-build-time.txt
+            examples/reload/native-run.log
+            examples/reload/native-status.json
