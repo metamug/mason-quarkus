@@ -23,7 +23,7 @@ quarkus:
     limits:
       max-body-size: 1M
     cors:
-      ~: true
+      enabled: true
       origins: https://app.example
     auth:
       permission:
