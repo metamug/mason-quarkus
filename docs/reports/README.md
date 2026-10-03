@@ -1,0 +1,11 @@
+# Reports
+
+One page each, in the build brief's section 9 format. Raw logs and result files are in the folders named in each report.
+
+| Next work item | Report |
+|---|---|
+| 1 Validator against R2's parser and XSD | [../validator-gap-analysis.md](../validator-gap-analysis.md) |
+| 2 Shared library | [mq-core.md](mq-core.md) |
+| 3 and 4 Native settings in the extension; dev reload on Linux and macOS | [reload-and-extension.md](reload-and-extension.md) |
+| 5 Lazy start | [lazy-start.md](lazy-start.md) |
+| 6 Parse time with the real validator | [parse-time.md](parse-time.md) |
