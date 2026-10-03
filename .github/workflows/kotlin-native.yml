@@ -47,6 +47,9 @@ jobs:
         run: |
           cp -r native-config/META-INF build/classes/
           bash build-native.sh B
+      - name: Native build C, as B plus locale data for German
+        working-directory: spikes/kotlin-native
+        run: bash build-native.sh C -H:IncludeLocales=de,en
       - uses: actions/upload-artifact@v4
         if: always()
         with:
