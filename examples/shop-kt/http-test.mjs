@@ -90,5 +90,11 @@ check("StringEscapeUtils.escapeHtml4", fmt.json?.fmt?.html === "&lt;b&gt;ada loV
 check("LevenshteinDistance", fmt.json?.fmt?.distance === 3, fmt.text);
 check("StringSubstitutor", fmt.json?.fmt?.letter === "Dear ada loVELACE,", fmt.text);
 
+console.log("== two scripts share code from the project lib folder ==");
+const quote = await call("GET", "/v1.0/pricing", { query: { price: "4.50", tax: "18" } });
+check("quote uses shop.Money.withTax (4.50 + 18% = 5.31)", quote.json?.quote?.text === "EUR 5.31", quote.text);
+const rec = await call("GET", "/v1.0/pricing/3", { query: { price: "4.50" } });
+check("receipt uses shop.Money.format (3 x 4.50)", rec.json?.receipt?.total === "EUR 13.50" && rec.json?.receipt?.qty === 3, rec.text);
+
 console.log(passed + " passed, " + failed + " failed");
 process.exit(failed ? 1 : 0);

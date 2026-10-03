@@ -49,7 +49,7 @@ class ShopScriptsTest {
         ResourceStore store = new ResourceStore();
         var set = store.reload(SAMPLE.resolve("mq"));
         assertTrue(set.problems().isEmpty(), "the shop sample must validate: " + set.problemSummary());
-        ScriptLoader loader = new DevScriptLoader(SAMPLE.resolve("scripts"));
+        ScriptLoader loader = new DevScriptLoader(SAMPLE.resolve("scripts"), null, SAMPLE.resolve("lib"));
         mq = new Dispatcher(store::current, new Engine(name -> ds, new ScriptHandler(() -> loader), null, null));
     }
 
@@ -128,6 +128,14 @@ class ShopScriptsTest {
         assertEquals("&lt;b&gt;ada loVELACE&lt;/b&gt;", f.get("html"));
         assertEquals(3L, ((Number) f.get("distance")).longValue());
         assertEquals("Dear ada loVELACE,", f.get("letter"));
+    }
+
+    @Test
+    void twoScriptsShareTheProjectLibFolder() {
+        Map<String, Object> q = map(call("GET", "/v1.0/pricing", "price=4.50&tax=18", null), "quote");
+        assertEquals("EUR 5.31", q.get("text"));
+        Map<String, Object> r = map(call("GET", "/v1.0/pricing/3", "price=4.50", null), "receipt");
+        assertEquals("EUR 13.50", r.get("total"));
     }
 
     @Test

@@ -58,8 +58,8 @@ public class MqHttp {
                     if (interpret) {
                         try {
                             Class<?> c = Class.forName(ScriptLoader.class.getPackageName() + ".DevScriptLoader");
-                            chosen = (ScriptLoader) c.getConstructor(java.nio.file.Path.class, java.util.List.class)
-                                    .newInstance(java.nio.file.Path.of(config.scriptsDir()), applicationClasspath());
+                            chosen = (ScriptLoader) c.getConstructor(java.nio.file.Path.class, java.util.List.class, java.nio.file.Path.class)
+                                    .newInstance(java.nio.file.Path.of(config.scriptsDir()), applicationClasspath(), java.nio.file.Path.of(config.libDir()));
                             LOG.infof("MQ interprets scripts from %s", config.scriptsDir());
                         } catch (ReflectiveOperationException | LinkageError e) {
                             if (mode.equals("interpreted")) {

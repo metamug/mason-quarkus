@@ -18,6 +18,10 @@ public interface MqConfig {
     @WithDefault("scripts")
     String scriptsDir();
 
+    /** folder with ordinary Kotlin files shared by the scripts (compiled before them) */
+    @WithDefault("lib")
+    String libDir();
+
     /**
      * where scripts come from: compiled (generated registry in the application, production and native), interpreted (the Dev
      * server compiles the .kts files and notices changes) or auto (interpreted in dev mode when the compiler is on the class path)
