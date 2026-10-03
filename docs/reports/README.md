@@ -17,3 +17,4 @@ One page each, in the build brief's section 9 format. Raw logs and result files 
 | Script modules and libraries, options 1 and 2 built | [script-modules.md](script-modules.md) |
 | Shared scripting host across backends, measured | [shared-host.md](shared-host.md) |
 | Next-work test 6: real resources | [real-resources.md](real-resources.md) |
+| "Is it enough?": a bookstore API from scratch | [bookstore-exercise.md](bookstore-exercise.md) |

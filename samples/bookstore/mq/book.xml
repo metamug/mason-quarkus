@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Resource xmlns="http://xml.metamug.net/resource/1.0" v="1.0">
+  <Desc>Books: search, read with author and reviews, create with validation, update, delete.</Desc>
+
+  <Request method="GET">
+    <Sql id="byAuthor" when="not empty $author_id">SELECT b.id, b.title, b.price, a.name AS author FROM book b JOIN author a ON a.id = b.author_id WHERE b.author_id = $author_id ORDER BY b.title</Sql>
+    <Sql id="search" when="not empty $q and empty $author_id">SELECT b.id, b.title, b.price, a.name AS author FROM book b JOIN author a ON a.id = b.author_id WHERE LOWER(b.title) LIKE LOWER('%$q%') ORDER BY b.title</Sql>
+    <Sql id="all" when="empty $q and empty $author_id" limit="size" offset="from">SELECT b.id, b.title, b.price, a.name AS author FROM book b JOIN author a ON a.id = b.author_id ORDER BY b.title</Sql>
+  </Request>
+
+  <Request method="GET" item="true">
+    <Sql id="book">SELECT b.id, b.title, b.isbn, b.price, b.stock, a.name AS author FROM book b JOIN author a ON a.id = b.author_id WHERE b.id = $id</Sql>
+    <Sql id="reviews">SELECT rating, comment FROM review WHERE book_id = $id ORDER BY id</Sql>
+    <Script id="rating" file="stats"/>
+  </Request>
+
+  <Request method="POST" status="201">
+    <Param name="author_id" type="number" required="true" min="1"/>
+    <Param name="title" type="text" required="true" maxlength="200"/>
+    <Param name="isbn" type="text" required="true" pattern="[0-9]{10,13}"/>
+    <Param name="price" type="number" required="true" min="0"/>
+    <Param name="stock" type="number" value="0" min="0"/>
+    <Sql id="ins" type="update" output="false">INSERT INTO book (author_id, title, isbn, price, stock) VALUES ($author_id, $title, $isbn, $price, $stock)</Sql>
+    <Sql id="created">SELECT id, title, isbn, price, stock FROM book WHERE isbn = $isbn</Sql>
+  </Request>
+
+  <Request method="PUT" item="true" status="202">
+    <Param name="price" type="number" min="0"/>
+    <Param name="stock" type="number" min="0"/>
+    <Sql id="upd" type="update" when="not empty $price">UPDATE book SET price = $price WHERE id = $id</Sql>
+    <Sql id="upd2" type="update" when="not empty $stock">UPDATE book SET stock = $stock WHERE id = $id</Sql>
+  </Request>
+
+  <Request method="DELETE" item="true" status="410">
+    <Sql id="del" type="update" output="false">DELETE FROM book WHERE id = $id</Sql>
+  </Request>
+</Resource>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Resource xmlns="http://xml.metamug.net/resource/1.0" v="1.0">
+  <Desc>Authors.</Desc>
+
+  <Request method="POST" status="201">
+    <Param name="name" type="text" required="true" maxlength="100"/>
+    <Sql id="ins" type="update" output="false">INSERT INTO author (name) VALUES ($name)</Sql>
+    <Sql id="created">SELECT id, name FROM author WHERE id = (SELECT MAX(id) FROM author)</Sql>
+  </Request>
+
+  <Request method="GET">
+    <Sql id="authors">SELECT id, name FROM author ORDER BY name</Sql>
+  </Request>
+
+  <Request method="GET" item="true">
+    <Sql id="author">SELECT id, name FROM author WHERE id = $id</Sql>
+    <Sql id="books">SELECT id, title, price FROM book WHERE author_id = $id ORDER BY title</Sql>
+  </Request>
+</Resource>

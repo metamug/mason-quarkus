@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Resource xmlns="http://xml.metamug.net/resource/1.0" v="1.0" parent="book">
+  <Desc>Reviews of a book: /v1.0/book/{pid}/review.</Desc>
+
+  <Request method="POST" status="201">
+    <Param name="rating" type="number" required="true" min="1" max="5"/>
+    <Param name="comment" type="text" maxlength="500"/>
+    <Sql id="ins" type="update" output="false">INSERT INTO review (book_id, rating, comment) VALUES ($pid, $rating, $comment)</Sql>
+  </Request>
+
+  <Request method="GET">
+    <Sql id="reviews">SELECT rating, comment FROM review WHERE book_id = $pid ORDER BY id</Sql>
+  </Request>
+</Resource>

@@ -100,6 +100,7 @@
                 <configuration>
                     <systemPropertyVariables>
                         <mq.sample>${project.basedir}/../samples/shop</mq.sample>
+                        <mq.bookstore>${project.basedir}/../samples/bookstore</mq.bookstore>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
