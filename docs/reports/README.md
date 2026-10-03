@@ -9,3 +9,4 @@ One page each, in the build brief's section 9 format. Raw logs and result files 
 | 3 and 4 Native settings in the extension; dev reload on Linux and macOS | [reload-and-extension.md](reload-and-extension.md) |
 | 5 Lazy start | [lazy-start.md](lazy-start.md) |
 | 6 Parse time with the real validator | [parse-time.md](parse-time.md) |
+| Phase 3 SQL skeleton (build order) | [phase3-sql-skeleton.md](phase3-sql-skeleton.md) |
