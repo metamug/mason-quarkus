@@ -33,7 +33,7 @@ jobs:
         run: mvn -B -ntp install -DskipTests
       - name: Run the scenarios against Quarkus dev mode
         working-directory: examples/reload
-        run: ./run.sh ${{ matrix.os }} | tee results/${{ matrix.os }}.txt
+        run: set -o pipefail; bash run.sh ${{ matrix.os }} | tee results/${{ matrix.os }}.txt
       - name: Quarkus dev log (tail)
         if: always()
         working-directory: examples/reload
