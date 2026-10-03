@@ -1,0 +1,40 @@
+{
+ "label": "local-jvm",
+ "command": "java -Dquarkus.http.port={port} -Dquarkus.mq.dir={dir} -jar D:/projects/mason-quarkus/examples/reload/target/quarkus-app/quarkus-run.jar",
+ "idleMs": 1500,
+ "A_firstRequestMs": [
+  1448,
+  1456,
+  1431,
+  1422,
+  1424
+ ],
+ "A_readyMs": [
+  1389,
+  1400,
+  1376,
+  1366,
+  1370
+ ],
+ "A_rssKb": [
+  -1,
+  -1,
+  -1,
+  -1,
+  -1
+ ],
+ "B_warmMedianMs": 2.51,
+ "B_warmMaxMs": 6.2,
+ "C_lastRequestToStoppedMs": 1566,
+ "C_stopMs": 1,
+ "C_exitCode": 1,
+ "D_allFiveMs": 7066,
+ "D_eachMs": [
+  6964,
+  7055,
+  7065,
+  6990,
+  6530
+ ],
+ "D_rssKbTotal": -5
+}

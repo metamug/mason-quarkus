@@ -1,0 +1,46 @@
+name: lazy-start (throwaway spike)
+
+on:
+  workflow_dispatch:
+  push:
+    paths: ['spikes/lazy-start/**', '.github/workflows/lazy-start.yml']
+
+jobs:
+  lazy-start:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build the example as a JVM application
+        run: |
+          echo "TEMURIN=$JAVA_HOME" >> "$GITHUB_ENV"
+          mvn -B -ntp install -DskipTests
+          mkdir -p out && cp -r examples/reload/target/quarkus-app out/jvm-app
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '25'
+          distribution: mandrel
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build the example as a native binary
+        run: |
+          mvn -B -ntp -f examples/reload/pom.xml package -Dnative
+          cp examples/reload/target/*-runner out/runner
+      - name: Runner
+        run: |
+          nproc; free -m; ls -l out/runner; "$TEMURIN/bin/java" -version 2>&1 | head -1
+      - name: Lazy start, native backend
+        run: node spikes/lazy-start/measure.mjs linux-native "$PWD/out/runner -Dquarkus.http.port={port} -Dquarkus.mq.dir={dir}" 1500
+      - name: Lazy start, JVM backend
+        run: node spikes/lazy-start/measure.mjs linux-jvm "$TEMURIN/bin/java -Dquarkus.http.port={port} -Dquarkus.mq.dir={dir} -jar $PWD/out/jvm-app/quarkus-run.jar" 1500
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lazy-start-results
+          path: spikes/lazy-start/results/*.json
