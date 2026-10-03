@@ -1,0 +1,82 @@
+name: shop-conformance
+
+on:
+  push:
+    paths: ['mq-core/**', 'mq-engine/**', 'quarkus-mq/**', 'examples/shop/**', 'samples/**', '.github/workflows/shop-conformance.yml']
+  workflow_dispatch:
+
+jobs:
+  jvm-and-native:
+    name: SQL shop scenario over HTTP, JVM then native, PostgreSQL 16
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: mqtest
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      PGPASSWORD: postgres
+      QUARKUS_MQ_DIR: ${{ github.workspace }}/samples/shop-sql/mq
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build everything (tests included, HSQLDB)
+        run: |
+          echo "TEMURIN=$JAVA_HOME" >> "$GITHUB_ENV"
+          mvn -B -ntp install
+          cp -r examples/shop/target/quarkus-app out-jvm-app
+      - name: Load the schema
+        run: psql -h localhost -U postgres mqtest -f samples/shop-sql/schema.postgresql.sql
+      - name: JVM application, HTTP conformance
+        run: |
+          "$TEMURIN/bin/java" -Dquarkus.http.port=8080 -jar out-jvm-app/quarkus-run.jar > jvm-run.log 2>&1 &
+          PID=$!
+          for i in $(seq 1 100); do curl -s -o /dev/null http://localhost:8080/v1.0/product && break; sleep 0.3; done
+          node examples/shop/http-test.mjs http://localhost:8080 | tee jvm-result.txt
+          ps -o rss= -p $PID | awk '{print "jvm rss_kb", $1}'
+          kill $PID
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '25'
+          distribution: mandrel
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build the native binary
+        working-directory: examples/shop
+        run: |
+          nproc; free -m
+          /usr/bin/time -v -o native-build-time.txt mvn -B -ntp package -Dnative
+          grep -E "Elapsed|Maximum resident" native-build-time.txt
+          ls -l target/*-runner
+      - name: Reload the schema
+        run: |
+          psql -h localhost -U postgres mqtest -c "DROP TABLE IF EXISTS order_line, orders, product, customer"
+          psql -h localhost -U postgres mqtest -f samples/shop-sql/schema.postgresql.sql
+      - name: Native binary, HTTP conformance
+        run: |
+          examples/shop/target/mq-example-shop-0.1.0-SNAPSHOT-runner -Dquarkus.http.port=8080 > native-run.log 2>&1 &
+          PID=$!
+          for i in $(seq 1 100); do curl -s -o /dev/null http://localhost:8080/v1.0/product && break; sleep 0.1; done
+          node examples/shop/http-test.mjs http://localhost:8080 | tee native-result.txt
+          ps -o rss= -p $PID | awk '{print "native rss_kb", $1}'
+          kill $PID
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: shop-conformance
+          path: |
+            jvm-result.txt
+            native-result.txt
+            jvm-run.log
+            native-run.log
+            examples/shop/native-build-time.txt

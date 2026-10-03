@@ -1,5 +1,6 @@
 package io.mq.quarkus.deployment;
 
+import io.mq.quarkus.runtime.MqHttp;
 import io.mq.quarkus.runtime.MqResources;
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.deployment.annotations.BuildStep;
@@ -17,7 +18,7 @@ class MqProcessor {
 
     @BuildStep
     AdditionalBeanBuildItem resources() {
-        return AdditionalBeanBuildItem.unremovableOf(MqResources.class);
+        return AdditionalBeanBuildItem.builder().addBeanClasses(MqResources.class, MqHttp.class).setUnremovable().build();
     }
 
     /**

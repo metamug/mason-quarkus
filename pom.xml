@@ -12,5 +12,6 @@
         <module>mq-engine</module>
         <module>quarkus-mq</module>
         <module>examples/reload</module>
+        <module>examples/shop</module>
     </modules>
 </project>
