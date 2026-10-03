@@ -1,0 +1,2 @@
+-rwxr-xr-x 1 runner runner 55970128 Oct  3 00:40 target/spike2-native-parse-1.0.0-SNAPSHOT-runner
+no native-image config files in the project

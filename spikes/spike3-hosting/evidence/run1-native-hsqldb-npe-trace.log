@@ -1,0 +1,50 @@
+__  ____  __  _____   ___  __ ____  ______ 
+ --/ __ \/ / / / _ | / _ \/ //_/ / / / __/ 
+ -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \   
+--\___\_\____/_/ |_/_/|_/_/|_|\____/___/   
+2026-10-03 00:46:47,464 INFO  [io.quarkus] (main) spike3-hosting 1.0.0-SNAPSHOT native (powered by Quarkus 3.40.1) started in 0.020s. Listening on: http://0.0.0.0:8080
+2026-10-03 00:46:47,464 INFO  [io.quarkus] (main) Profile prod activated. 
+2026-10-03 00:46:47,464 INFO  [io.quarkus] (main) Installed features: [agroal, cdi, jdbc-postgresql, narayana-jta, rest, smallrye-context-propagation, vertx]
+java.sql.SQLException: java.lang.NullPointerException
+	at org.hsqldb.jdbc.JDBCUtil.sqlException(Unknown Source)
+	at org.hsqldb.jdbc.JDBCUtil.sqlException(Unknown Source)
+	at org.hsqldb.jdbc.JDBCConnection.<init>(Unknown Source)
+	at org.hsqldb.jdbc.JDBCDriver.getConnection(Unknown Source)
+	at org.hsqldb.jdbc.JDBCDriver.connect(Unknown Source)
+	at io.agroal.pool.ConnectionFactory.createConnection(ConnectionFactory.java:226)
+	at io.agroal.pool.ConnectionPool.createAndPoolConnection(ConnectionPool.java:663)
+	at io.agroal.pool.ConnectionPool.handlerFromSharedCache(ConnectionPool.java:378)
+	at io.agroal.pool.ConnectionPool.internalGetConnection(ConnectionPool.java:319)
+	at io.agroal.pool.ConnectionPool.getConnection(ConnectionPool.java:292)
+	at io.agroal.pool.DataSource.getConnection(DataSource.java:86)
+	at io.mq.hosting.Backends.probe(Backends.java:165)
+	at io.mq.hosting.HostingResource.ds(HostingResource.java:23)
+	at io.mq.hosting.HostingResource$quarkusrestinvoker$ds_1f1e1e81ca3ef8efd9381a50fd24355fbed01d00.invoke(Unknown Source)
+	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
+	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:195)
+	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:150)
+	at io.quarkus.vertx.core.runtime.VertxCoreRecorder$15.runWith(VertxCoreRecorder.java:695)
+	at org.jboss.threads.EnhancedQueueExecutor$Task.doRunWith(EnhancedQueueExecutor.java:2651)
+	at org.jboss.threads.EnhancedQueueExecutor$Task.run(EnhancedQueueExecutor.java:2630)
+	at org.jboss.threads.EnhancedQueueExecutor.runThreadBody(EnhancedQueueExecutor.java:1622)
+	at org.jboss.threads.EnhancedQueueExecutor$ThreadBody.run(EnhancedQueueExecutor.java:1589)
+	at org.jboss.threads.DelegatingRunnable.run(DelegatingRunnable.java:11)
+	at org.jboss.threads.ThreadLocalResettingRunnable.run(ThreadLocalResettingRunnable.java:11)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base@25.0.4.1/java.lang.Thread.runWith(Thread.java:1487)
+	at java.base@25.0.4.1/java.lang.Thread.run(Thread.java:1474)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:832)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:808)
+Caused by: org.hsqldb.HsqlException: java.lang.NullPointerException
+	at org.hsqldb.error.Error.error(Unknown Source)
+	at org.hsqldb.Database.reopen(Unknown Source)
+	at org.hsqldb.Database.open(Unknown Source)
+	at org.hsqldb.DatabaseManager.getDatabase(Unknown Source)
+	at org.hsqldb.DatabaseManager.newSession(Unknown Source)
+	... 27 more
+Caused by: java.lang.NullPointerException
+	at java.base@25.0.4.1/java.io.Reader.<init>(Reader.java:286)
+	at java.base@25.0.4.1/java.io.InputStreamReader.<init>(InputStreamReader.java:119)
+	at org.hsqldb.lib.LineGroupReader.getGroupReader(Unknown Source)
+	at org.hsqldb.lib.LineGroupReader.getStatementMap(Unknown Source)
+	at org.hsqldb.persist.LobManager.createSchema(Unknown Source)

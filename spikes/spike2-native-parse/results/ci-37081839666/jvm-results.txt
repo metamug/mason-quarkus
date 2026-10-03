@@ -1,0 +1,37 @@
+invalid/bad-method.xml: invalid unknown method 'FETCH' (line 1)
+invalid/bad-status.xml: invalid status must be 100-599, found 999 (line 1)
+invalid/bad-version.xml: invalid version v must look like 1.0, found 'one' (line 1)
+invalid/duplicate-id.xml: invalid duplicate id 'a' (ids are unique across all requests of a resource) (line 1)
+invalid/missing-method.xml: invalid <Request> needs a method (line 1)
+invalid/missing-version.xml: invalid <Resource> needs a version attribute v (line 1)
+invalid/no-request.xml: invalid a resource needs at least one <Request>
+invalid/not-xml.xml: invalid not well-formed (line 1): ParseError at [row,col]:[1,1]
+invalid/script-missing-file.xml: invalid <Script> needs a file (line 1)
+invalid/sql-bad-type.xml: invalid <Sql> type must be query or update, found 'delete' (line 1)
+invalid/sql-missing-id.xml: invalid <Sql> needs an id (line 1)
+invalid/status-not-a-number.xml: invalid status must be a number, found 'ok' (line 1)
+invalid/transaction-with-script.xml: invalid only <Sql> is allowed inside <Transaction>, found <Script> (line 1)
+invalid/truncated.xml: invalid not well-formed (line 2): ParseError at [row,col]:[2,1]
+invalid/unknown-element.xml: invalid unknown element <Frobnicate> (line 1)
+invalid/wrong-root.xml: invalid root element must be <Resource>, found <Thing> (line 1)
+invalid/xrequest-missing-url.xml: invalid <XRequest> needs url and method (line 1)
+valid/generated1.xml: valid requests=3 steps=6
+valid/generated2.xml: valid requests=3 steps=6
+valid/generated3.xml: valid requests=3 steps=6
+valid/generated4.xml: valid requests=3 steps=6
+valid/generated5.xml: valid requests=3 steps=6
+valid/generated6.xml: valid requests=3 steps=6
+valid/hello.xml: valid requests=1 steps=1
+valid/movie.xml: valid requests=5 steps=5
+valid/r2-custauth.xml: valid requests=1 steps=1
+valid/r2-customer.xml: valid requests=2 steps=4
+valid/r2-sample.xml: valid requests=4 steps=3
+valid/r2-script.xml: valid requests=1 steps=2
+valid/r2-xrequest.xml: valid requests=2 steps=4
+valid/shop-customer.xml: valid requests=3 steps=6
+valid/shop-legacy.xml: valid requests=1 steps=1
+valid/shop-order.xml: valid requests=4 steps=16
+valid/shop-product.xml: valid requests=2 steps=2
+valid/shop-token.xml: valid requests=2 steps=2
+valid/shop-txtest.xml: valid requests=1 steps=3
+valid/shop-xfail.xml: valid requests=1 steps=2

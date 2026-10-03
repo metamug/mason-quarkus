@@ -1,0 +1,4 @@
+== datasources from backend.yaml, native
+{"backend":"pg","datasources":{"main":{"product":"PostgreSQL","driver":"PostgreSQL JDBC Driver","select1":1}}}
+{"error":"java.sql.SQLException: java.lang.NullPointerException"}
+{"backends":2,"heapUsedKb":11776,"rssKb":72024,"mode":"native"}
