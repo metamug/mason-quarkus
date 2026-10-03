@@ -14,11 +14,14 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import io.mq.spike.parser.ResourceParser;
 import io.quarkus.runtime.StartupEvent;
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
+import jakarta.inject.Singleton;
 
-/** Reads every *.xml from the configured folders at boot, validates and parses it, keeps the outcome per file. */
-@ApplicationScoped
+/**
+ * Reads every *.xml from the configured folders at boot, validates and parses it, keeps the outcome per file.
+ * A @Singleton (no client proxy): the status resource reads its fields directly.
+ */
+@Singleton
 public class Loader {
 
     @ConfigProperty(name = "mq.resources.dirs")
@@ -63,7 +66,7 @@ public class Loader {
 
     private static ResourceParser.Result parse(Path p) throws IOException {
         try (InputStream in = Files.newInputStream(p)) {
-            return ResourceParser.parse(p.getFileName().toString().replaceAll("\.xml$", ""), in);
+            return ResourceParser.parse(p.getFileName().toString().replaceAll("\\.xml$", ""), in);
         }
     }
 }
