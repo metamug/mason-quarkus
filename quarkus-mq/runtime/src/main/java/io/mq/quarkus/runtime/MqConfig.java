@@ -25,6 +25,13 @@ public interface MqConfig {
     @WithDefault("auto")
     String scripts();
 
+    /** backend properties: {{name}} in an XRequest url is replaced by quarkus.mq.properties.name */
+    java.util.Map<String, String> properties();
+
+    /** seconds to wait for an XRequest to connect and to answer */
+    @WithDefault("15")
+    int xrequestTimeoutSeconds();
+
     /** dev mode only: watch the folder and reload on change. Ignored in production, where nothing is watched. */
     @WithDefault("true")
     boolean watch();

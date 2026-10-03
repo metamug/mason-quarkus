@@ -51,5 +51,29 @@ check("status is now PAID", has(await call("GET", "/v1.0/order/1"), "PAID"));
 const unknown = await call("PUT", "/v1.0/order/999", { body: { status: "PAID" } });
 check("unknown order is reported by the script", has(unknown, "unknown order"), unknown.text);
 
+console.log("== order: XRequest + script + transaction + external call in one request ==");
+const stubBase = process.env.STUB || "http://127.0.0.1:9999";
+const stock = async () => Number(col((await call("GET", "/v1.0/product/1")).json?.one?.[0], "stock"));
+const o1 = await call("POST", "/v1.0/order", { body: { customer_id: "1", product_id: "1", qty: "3" } });
+check("place order returns declared 201", o1.status === 201, o1.text);
+check("script priced the order from the XRequest product (3 x 4.50 = 13.5)", Number(o1.json?.calc?.total) === 13.5, o1.text);
+const token = o1.json?.calc?.token;
+check("script returned an HMAC token (40 hex)", /^[0-9a-f]{40}$/.test(token || ""), o1.text);
+check("final SQL step returns the placed order joined with the customer", has(o1, "Ada") && has(o1, "NEW"), o1.text);
+check("transaction decremented stock 100 -> 97", (await stock()) === 97);
+const sent = await (await fetch(stubBase + "/_requests")).json();
+check("the external API received the notification with the script token", sent.length === 1 && sent[0].body.includes(token || "no-token") && sent[0].url === "/post", JSON.stringify(sent));
+const bad = await call("POST", "/v1.0/order", { body: { customer_id: "1", product_id: "1", qty: "1000" } });
+check("insufficient stock: script rejects, no transaction run", has(bad, "insufficient stock") && !has(bad, "\"placed\""), bad.text);
+check("stock unchanged after the rejected order", (await stock()) === 97);
+check("no second notification", (await (await fetch(stubBase + "/_requests")).json()).length === 1);
+check("unknown product is rejected by the script", has(await call("POST", "/v1.0/order", { body: { customer_id: "1", product_id: "999", qty: "1" } }), "unknown product"));
+
+console.log("== failure semantics: external API answers 500 ==");
+const t0 = Date.now();
+const xf = await call("GET", "/v1.0/xfail");
+check("external API 500: the request completes quickly (no hang)", Date.now() - t0 < 15000, (Date.now() - t0) + " ms");
+check("...and the SQL step after it ran", xf.status === 200 && rows(xf, "after").length === 1, xf.text);
+
 console.log(passed + " passed, " + failed + " failed");
 process.exit(failed ? 1 : 0);

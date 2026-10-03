@@ -146,7 +146,15 @@ public final class Engine {
         } else if (step instanceof Model.Script s) {
             store(s.id(), s.output(), scripts.run(s, ctx), ctx, body);
         } else if (step instanceof Model.XRequest x) {
-            store(x.id(), "true".equals(x.output()) || "headers".equals(x.output()), xrequests.run(x, ctx), ctx, body);
+            Object result = xrequests.run(x, ctx);
+            ctx.results.put(x.id(), result);
+            if (result instanceof XResponse r) {
+                if ("true".equals(x.output())) {
+                    body.put(x.id(), r.payload());
+                } else if ("headers".equals(x.output())) {
+                    body.put(x.id(), r.withHeaders());
+                }
+            }
         } else if (step instanceof Model.Execute x) {
             store(x.id(), Boolean.TRUE.equals(x.output()), executes.run(x, ctx), ctx, body);
         } else if (step instanceof Model.Text t) {

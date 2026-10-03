@@ -110,7 +110,8 @@ public class MqHttp {
             synchronized (this) {
                 if (dispatcher == null) {
                     // the default datasource of the application; a step with a datasource name is not supported yet
-                    Engine engine = new Engine(name -> dataSource.isResolvable() ? dataSource.get() : null, new ScriptHandler(this::loader), null, null);
+                    Engine engine = new Engine(name -> dataSource.isResolvable() ? dataSource.get() : null, new ScriptHandler(this::loader),
+                            new io.mq.engine.XRequestHandler(config.properties(), java.time.Duration.ofSeconds(config.xrequestTimeoutSeconds())), null);
                     engine.onError((id, t) -> LOG.errorf(t, "MQ request failed, errorId %s", id));
                     dispatcher = new Dispatcher(resources::current, engine);
                 }

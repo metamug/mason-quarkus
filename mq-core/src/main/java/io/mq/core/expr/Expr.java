@@ -20,6 +20,15 @@ public final class Expr {
     public record Ref(boolean mpath, String name, String path) {
     }
 
+    /**
+     * A step result that answers extra names. An XRequest result holds the response body's fields and also answers
+     * {@code body}, {@code statusCode} and {@code headers}; a body that is an array answers {@code [n]}. Asked only when the plain lookup fails.
+     */
+    public interface Aliased {
+        /** @param key a field name, or {@code [n]} for an index; null when this result has no such alias */
+        Object alias(String key);
+    }
+
     /** supplies the values of variables when an expression is evaluated */
     public interface Env {
         Object lookup(Ref ref);
@@ -425,6 +434,9 @@ public final class Expr {
                             }
                         }
                     }
+                    if (v == null && !m.containsKey(key) && m instanceof Aliased a) {
+                        v = a.alias(key);
+                    }
                     cur = v;
                 } else {
                     return null;
@@ -435,6 +447,8 @@ public final class Expr {
                 i = close + 1;
                 if (cur instanceof List<?> l && idx >= 0 && idx < l.size()) {
                     cur = l.get(idx);
+                } else if (cur instanceof Aliased a) {
+                    cur = a.alias("[" + idx + "]");
                 } else {
                     return null;
                 }

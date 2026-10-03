@@ -59,8 +59,11 @@ jobs:
 
       - name: A. Dev server loader (scripts interpreted from the .kts files), JVM
         run: |
+          pkill -f examples/shop-kt/stub.mjs || true
+          node examples/shop-kt/stub.mjs 9999 &
+          sleep 1
           mvn -q -B -f examples/shop-kt/pom.xml clean package -Pinterpreted
-          "$TEMURIN/bin/java" -Dquarkus.http.port=8080 -Dquarkus.mq.scripts=interpreted -Dquarkus.mq.scripts-dir=samples/shop/scripts -jar examples/shop-kt/target/quarkus-app/quarkus-run.jar > out/interpreted-run.log 2>&1 &
+          "$TEMURIN/bin/java" -Dquarkus.http.port=8080 -Dquarkus.mq.properties.self=http://127.0.0.1:8080 -Dquarkus.mq.properties.stub=http://127.0.0.1:9999 -Dquarkus.mq.scripts=interpreted -Dquarkus.mq.scripts-dir=samples/shop/scripts -jar examples/shop-kt/target/quarkus-app/quarkus-run.jar > out/interpreted-run.log 2>&1 &
           PID=$!
           for i in $(seq 1 120); do curl -s -o /dev/null http://localhost:8080/v1.0/product && break; sleep 0.3; done
           node examples/shop-kt/http-test.mjs http://localhost:8080 | tee out/interpreted-result.txt
@@ -69,9 +72,12 @@ jobs:
 
       - name: B. Scripts compiled ahead of time, JVM
         run: |
+          pkill -f examples/shop-kt/stub.mjs || true
+          node examples/shop-kt/stub.mjs 9999 &
+          sleep 1
           bash out/reset.sh
           mvn -q -B -f examples/shop-kt/pom.xml clean package -Pcompiled
-          "$TEMURIN/bin/java" -Dquarkus.http.port=8080 -jar examples/shop-kt/target/quarkus-app/quarkus-run.jar > out/compiled-jvm-run.log 2>&1 &
+          "$TEMURIN/bin/java" -Dquarkus.http.port=8080 -Dquarkus.mq.properties.self=http://127.0.0.1:8080 -Dquarkus.mq.properties.stub=http://127.0.0.1:9999 -jar examples/shop-kt/target/quarkus-app/quarkus-run.jar > out/compiled-jvm-run.log 2>&1 &
           PID=$!
           for i in $(seq 1 120); do curl -s -o /dev/null http://localhost:8080/v1.0/product && break; sleep 0.3; done
           node examples/shop-kt/http-test.mjs http://localhost:8080 | tee out/compiled-jvm-result.txt
@@ -86,11 +92,14 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: C. Scripts compiled ahead of time, native binary
         run: |
+          pkill -f examples/shop-kt/stub.mjs || true
+          node examples/shop-kt/stub.mjs 9999 &
+          sleep 1
           bash out/reset.sh
           /usr/bin/time -v -o out/native-build-time.txt mvn -q -B -f examples/shop-kt/pom.xml clean package -Pcompiled -Dnative
           grep -E "Elapsed|Maximum resident" out/native-build-time.txt
           ls -l examples/shop-kt/target/*-runner
-          examples/shop-kt/target/mq-example-shop-kt-0.1.0-SNAPSHOT-runner -Dquarkus.http.port=8080 > out/native-run.log 2>&1 &
+          examples/shop-kt/target/mq-example-shop-kt-0.1.0-SNAPSHOT-runner -Dquarkus.http.port=8080 -Dquarkus.mq.properties.self=http://127.0.0.1:8080 -Dquarkus.mq.properties.stub=http://127.0.0.1:9999 > out/native-run.log 2>&1 &
           PID=$!
           for i in $(seq 1 120); do curl -s -o /dev/null http://localhost:8080/v1.0/product && break; sleep 0.2; done
           node examples/shop-kt/http-test.mjs http://localhost:8080 | tee out/native-result.txt
