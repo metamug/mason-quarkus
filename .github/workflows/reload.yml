@@ -34,7 +34,7 @@ jobs:
       - name: Run the scenarios against Quarkus dev mode
         working-directory: examples/reload
         run: set -o pipefail; bash run.sh ${{ matrix.os }} | tee results/${{ matrix.os }}.txt
-      - name: Same scenarios with the JDK watcher forced (macOS: polling, for comparison)
+      - name: "Same scenarios with the JDK watcher forced (macOS polls)"
         if: runner.os == 'macOS'
         working-directory: examples/reload
         run: set -o pipefail; bash run.sh ${{ matrix.os }}-jdk-watcher -Dmq.watcher=jdk | tee results/${{ matrix.os }}-jdk-watcher.txt
