@@ -5,3 +5,4 @@ node_modules/
 # raw logs contain local paths: commit scrubbed copies by hand
 spikes/**/results/raw/
 spikes/spike1-dev-reload/outside/
+art/
