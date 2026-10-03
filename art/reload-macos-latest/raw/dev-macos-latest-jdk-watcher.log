@@ -1,0 +1,53 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------------< io.mq:mq-example-reload >-----------------------
+[INFO] Building MQ example: reload 0.1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] ------------------------------[ quarkus ]-------------------------------
+[INFO] 
+[INFO] --- quarkus:3.40.1:dev (default-cli) @ mq-example-reload ---
+[INFO] Invoking quarkus:3.40.1:generate-code (default-generate-code) @ mq-example-reload
+[INFO] Invoking resources:3.5.0:resources (default-resources) @ mq-example-reload
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Invoking compiler:3.15.0:compile (default-compile) @ mq-example-reload
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] Invoking quarkus:3.40.1:generate-code-tests (default-generate-code-tests) @ mq-example-reload
+[INFO] Invoking resources:3.5.0:testResources (default-testResources) @ mq-example-reload
+[INFO] skip non existing resourceDirectory /Users/runner/work/mason-quarkus/mason-quarkus/examples/reload/src/test/resources
+[INFO] Invoking compiler:3.15.0:testCompile (default-testCompile) @ mq-example-reload
+[INFO] No sources to compile
+__  ____  __  _____   ___  __ ____  ______ 
+ --/ __ \/ / / / _ | / _ \/ //_/ / / / __/ 
+ -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \   
+--\___\_\____/_/ |_/_/|_/_/|_|\____/___/   
+2026-10-03 04:04:13,622 INFO  [io.mq.quarkus.runtime.MqResources] (Quarkus Main Thread) MQ loaded 1 resources from /Users/runner/work/mason-quarkus/mason-quarkus/examples/reload/mq in 8 ms
+2026-10-03 04:04:13,626 INFO  [io.mq.quarkus.runtime.MqResources] (Quarkus Main Thread) MQ watches /Users/runner/work/mason-quarkus/mason-quarkus/examples/reload/mq (jdk)
+MQ-EXAMPLE app started be2a1134
+2026-10-03 04:04:13,693 INFO  [io.quarkus] (Quarkus Main Thread) mq-example-reload 0.1.0-SNAPSHOT on JVM (powered by Quarkus 3.40.1) started in 1.342s. Listening on: http://localhost:8090
+2026-10-03 04:04:13,694 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2026-10-03 04:04:13,694 INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [cdi, mq, rest, smallrye-context-propagation, vertx]
+2026-10-03 04:04:18,853 INFO  [io.mq.quarkus.runtime.MqResources] (mq-watcher) MQ reloaded 1 resources in 1 ms
+2026-10-03 04:04:20,821 INFO  [io.mq.quarkus.runtime.MqResources] (mq-watcher) MQ reloaded 1 resources in 0 ms
+2026-10-03 04:04:22,854 INFO  [io.mq.quarkus.runtime.MqResources] (mq-watcher) MQ reloaded 1 resources in 0 ms
+2026-10-03 04:04:24,853 INFO  [io.mq.quarkus.runtime.MqResources] (mq-watcher) MQ reloaded 1 resources in 0 ms
+2026-10-03 04:04:26,833 INFO  [io.mq.quarkus.runtime.MqResources] (mq-watcher) MQ reloaded 1 resources in 0 ms
+2026-10-03 04:04:28,730 INFO  [io.mq.quarkus.runtime.MqResources] (mq-watcher) MQ reloaded 2 resources in 4 ms
+2026-10-03 04:04:30,870 INFO  [io.mq.quarkus.runtime.MqResources] (mq-watcher) MQ reloaded 3 resources in 6 ms
+2026-10-03 04:04:32,855 INFO  [io.mq.quarkus.runtime.MqResources] (mq-watcher) MQ reloaded 4 resources in 8 ms
+2026-10-03 04:04:34,880 INFO  [io.mq.quarkus.runtime.MqResources] (mq-watcher) MQ reloaded 5 resources in 7 ms
+2026-10-03 04:04:36,864 INFO  [io.mq.quarkus.runtime.MqResources] (mq-watcher) MQ reloaded 6 resources in 10 ms
+2026-10-03 04:04:38,660 INFO  [io.mq.quarkus.runtime.MqResources] (mq-watcher) MQ reloaded 5 resources in 8 ms
+2026-10-03 04:04:40,856 INFO  [io.mq.quarkus.runtime.MqResources] (mq-watcher) MQ reloaded 4 resources in 5 ms
+2026-10-03 04:04:42,767 INFO  [io.mq.quarkus.runtime.MqResources] (mq-watcher) MQ reloaded 3 resources in 4 ms
+2026-10-03 04:04:44,871 INFO  [io.mq.quarkus.runtime.MqResources] (mq-watcher) MQ reloaded 2 resources in 2 ms
+2026-10-03 04:04:46,813 INFO  [io.mq.quarkus.runtime.MqResources] (mq-watcher) MQ reloaded 1 resources in 3 ms
+2026-10-03 04:04:48,660 INFO  [io.mq.quarkus.runtime.MqResources] (mq-watcher) MQ reloaded 2 resources in 0 ms
+2026-10-03 04:04:50,817 INFO  [io.mq.quarkus.runtime.MqResources] (mq-watcher) MQ reloaded 2 resources in 4 ms
+2026-10-03 04:04:52,661 INFO  [io.mq.quarkus.runtime.MqResources] (mq-watcher) MQ reloaded 21 resources in 5 ms
+2026-10-03 04:04:54,874 INFO  [io.mq.quarkus.runtime.MqResources] (mq-watcher) MQ reloaded 1 resources in 3 ms
+2026-10-03 04:04:56,657 INFO  [io.mq.quarkus.runtime.MqResources] (mq-watcher) MQ reloaded 1 resources in 2 ms
+2026-10-03 04:04:58,745 WARN  [io.mq.quarkus.runtime.MqResources] (mq-watcher) MQ reloaded with problems (old versions kept): first.xml:1: not well-formed: XML document structures must start and end within the same entity.
+2026-10-03 04:05:00,649 INFO  [io.mq.quarkus.runtime.MqResources] (mq-watcher) MQ reloaded 1 resources in 2 ms
+2026-10-03 04:05:02,780 INFO  [io.mq.quarkus.runtime.MqResources] (mq-watcher) MQ reloaded 1 resources in 2 ms
+2026-10-03 04:05:04,788 INFO  [io.mq.quarkus.runtime.MqResources] (mq-watcher) MQ reloaded 1 resources in 3 ms
+2026-10-03 04:05:04,840 INFO  [io.quarkus] (Shutdown thread) mq-example-reload stopped in 0.018s
