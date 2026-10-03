@@ -468,9 +468,27 @@ final class Checker {
     private Model.Script script(Node n) {
         Map<String, String> a = attributes(n, "Script", SCRIPT);
         empty(n, "Script");
+        scriptFile(n, a.get("file"));
         whenCondition(n, "Script", a.get("when"));
         register(n, a.get("id"));
         return new Model.Script(a.get("id"), a.get("file"), !a.containsKey("output") || bool(a.get("output")), a.get("when"), n.line);
+    }
+
+    /** scripts are Kotlin only: a name, or name.kts; Groovy and any other language were dropped */
+    private void scriptFile(Node n, String file) {
+        if (file == null || file.isEmpty()) {
+            return;
+        }
+        String base = file.endsWith(".kts") ? file.substring(0, file.length() - 4) : file;
+        if (base.matches("[A-Za-z_][A-Za-z0-9_]*")) {
+            return;
+        }
+        int dot = file.lastIndexOf('.');
+        if (dot > 0 && !file.contains("/") && !file.contains("\\") && !file.contains("..")) {
+            err(n, "attribute 'file' of <Script> names '" + file + "', which is not a Kotlin script: scripts are Kotlin only (name or name.kts); Groovy and other languages are not supported");
+        } else {
+            err(n, "attribute 'file' of <Script> must be a script name such as hash or hash.kts, found '" + file + "'");
+        }
     }
 
     private Model.Text text(Node n) {

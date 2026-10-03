@@ -4,7 +4,9 @@ import io.mq.quarkus.runtime.MqHttp;
 import io.mq.quarkus.runtime.MqResources;
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.deployment.annotations.BuildStep;
+import io.mq.script.ScriptLoader;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.ServiceProviderBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBundleBuildItem;
 
 class MqProcessor {
@@ -19,6 +21,12 @@ class MqProcessor {
     @BuildStep
     AdditionalBeanBuildItem resources() {
         return AdditionalBeanBuildItem.builder().addBeanClasses(MqResources.class, MqHttp.class).setUnremovable().build();
+    }
+
+    /** the scripts compiled ahead of time register as a ScriptLoader service; the native binary needs them registered at build time */
+    @BuildStep
+    ServiceProviderBuildItem compiledScripts() {
+        return ServiceProviderBuildItem.allProvidersFromClassPath(ScriptLoader.class.getName());
     }
 
     /**

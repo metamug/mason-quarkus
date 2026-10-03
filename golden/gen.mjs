@@ -171,6 +171,10 @@ X('xrequest-unknown-child', 'unknown child of XRequest', one('<XRequest id="x" u
 // ---------- Script, Text, Execute ----------
 V('script-minimal', 'id and file', one('<Script id="s" file="hello"/>'));
 V('script-all-attributes', 'output and when', one('<Script id="s" file="hello.kts" output="false" when="$q eq 1"/>'));
+M('script-file-groovy', 'Groovy is dropped: only Kotlin scripts', one('<Script id="s" file="legacy.groovy"/>'));
+M('script-file-javascript', 'only Kotlin scripts', one('<Script id="s" file="tool.js"/>'));
+M('script-file-path', 'a script is a name, not a path', one('<Script id="s" file="../scripts/x.kts"/>'));
+M('script-file-dashed-name', 'the name becomes a class name', one('<Script id="s" file="my-script"/>'));
 X('script-file-missing', 'file is required', one('<Script id="s"/>'));
 X('script-id-missing', 'id is required', one('<Script file="hello"/>'));
 X('script-file-empty', 'file must not be empty', one('<Script id="s" file=""/>'));

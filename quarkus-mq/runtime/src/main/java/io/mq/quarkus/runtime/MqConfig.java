@@ -14,6 +14,17 @@ public interface MqConfig {
     @WithDefault("mq")
     String dir();
 
+    /** folder with the Kotlin scripts (name.kts); the Dev server compiles them from here */
+    @WithDefault("scripts")
+    String scriptsDir();
+
+    /**
+     * where scripts come from: compiled (generated registry in the application, production and native), interpreted (the Dev
+     * server compiles the .kts files and notices changes) or auto (interpreted in dev mode when the compiler is on the class path)
+     */
+    @WithDefault("auto")
+    String scripts();
+
     /** dev mode only: watch the folder and reload on change. Ignored in production, where nothing is watched. */
     @WithDefault("true")
     boolean watch();

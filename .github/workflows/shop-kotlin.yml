@@ -1,0 +1,108 @@
+name: shop-kotlin
+
+# Test 2: Script -> mpath -> Sql chains of R2's shop scenario over HTTP: scripts interpreted by the Dev server loader on the JVM,
+# scripts compiled ahead of time on the JVM, and scripts compiled ahead of time in the native binary. PostgreSQL 16.
+on:
+  push:
+    paths: ['mq-core/**', 'mq-engine/**', 'mq-script/**', 'quarkus-mq/**', 'examples/shop-kt/**', 'samples/shop/**', 'tools/mq-compile-scripts/**', '.github/workflows/shop-kotlin.yml']
+  workflow_dispatch:
+
+jobs:
+  shop-kotlin:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: mqtest
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      PGPASSWORD: postgres
+      QUARKUS_MQ_DIR: ${{ github.workspace }}/samples/shop/mq
+      KOTLINC_HOME: ${{ github.workspace }}/kotlinc
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build and test everything (the Dev server loader runs the shop scripts in mq-script's tests)
+        run: |
+          echo "TEMURIN=$JAVA_HOME" >> "$GITHUB_ENV"
+          mvn -B -ntp install
+      - name: Kotlin compiler 2.2.20
+        run: |
+          curl -sL -o kc.zip https://github.com/JetBrains/kotlin/releases/download/v2.2.20/kotlin-compiler-2.2.20.zip
+          unzip -q kc.zip
+      - name: Compile the shop scripts ahead of time (the CLI's script step)
+        run: |
+          mvn -q -B -f mq-script/pom.xml dependency:build-classpath -Dmdep.outputFile="$RUNNER_TEMP/cp.txt"
+          export MQ_JARS="$(cat "$RUNNER_TEMP/cp.txt"):$PWD/mq-script/target/mq-script-0.1.0-SNAPSHOT.jar"
+          mkdir -p out
+          bash tools/mq-compile-scripts/compile-scripts.sh samples/shop/scripts out/shop-scripts.jar
+          mvn -q -B install:install-file -Dfile=out/shop-scripts.jar -DgroupId=io.mq.example -DartifactId=shop-scripts -Dversion=1 -Dpackaging=jar
+      - name: Schema and one order for the state machine checks
+        run: |
+          cat > out/reset.sh <<'EOF'
+          psql -h localhost -U postgres mqtest -c "DROP TABLE IF EXISTS order_line, orders, product, customer"
+          psql -h localhost -U postgres mqtest -f samples/shop/schema.postgresql.sql
+          psql -h localhost -U postgres mqtest -c "INSERT INTO orders (customer_id, total, status, token) VALUES (1, 13.5, 'NEW', 'seed')"
+          EOF
+          bash out/reset.sh
+
+      - name: A. Dev server loader (scripts interpreted from the .kts files), JVM
+        run: |
+          mvn -q -B -f examples/shop-kt/pom.xml clean package -Pinterpreted
+          "$TEMURIN/bin/java" -Dquarkus.http.port=8080 -Dquarkus.mq.scripts=interpreted -Dquarkus.mq.scripts-dir=samples/shop/scripts -jar examples/shop-kt/target/quarkus-app/quarkus-run.jar > out/interpreted-run.log 2>&1 &
+          PID=$!
+          for i in $(seq 1 120); do curl -s -o /dev/null http://localhost:8080/v1.0/product && break; sleep 0.3; done
+          node examples/shop-kt/http-test.mjs http://localhost:8080 | tee out/interpreted-result.txt
+          ps -o rss= -p $PID | awk '{print "interpreted jvm rss_kb", $1}'
+          kill $PID; sleep 1
+
+      - name: B. Scripts compiled ahead of time, JVM
+        run: |
+          bash out/reset.sh
+          mvn -q -B -f examples/shop-kt/pom.xml clean package -Pcompiled
+          "$TEMURIN/bin/java" -Dquarkus.http.port=8080 -jar examples/shop-kt/target/quarkus-app/quarkus-run.jar > out/compiled-jvm-run.log 2>&1 &
+          PID=$!
+          for i in $(seq 1 120); do curl -s -o /dev/null http://localhost:8080/v1.0/product && break; sleep 0.3; done
+          node examples/shop-kt/http-test.mjs http://localhost:8080 | tee out/compiled-jvm-result.txt
+          ps -o rss= -p $PID | awk '{print "compiled jvm rss_kb", $1}'
+          grep "MQ runs" out/compiled-jvm-run.log || true
+          kill $PID; sleep 1
+
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '25'
+          distribution: mandrel
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: C. Scripts compiled ahead of time, native binary
+        run: |
+          bash out/reset.sh
+          /usr/bin/time -v -o out/native-build-time.txt mvn -q -B -f examples/shop-kt/pom.xml clean package -Pcompiled -Dnative
+          grep -E "Elapsed|Maximum resident" out/native-build-time.txt
+          ls -l examples/shop-kt/target/*-runner
+          examples/shop-kt/target/mq-example-shop-kt-0.1.0-SNAPSHOT-runner -Dquarkus.http.port=8080 > out/native-run.log 2>&1 &
+          PID=$!
+          for i in $(seq 1 120); do curl -s -o /dev/null http://localhost:8080/v1.0/product && break; sleep 0.2; done
+          node examples/shop-kt/http-test.mjs http://localhost:8080 | tee out/native-result.txt
+          ps -o rss= -p $PID | awk '{print "native rss_kb", $1}'
+          grep "MQ runs" out/native-run.log || true
+          kill $PID
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: shop-kotlin-results
+          path: |
+            out/*.txt
+            out/*.log
+            out/*.jar

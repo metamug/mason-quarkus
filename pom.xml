@@ -10,6 +10,7 @@
     <modules>
         <module>mq-core</module>
         <module>mq-engine</module>
+        <module>mq-script</module>
         <module>quarkus-mq</module>
         <module>examples/reload</module>
         <module>examples/shop</module>

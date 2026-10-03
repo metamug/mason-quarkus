@@ -123,8 +123,12 @@ resource-xsi-nil	INVALID	1	2	unknown attribute '{http://www.w3.org/2001/XMLSchem
 resource-xsi-no-namespace-schema-location	VALID
 resource-xsi-schema-location	VALID
 script-all-attributes	VALID
+script-file-dashed-name	INVALID	1	4	attribute 'file' of <Script> must be a script name such as hash or hash.kts, found 'my-script'
 script-file-empty	INVALID	1	4	attribute 'file' of <Script> must not be empty
+script-file-groovy	INVALID	1	4	attribute 'file' of <Script> names 'legacy.groovy', which is not a Kotlin script: scripts are Kotlin only (name or name.kts); Groovy and other languages are not supported
+script-file-javascript	INVALID	1	4	attribute 'file' of <Script> names 'tool.js', which is not a Kotlin script: scripts are Kotlin only (name or name.kts); Groovy and other languages are not supported
 script-file-missing	INVALID	1	4	<Script> needs the attribute 'file'
+script-file-path	INVALID	1	4	attribute 'file' of <Script> must be a script name such as hash or hash.kts, found '../scripts/x.kts'
 script-id-missing	INVALID	1	4	<Script> needs the attribute 'id'
 script-minimal	VALID
 script-output-maybe	INVALID	1	4	attribute 'output' of <Script> must be true or false, found 'maybe'

@@ -130,6 +130,10 @@ xrequest-unknown-attribute-persist	invalid-xsd	persist is not an attribute
 xrequest-unknown-child	invalid-xsd	unknown child of XRequest
 script-minimal	valid	id and file
 script-all-attributes	valid	output and when
+script-file-groovy	invalid-mq	Groovy is dropped: only Kotlin scripts
+script-file-javascript	invalid-mq	only Kotlin scripts
+script-file-path	invalid-mq	a script is a name, not a path
+script-file-dashed-name	invalid-mq	the name becomes a class name
 script-file-missing	invalid-xsd	file is required
 script-id-missing	invalid-xsd	id is required
 script-file-empty	invalid-xsd	file must not be empty

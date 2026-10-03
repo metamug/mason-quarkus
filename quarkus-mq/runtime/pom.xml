@@ -22,6 +22,11 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>io.mq</groupId>
+            <artifactId>mq-script</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-vertx-http</artifactId>
         </dependency>
