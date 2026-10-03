@@ -1,0 +1,49 @@
+PASS hashpw.hash
+PASS hashpw.salt
+PASS ordercalc.ok
+PASS ordercalc.total
+PASS ordercalc.price
+PASS ordercalc.token
+PASS ordercalc.ok
+PASS ordercalc.reason
+PASS ordercalc.ok
+PASS ordercalc.reason
+PASS transition.ok
+PASS transition.reason
+PASS transition.ok
+PASS transition.from
+PASS transition.to
+PASS tokens.sha256
+PASS tokens.md5
+PASS tokens.base64
+PASS tokens.uuid
+PASS tokens.count
+PASS tokens.items
+PASS legacy.message
+PASS legacy.length
+PASS b_reflection.forName_jdk_class
+PASS b_reflection.getMethod_invoke_jdk
+FAIL b_reflection.declaredFields_user_class: got '', wanted /^x,y$/
+FAIL b_reflection.kotlin_reflect_members: got 'FAIL KotlinReflectionNotSupportedError', wanted /^[a-z]/
+PASS b_reflection.kotlin_class_name
+PASS b_reflection.dynamic_proxy
+PASS b_crypto.sha256
+PASS b_crypto.hmac_sha256
+PASS b_crypto.aes_gcm_roundtrip
+PASS b_crypto.pbkdf2
+PASS b_crypto.secure_random
+PASS b_crypto.rsa_sign_verify
+PASS b_serialization.kotlinx_json_encode
+PASS b_serialization.kotlinx_json_decode
+PASS b_serialization.kotlinx_json_tree
+FAIL b_serialization.java_serialization_roundtrip: got 'FAIL UnsupportedFeatureError SerializationConstructorAccessor class not found for declaringClass: B_serializa', wanted /^5$/
+PASS b_resources_misc.classpath_resource
+FAIL b_resources_misc.resource_bundle: got 'FAIL MissingResourceException Can't find bundle for base name messages, locale ', wanted /^hello from a bundle$/
+PASS b_resources_misc.time_zone
+FAIL b_resources_misc.locale_format: got '1,234.50', wanted /1[.]234,50/
+PASS b_resources_misc.regex
+PASS b_resources_misc.coroutines
+PASS b_resources_misc.http_client_object
+PASS b_resources_misc.bigdecimal
+PASS b_resources_misc.uuid_random
+selftest: 43 passed, 0 required failures, 5 boundary constructs failed

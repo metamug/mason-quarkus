@@ -1,0 +1,139 @@
+Unable to find image 'quay.io/quarkus/ubi9-quarkus-mandrel-builder-image:jdk-25' locally
+jdk-25: Pulling from quarkus/ubi9-quarkus-mandrel-builder-image
+207da760819c: Pulling fs layer
+a2dd9179cdd5: Pulling fs layer
+dd7616374c14: Pulling fs layer
+8323612af196: Pulling fs layer
+9fb12c2a3109: Pulling fs layer
+8ebda3c624f9: Pulling fs layer
+3c3a1117aff4: Pulling fs layer
+146daea6e77e: Pulling fs layer
+4c83962cf454: Pulling fs layer
+4288ca89de38: Pulling fs layer
+26f7a66f8b9e: Pulling fs layer
+bb443990ec3d: Pulling fs layer
+d6b13e19e223: Pulling fs layer
+d30cd0542fc9: Pulling fs layer
+9a9eaa564b02: Pulling fs layer
+4288ca89de38: Waiting
+8ebda3c624f9: Waiting
+d6b13e19e223: Waiting
+26f7a66f8b9e: Waiting
+3c3a1117aff4: Waiting
+bb443990ec3d: Waiting
+d30cd0542fc9: Waiting
+146daea6e77e: Waiting
+9a9eaa564b02: Waiting
+4c83962cf454: Waiting
+8323612af196: Waiting
+9fb12c2a3109: Waiting
+dd7616374c14: Verifying Checksum
+dd7616374c14: Download complete
+207da760819c: Verifying Checksum
+207da760819c: Download complete
+8323612af196: Verifying Checksum
+8323612af196: Download complete
+a2dd9179cdd5: Verifying Checksum
+a2dd9179cdd5: Download complete
+9fb12c2a3109: Verifying Checksum
+9fb12c2a3109: Download complete
+8ebda3c624f9: Verifying Checksum
+8ebda3c624f9: Download complete
+3c3a1117aff4: Verifying Checksum
+3c3a1117aff4: Download complete
+4c83962cf454: Verifying Checksum
+4c83962cf454: Download complete
+146daea6e77e: Verifying Checksum
+146daea6e77e: Download complete
+4288ca89de38: Verifying Checksum
+4288ca89de38: Download complete
+207da760819c: Pull complete
+d6b13e19e223: Verifying Checksum
+d6b13e19e223: Download complete
+d30cd0542fc9: Verifying Checksum
+d30cd0542fc9: Download complete
+9a9eaa564b02: Verifying Checksum
+9a9eaa564b02: Download complete
+bb443990ec3d: Verifying Checksum
+bb443990ec3d: Download complete
+26f7a66f8b9e: Verifying Checksum
+26f7a66f8b9e: Download complete
+a2dd9179cdd5: Pull complete
+dd7616374c14: Pull complete
+8323612af196: Pull complete
+9fb12c2a3109: Pull complete
+8ebda3c624f9: Pull complete
+3c3a1117aff4: Pull complete
+146daea6e77e: Pull complete
+4c83962cf454: Pull complete
+4288ca89de38: Pull complete
+26f7a66f8b9e: Pull complete
+bb443990ec3d: Pull complete
+d6b13e19e223: Pull complete
+d30cd0542fc9: Pull complete
+9a9eaa564b02: Pull complete
+Digest: sha256:e39ad9aaffbc668b1ae14920ec9769905a399eddffc0c59183d87b0f69162636
+Status: Downloaded newer image for quay.io/quarkus/ubi9-quarkus-mandrel-builder-image:jdk-25
+Warning: The option '-H:IncludeResourceBundles=com.sun.org.apache.xerces.internal.impl.msg.XMLMessages' is experimental and must be enabled via '-H:+UnlockExperimentalVMOptions' in the future.
+Warning: Please re-evaluate whether any experimental option is required, and either remove or unlock it. The build output lists all active experimental options, including where they come from and possible alternatives. If you think an experimental option should be considered as stable, please file an issue.
+========================================================================================================================
+GraalVM Native Image: Generating 'native-A' (executable)...
+========================================================================================================================
+For detailed information and explanations on the build output, visit:
+https://github.com/oracle/graal/blob/master/docs/reference-manual/native-image/BuildOutput.md
+------------------------------------------------------------------------------------------------------------------------
+[1/8] Initializing...                                                                                    (4.9s @ 0.15GB)
+ Java version: 25.0.4.1+1-LTS, vendor version: Mandrel-25.0.4.1-Final
+ Graal compiler: optimization level: 2, target machine: x86-64-v3
+ C compiler: gcc (redhat, x86_64, 11.5.0)
+ Garbage collector: Serial GC (max heap size: 80% of RAM)
+ 1 user-specific feature(s):
+ - com.oracle.svm.thirdparty.gson.GsonFeature
+------------------------------------------------------------------------------------------------------------------------
+ 1 experimental option(s) unlocked:
+ - '-H:IncludeResourceBundles' (origin(s): 'META-INF/native-image/io.mq/mq-core/native-image.properties' in 'file:///work/build/lib/mq-core-0.1.0-SNAPSHOT.jar')
+------------------------------------------------------------------------------------------------------------------------
+Build resources:
+ - 12.67GB of memory (75.6% of system memory, in container)
+ - 4 thread(s) (100.0% of 4 available processor(s), determined at start)
+[2/8] Performing analysis...  [******]                                                                  (20.7s @ 0.62GB)
+    5,858 types,   6,905 fields, and  26,943 methods found reachable
+    2,078 types,      80 fields, and   1,598 methods registered for reflection
+       59 types,      59 fields, and      53 methods registered for JNI access
+        0 downcalls and 0 upcalls registered for foreign access
+        4 native libraries: dl, pthread, rt, z
+[3/8] Building universe...                                                                               (2.7s @ 0.71GB)
+[4/8] Parsing methods...      [**]                                                                       (2.1s @ 0.75GB)
+[5/8] Inlining methods...     [***]                                                                      (1.6s @ 0.82GB)
+[6/8] Compiling methods...    [****]                                                                    (20.9s @ 0.60GB)
+[7/8] Laying out methods...   [*]                                                                        (1.8s @ 0.79GB)
+[8/8] Creating image...       [**]                                                                       (2.2s @ 0.89GB)
+  11.06MB (39.86%) for code area:    16,699 compilation units
+  14.68MB (52.92%) for image heap:  177,792 objects and 63 resources
+   2.00MB ( 7.22%) for other data
+  27.74MB in total image size, 26.09MB in total file size
+------------------------------------------------------------------------------------------------------------------------
+Top 10 origins of code area:                                Top 10 object types in image heap:
+   7.92MB java.base                                            2.90MB byte[] for code metadata
+   1.50MB svm.jar (Native Image)                               2.55MB byte[] for java.lang.String
+ 236.50kB kotlinx-coroutines-core-jvm-1.10.2.jar               1.58MB java.lang.String
+ 181.87kB kotlin-stdlib-2.2.20.jar                             1.17MB com.oracle.svm.core.hub.DynamicHubCompanion
+ 114.42kB java.logging                                       913.30kB byte[] for general heap data
+ 101.26kB java.net.http                                      822.24kB java.lang.Class
+  90.80kB org.graalvm.nativeimage.base                       366.14kB java.util.HashMap$Node
+  84.53kB kotlinx-serialization-json-jvm-1.8.1.jar           322.23kB java.lang.Object[]
+  82.26kB jdk.charsets                                       300.39kB java.lang.String[]
+  72.77kB jdk.proxy4                                         277.92kB heap alignment
+ 421.69kB for 71 more packages                                 3.48MB for 1489 more object types
+------------------------------------------------------------------------------------------------------------------------
+Recommendations:
+ FUTR: Use '--future-defaults=all' to prepare for future releases.
+ HEAP: Set max heap for improved and more predictable memory usage.
+ CPU:  Enable more CPU features with '-march=native' for improved performance.
+------------------------------------------------------------------------------------------------------------------------
+                        4.6s (7.8% of total time) in 740 GCs | Peak RSS: 1.62GB | CPU load: 3.72
+------------------------------------------------------------------------------------------------------------------------
+Build artifacts:
+ /work/build/native-A (executable)
+========================================================================================================================
+Finished generating 'native-A' in 58.1s.

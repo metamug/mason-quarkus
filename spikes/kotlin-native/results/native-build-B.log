@@ -1,0 +1,64 @@
+Warning: The option '-H:IncludeResourceBundles=com.sun.org.apache.xerces.internal.impl.msg.XMLMessages' is experimental and must be enabled via '-H:+UnlockExperimentalVMOptions' in the future.
+Warning: Please re-evaluate whether any experimental option is required, and either remove or unlock it. The build output lists all active experimental options, including where they come from and possible alternatives. If you think an experimental option should be considered as stable, please file an issue.
+Warning: Option 'DynamicProxyConfigurationResources' is deprecated and might be removed in a future release: This can be caused by a proxy-config.json file in your META-INF directory. Consider including proxy configuration in the reflection section of reachability-metadata.md instead.. Please refer to the GraalVM release notes.
+========================================================================================================================
+GraalVM Native Image: Generating 'native-B' (executable)...
+========================================================================================================================
+For detailed information and explanations on the build output, visit:
+https://github.com/oracle/graal/blob/master/docs/reference-manual/native-image/BuildOutput.md
+------------------------------------------------------------------------------------------------------------------------
+[1/8] Initializing...                                                                                    (5.0s @ 0.15GB)
+ Java version: 25.0.4.1+1-LTS, vendor version: Mandrel-25.0.4.1-Final
+ Graal compiler: optimization level: 2, target machine: x86-64-v3
+ C compiler: gcc (redhat, x86_64, 11.5.0)
+ Garbage collector: Serial GC (max heap size: 80% of RAM)
+ 1 user-specific feature(s):
+ - com.oracle.svm.thirdparty.gson.GsonFeature
+------------------------------------------------------------------------------------------------------------------------
+ 1 experimental option(s) unlocked:
+ - '-H:IncludeResourceBundles' (origin(s): 'META-INF/native-image/io.mq/mq-core/native-image.properties' in 'file:///work/build/lib/mq-core-0.1.0-SNAPSHOT.jar')
+------------------------------------------------------------------------------------------------------------------------
+Build resources:
+ - 12.67GB of memory (75.6% of system memory, in container)
+ - 4 thread(s) (100.0% of 4 available processor(s), determined at start)
+[2/8] Performing analysis...  [*****]                                                                   (20.5s @ 0.65GB)
+    5,859 types,   6,908 fields, and  26,963 methods found reachable
+    2,084 types,      83 fields, and   1,611 methods registered for reflection
+       59 types,      59 fields, and      53 methods registered for JNI access
+        0 downcalls and 0 upcalls registered for foreign access
+        4 native libraries: dl, pthread, rt, z
+[3/8] Building universe...                                                                               (2.8s @ 0.70GB)
+[4/8] Parsing methods...      [**]                                                                       (2.1s @ 0.76GB)
+[5/8] Inlining methods...     [***]                                                                      (1.6s @ 0.83GB)
+[6/8] Compiling methods...    [****]                                                                    (20.9s @ 0.58GB)
+[7/8] Laying out methods...   [*]                                                                        (1.6s @ 0.76GB)
+[8/8] Creating image...       [**]                                                                       (2.6s @ 0.90GB)
+  11.06MB (39.78%) for code area:    16,721 compilation units
+  14.68MB (52.79%) for image heap:  177,952 objects and 73 resources
+   2.06MB ( 7.42%) for other data
+  27.81MB in total image size, 26.09MB in total file size
+------------------------------------------------------------------------------------------------------------------------
+Top 10 origins of code area:                                Top 10 object types in image heap:
+   7.92MB java.base                                            2.90MB byte[] for code metadata
+   1.50MB svm.jar (Native Image)                               2.55MB byte[] for java.lang.String
+ 236.50kB kotlinx-coroutines-core-jvm-1.10.2.jar               1.58MB java.lang.String
+ 181.87kB kotlin-stdlib-2.2.20.jar                             1.17MB com.oracle.svm.core.hub.DynamicHubCompanion
+ 114.42kB java.logging                                       913.35kB byte[] for general heap data
+ 101.26kB java.net.http                                      822.42kB java.lang.Class
+  90.80kB org.graalvm.nativeimage.base                       366.58kB java.util.HashMap$Node
+  84.53kB kotlinx-serialization-json-jvm-1.8.1.jar           323.02kB java.lang.Object[]
+  82.26kB jdk.charsets                                       300.50kB java.lang.String[]
+  72.77kB jdk.proxy4                                         268.38kB heap alignment
+ 423.29kB for 73 more packages                                 3.49MB for 1490 more object types
+------------------------------------------------------------------------------------------------------------------------
+Recommendations:
+ FUTR: Use '--future-defaults=all' to prepare for future releases.
+ HEAP: Set max heap for improved and more predictable memory usage.
+ CPU:  Enable more CPU features with '-march=native' for improved performance.
+------------------------------------------------------------------------------------------------------------------------
+                        4.7s (7.8% of total time) in 731 GCs | Peak RSS: 1.64GB | CPU load: 3.70
+------------------------------------------------------------------------------------------------------------------------
+Build artifacts:
+ /work/build/native-B (executable)
+========================================================================================================================
+Finished generating 'native-B' in 58.5s.
