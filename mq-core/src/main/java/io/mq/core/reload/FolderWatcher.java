@@ -20,8 +20,9 @@ public interface FolderWatcher extends AutoCloseable {
         boolean mac = System.getProperty("os.name", "").toLowerCase().contains("mac");
         if (choice.equals("native") || (choice.equals("auto") && mac)) {
             try {
-                // by name, so that code which never watches (a native production binary) does not pull the library into the image
-                Class<?> c = Class.forName("io.mq.core.reload.NativeEventsFolderWatcher");
+                // by a name the native-image analysis cannot fold into a constant, so that a native production binary does not pull
+                // the library (and JNA, which cannot initialise at build time) into the image
+                Class<?> c = Class.forName(FolderWatcher.class.getPackageName() + ".NativeEventsFolderWatcher");
                 return (FolderWatcher) c.getMethod("start", Path.class, Runnable.class, long.class).invoke(null, dir, onChange, debounceMillis);
             } catch (ReflectiveOperationException | LinkageError e) {
                 if (choice.equals("native")) {

@@ -8,6 +8,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import io.methvin.watcher.DirectoryWatcher;
+import io.methvin.watchservice.MacOSXListeningWatchService;
 
 /**
  * FolderWatcher on the operating system's file events through the optional library io.methvin:directory-watcher
@@ -25,7 +26,17 @@ public final class NativeEventsFolderWatcher implements FolderWatcher {
             t.setDaemon(true);
             return t;
         });
-        this.watcher = DirectoryWatcher.builder().path(dir).fileHashing(false).listener(event -> schedule(onChange, debounceMillis)).build();
+        DirectoryWatcher.Builder b = DirectoryWatcher.builder().path(dir).fileHashing(false).listener(event -> schedule(onChange, debounceMillis));
+        if (System.getProperty("os.name", "").toLowerCase().contains("mac")) {
+            // FSEvents coalesces events for its latency, 0.5 s by default; we debounce ourselves
+            b.watchService(new MacOSXListeningWatchService(new MacOSXListeningWatchService.Config() {
+                @Override
+                public double latency() {
+                    return 0.01;
+                }
+            }));
+        }
+        this.watcher = b.build();
     }
 
     public static FolderWatcher start(Path dir, Runnable onChange, long debounceMillis) throws IOException {
