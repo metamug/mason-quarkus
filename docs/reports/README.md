@@ -18,3 +18,4 @@ One page each, in the build brief's section 9 format. Raw logs and result files 
 | Shared scripting host across backends, measured | [shared-host.md](shared-host.md) |
 | Next-work test 6: real resources | [real-resources.md](real-resources.md) |
 | "Is it enough?": a bookstore API from scratch | [bookstore-exercise.md](bookstore-exercise.md) |
+| Quarkus features MQ can lean on (JVM and native) | [quarkus-leverage.md](quarkus-leverage.md) |

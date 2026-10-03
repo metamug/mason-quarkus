@@ -1,6 +1,6 @@
 # Mason for Quarkus (MQ)
 
-MQ runs [R2](https://github.com/metamug/R2) resource XML directly on [Quarkus](https://quarkus.io): the XML is parsed once
+MQ is a Quarkus-native way to build web APIs from a small XML language plus Kotlin scripts. It started from [R2](https://github.com/metamug/R2) resource XML and is now free of R2 and old Mason compatibility (see the project specification). The XML is parsed once
 (StAX), validated, held as an in-memory model, and executed by plain Java executors, replacing the XML to JSP to Tomcat
 translation layer of the original Mason. MQ is built on Quarkus (Apache 2.0); it is not affiliated with or endorsed by the Quarkus project.
 
@@ -11,10 +11,10 @@ A web API in MQ is a folder with four kinds of artifact; code is Kotlin (scripts
 | **XML** | what the API is: routes, SQL, steps, parameters, conditions (`mq/*.xml`) |
 | **Scripts** | small logic between steps, in Kotlin (`scripts/*.kts`, shared code in `lib/*.kt`) |
 | **Libraries** | heavy or reusable logic kept testable: Kotlin classes in `lib/`, jars declared in `libs` (plugins exist only as a compatibility feature) |
-| **`mq.yaml`** | where and how it runs: datasources, settings, declared libraries and drivers |
+| **`application.yaml`** | where and how it runs, in Quarkus syntax with MQ settings under `mq:` (datasources, libraries, auth); Quarkus provides profiles, secrets, security, CORS, metrics and health |
 
 Two products come out of it: a **Dev server** (JVM; reads the folder, hot-deploys, compiles scripts) and a **CLI** (validates, compiles
-scripts ahead of time, builds a native binary). The project layout and every setting are in [`docs/spec/project-spec.md`](docs/spec/project-spec.md).
+scripts ahead of time, builds a native binary). The project layout and every setting are in [`docs/spec/project-spec.md`](docs/spec/project-spec.md) (draft 2, Quarkus-native; the engine still speaks the older XML syntax until the redesign lands).
 
 ## Status
 
@@ -26,7 +26,7 @@ Working and tested (JVM and native, PostgreSQL and HSQLDB; Linux, macOS, Windows
 - Kotlin scripts interpreted by the Dev server and compiled ahead of time for production and native; shared `lib/` code; libraries such as commons-text.
 - The R2 shop scenario runs end to end: 40 HTTP checks give the same result on the Dev server loader, on compiled scripts (JVM) and in the native binary.
 
-Not built yet: the `mq.yaml` reader, authentication, database migrations, response shaping (nesting), the CLI and the Dev server as products, the shared scripting host in the Dev server (measured, experimental code exists), and a `db` object, raw responses and script-backed auth for scripts. See the open [issues](https://github.com/metamug/mason-quarkus/issues).
+Not built yet: the redesigned XML syntax, configuration in `application.yaml` under `mq:`, authentication, database migrations, response shaping (nesting), the CLI and the Dev server as products, the shared scripting host in the Dev server (measured, experimental code exists), and a `db` object, raw responses and script-backed auth for scripts. See the open [issues](https://github.com/metamug/mason-quarkus/issues).
 
 ## Where to read
 

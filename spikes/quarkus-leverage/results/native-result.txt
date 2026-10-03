@@ -1,0 +1,17 @@
+PASS open route
+PASS secured route without a token is 401
+PASS secured route with a valid JWT is 200 and knows the user
+PASS JWT with the wrong issuer is 401
+PASS expired JWT is 401
+PASS Flyway (classpath) migrated the default datasource
+PASS Flyway (filesystem folder) migrated the named datasource, chosen by name at run time
+FAIL named flyway locations do not leak into the default datasource (report_rows is not in main) {"exists":true}
+PASS cache: the second call does not compute again
+PASS Prometheus metrics exist
+PASS custom counter has the labelled routes
+PASS scheduler ticked
+PASS health reports UP including the datasources
+PASS OpenAPI document built from a model in code
+PASS CORS from configuration
+PASS body size limit from configuration (413)
+15 passed, 1 failed

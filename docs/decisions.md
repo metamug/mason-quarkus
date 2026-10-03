@@ -41,3 +41,12 @@ Decisions taken by the owner after the spikes and Phase 3. Newest at the bottom 
 - **What scripts need so that this holds** (issues): a `db` object (query, update, transaction with typed binding), raw responses, script-backed extension points (auth, custom parameter types, start/stop hooks), editor support, a documented pattern for state in `lib/` objects, and platform capabilities (mail, queue) declared in `mq.yaml`.
 - **Open check.** Whether any real plugins exist outside the repositories searched; if a team has them, the adapter moves toward v1.
 - **Backlog changes.** #7 now the optional compatibility adapter (future); #8 and #45 closed; #21 now script-backed extension points; new #48 to #53 (`db` in scripts, raw responses, editor support, lib state pattern, capabilities, transform sugar).
+
+## MQ is a Quarkus-native product, free of R2 and Mason (owner decision)
+
+- **Decision.** MQ is a new product. Compatibility with R2 and old Mason is not a constraint: the XML syntax, URL shapes, response shapes, file names and configuration are redesigned where that gives a better product. Where Quarkus provides a capability, MQ uses it as it is.
+- **Configuration.** `application.yaml` with an `mq:` section (typed `@ConfigMapping`, unknown keys are errors) replaces `mq.yaml` and `backend.yaml`. The earlier decision that `mq.yaml` replaces `backend.yaml` is superseded.
+- **Evidence** (`docs/reports/quarkus-leverage.md`): YAML config, a default and a named datasource, Flyway from a folder, JWT on code-added routes, CORS and limits, Micrometer/Prometheus, health, OpenAPI from a model in code, scheduler and cache work together in one native binary (15 of 16 checks; 70.8 MB, 85 MB resident, 0.136 s start).
+- **Exception found.** The Quarkus Flyway extension applied a named datasource's folder to the default datasource as well (the same on the JVM and in native), so MQ runs the Flyway library itself once per datasource.
+- **XML redesign (proposal, needs owner decisions).** Explicit `path` on `Resource` and `Request` (no `item`, `parent`, version attribute); `Param in=`; `<Respond>`; `<Error when>`; generated keys on updates; our own XSD (`urn:mq:api:1`); the golden suite rewritten. The engine keeps speaking the v1 syntax until this lands.
+- **Backlog.** #1, #2, #4, #5, #6, #13, #16, #17, #34, #43 re-shaped; #14 and #31 closed; new #54 to #64 (XML redesign, XSD, migration tool, datasource decision, missing native checks, resilience, Dev Services, Dev UI, `mq init`, virtual threads, upstream Flyway report).
