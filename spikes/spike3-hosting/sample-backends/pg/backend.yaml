@@ -1,0 +1,7 @@
+# secrets are named here and resolved from the environment at boot; they are never in the image
+datasources:
+  main:
+    kind: postgresql
+    url: jdbc:postgresql://${DB_HOST}:5432/mq
+    user: mq
+    password: ${DB_PASSWORD}

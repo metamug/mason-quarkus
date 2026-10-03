@@ -1,0 +1,11 @@
+datasources:
+  main:
+    kind: hsqldb
+    url: jdbc:hsqldb:mem:hsqlbackend
+    user: SA
+    password: ""
+  second:
+    kind: hsqldb
+    url: jdbc:hsqldb:mem:another
+    user: SA
+    password: ""
