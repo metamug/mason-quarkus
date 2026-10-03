@@ -39,6 +39,10 @@ jobs:
         run: node spikes/lazy-start/measure.mjs linux-native "$PWD/out/runner -Dquarkus.http.port={port} -Dquarkus.mq.dir={dir}" 1500
       - name: Lazy start, JVM backend
         run: node spikes/lazy-start/measure.mjs linux-jvm "$TEMURIN/bin/java -Dquarkus.http.port={port} -Dquarkus.mq.dir={dir} -jar $PWD/out/jvm-app/quarkus-run.jar" 1500
+      - name: Parse time of the real validator on the 37 files, next to boot time (native)
+        run: node spikes/lazy-start/parse-time.mjs linux-native "$PWD/out/runner -Dquarkus.http.port={port}" 7
+      - name: Parse time of the real validator on the 37 files, next to boot time (JVM)
+        run: node spikes/lazy-start/parse-time.mjs linux-jvm "$TEMURIN/bin/java -Dquarkus.http.port={port} -jar $PWD/out/jvm-app/quarkus-run.jar" 7
       - uses: actions/upload-artifact@v4
         if: always()
         with:
