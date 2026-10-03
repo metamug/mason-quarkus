@@ -58,14 +58,15 @@ jobs:
         run: |
           mkdir -p /tmp/mq-res && cp -r ../shared-resources/valid ../shared-resources/invalid /tmp/mq-res/
           START=$(date +%s%N)
-          (MQ_RESOURCES_DIRS=/tmp/mq-res/valid,/tmp/mq-res/invalid ./target/*-runner > ../../out/native-run.log 2>&1 &)
+          MQ_RESOURCES_DIRS=/tmp/mq-res/valid,/tmp/mq-res/invalid ./target/spike2-native-parse-1.0.0-SNAPSHOT-runner > ../../out/native-run.log 2>&1 &
+          NATIVE_PID=$!
           for i in $(seq 1 200); do curl -sf localhost:8080/status > ../../out/native-status.json && break; sleep 0.05; done
           END=$(date +%s%N)
           echo "process start to first successful /status: $(( (END-START)/1000000 )) ms" | tee ../../out/native-first-response.txt
           curl -sf localhost:8080/results > ../../out/native-results.txt
           cat ../../out/native-status.json
-          ps -o rss= -p "$(pgrep -f -- '-runner' | head -1)" | tee ../../out/native-rss-kb.txt
-          pkill -f -- '-runner' || true
+          ps -o rss= -p "$NATIVE_PID" | tee ../../out/native-rss-kb.txt
+          kill "$NATIVE_PID" || true
 
       - name: Compare JVM and native
         run: |
