@@ -16,10 +16,6 @@ quarkus:
     migrate-at-start: true
     locations:
       - classpath:db/migration
-    reports:
-      migrate-at-start: true
-      locations:
-        - filesystem:${REPORT_MIGRATIONS:db/reports}
   http:
     port: ${PORT:8080}
     limits:

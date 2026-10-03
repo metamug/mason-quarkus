@@ -67,7 +67,7 @@ public class Hello {
         router.get("/cached/:n").blockingHandler(rc -> {
             int n = Integer.parseInt(rc.pathParam("n"));
             int v = squares.square(n);
-            rc.response().putHeader("Content-Type", "application/json").end("{\"square\":" + v + ",\"computed\":" + squares.calls.get() + "}");
+            rc.response().putHeader("Content-Type", "application/json").end("{\"square\":" + v + ",\"computed\":" + squares.calls() + "}");
         }, false);
     }
 
@@ -78,7 +78,11 @@ public class Hello {
 
     @ApplicationScoped
     public static class Squares {
-        final AtomicInteger calls = new AtomicInteger();
+        private final AtomicInteger calls = new AtomicInteger();
+
+        public int calls() {
+            return calls.get();
+        }
 
         @CacheResult(cacheName = "squares")
         public int square(int n) {
