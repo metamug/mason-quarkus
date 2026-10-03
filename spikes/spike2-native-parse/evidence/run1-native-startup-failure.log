@@ -1,0 +1,36 @@
+__  ____  __  _____   ___  __ ____  ______ 
+ --/ __ \/ / / / _ | / _ \/ //_/ / / / __/ 
+ -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \   
+--\___\_\____/_/ |_/_/|_/_/|_|\____/___/   
+2026-10-03 00:17:46,106 ERROR [io.quarkus.runtime.Application] (main) Failed to start application: java.lang.RuntimeException: Failed to start quarkus
+	at io.quarkus.runner.ApplicationImpl.doStart(Unknown Source)
+	at io.quarkus.runtime.Application.start(Application.java:112)
+	at io.quarkus.runtime.ApplicationLifecycleManager.run(ApplicationLifecycleManager.java:129)
+	at io.quarkus.runtime.Quarkus.run(Quarkus.java:79)
+	at io.quarkus.runtime.Quarkus.run(Quarkus.java:50)
+	at io.quarkus.runtime.Quarkus.run(Quarkus.java:143)
+	at io.quarkus.runner.GeneratedMain.main(Unknown Source)
+Caused by: java.util.MissingResourceException: Could not load any resource bundle by com.sun.org.apache.xerces.internal.impl.msg.XMLMessages
+	at java.xml@25.0.4.1/jdk.xml.internal.SecuritySupport.getResourceBundle(SecuritySupport.java:237)
+	at java.xml@25.0.4.1/jdk.xml.internal.SecuritySupport.getResourceBundle(SecuritySupport.java:221)
+	at java.xml@25.0.4.1/com.sun.org.apache.xerces.internal.impl.msg.XMLMessageFormatter.formatMessage(XMLMessageFormatter.java:79)
+	at java.xml@25.0.4.1/com.sun.xml.internal.stream.StaxErrorReporter.reportError(StaxErrorReporter.java:93)
+	at java.xml@25.0.4.1/com.sun.org.apache.xerces.internal.impl.XMLScanner.reportFatalError(XMLScanner.java:1465)
+	at java.xml@25.0.4.1/com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl$PrologDriver.next(XMLDocumentScannerImpl.java:1008)
+	at java.xml@25.0.4.1/com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl.next(XMLDocumentScannerImpl.java:635)
+	at java.xml@25.0.4.1/com.sun.org.apache.xerces.internal.impl.XMLNSDocumentScannerImpl.next(XMLNSDocumentScannerImpl.java:113)
+	at java.xml@25.0.4.1/com.sun.org.apache.xerces.internal.impl.XMLStreamReaderImpl.next(XMLStreamReaderImpl.java:601)
+	at io.mq.spike.parser.ResourceParser.read(ResourceParser.java:101)
+	at io.mq.spike.parser.ResourceParser.parse(ResourceParser.java:88)
+	at io.mq.spike2.Loader.parse(Loader.java:69)
+	at io.mq.spike2.Loader.onStart(Loader.java:50)
+	at io.mq.spike2.Loader_Observer_onStart_h-CBUSTwoLtg79DK5JnTqZsV-Rc.notify(Unknown Source)
+	at io.quarkus.arc.impl.EventImpl$Notifier.notifyObservers(EventImpl.java:366)
+	at io.quarkus.arc.impl.EventImpl$Notifier.notify(EventImpl.java:348)
+	at io.quarkus.arc.impl.EventImpl.fire(EventImpl.java:81)
+	at io.quarkus.arc.runtime.ArcRecorder.fireLifecycleEvent(ArcRecorder.java:165)
+	at io.quarkus.arc.runtime.ArcRecorder.handleLifecycleEvents(ArcRecorder.java:115)
+	at io.quarkus.runner.recorded.LifecycleEventsBuildStep$startupEvent1144526294.deploy_0(Unknown Source)
+	at io.quarkus.runner.recorded.LifecycleEventsBuildStep$startupEvent1144526294.deploy(Unknown Source)
+	... 7 more
+
