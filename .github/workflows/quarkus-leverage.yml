@@ -1,0 +1,86 @@
+name: quarkus-leverage (throwaway spike)
+
+# Do the Quarkus features MQ wants to lean on (YAML config, named datasources, Flyway from a folder, JWT on code-added routes, CORS and limits,
+# Micrometer, health, OpenAPI from a model, scheduler, cache) work together, on the JVM and in the native binary?
+on:
+  workflow_dispatch:
+  push:
+    paths: ['spikes/quarkus-leverage/**', '.github/workflows/quarkus-leverage.yml']
+
+jobs:
+  leverage:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      PGPASSWORD: postgres
+      REPORT_MIGRATIONS: ${{ github.workspace }}/spikes/quarkus-leverage/db/reports
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Databases and a JWT key pair
+        run: |
+          echo "TEMURIN=$JAVA_HOME" >> "$GITHUB_ENV"
+          reset() { psql -h localhost -U postgres -c "DROP DATABASE IF EXISTS main" -c "DROP DATABASE IF EXISTS reports" -c "CREATE DATABASE main" -c "CREATE DATABASE reports"; }
+          declare -f reset > reset.sh
+          reset
+          openssl genrsa -out priv.pem 2048
+          openssl rsa -in priv.pem -pubout -out pub.pem
+      - name: Build the JVM application
+        working-directory: spikes/quarkus-leverage
+        run: mvn -B -ntp -q package
+      - name: JVM
+        run: |
+          export JWT_PUBLIC_KEY="$(cat pub.pem)"
+          "$TEMURIN/bin/java" -jar spikes/quarkus-leverage/target/quarkus-app/quarkus-run.jar > jvm-run.log 2>&1 &
+          PID=$!
+          for i in $(seq 1 100); do curl -s -o /dev/null http://localhost:8080/open/hello && break; sleep 0.3; done
+          grep -E "started in|Installed features" jvm-run.log | cut -c1-300
+          node spikes/quarkus-leverage/check.mjs http://localhost:8080 priv.pem | tee jvm-result.txt
+          ps -o rss= -p $PID | awk '{print "jvm rss_kb", $1}'
+          kill $PID; sleep 1
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '25'
+          distribution: mandrel
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Native build
+        working-directory: spikes/quarkus-leverage
+        run: |
+          /usr/bin/time -v -o ../../native-build-time.txt mvn -B -ntp -q package -Dnative
+          grep -E "Elapsed|Maximum resident" ../../native-build-time.txt
+          ls -l target/*-runner
+      - name: Native
+        run: |
+          source reset.sh; reset
+          export JWT_PUBLIC_KEY="$(cat pub.pem)"
+          spikes/quarkus-leverage/target/quarkus-leverage-1-runner > native-run.log 2>&1 &
+          PID=$!
+          for i in $(seq 1 100); do curl -s -o /dev/null http://localhost:8080/open/hello && break; sleep 0.2; done
+          grep -E "started in|Installed features" native-run.log | cut -c1-300
+          node spikes/quarkus-leverage/check.mjs http://localhost:8080 priv.pem | tee native-result.txt
+          ps -o rss= -p $PID | awk '{print "native rss_kb", $1}'
+          kill $PID
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: quarkus-leverage-results
+          path: |
+            jvm-result.txt
+            native-result.txt
+            jvm-run.log
+            native-run.log
+            native-build-time.txt
