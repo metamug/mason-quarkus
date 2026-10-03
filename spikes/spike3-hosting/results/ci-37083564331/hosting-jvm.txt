@@ -1,0 +1,10 @@
+== datasources from backend.yaml, JVM
+{"backend":"pg","datasources":{"main":{"product":"PostgreSQL","driver":"PostgreSQL JDBC Driver","select1":1}}}
+{"backend":"hsql","datasources":{"main":{"product":"HSQL Database Engine","driver":"HSQL Database Engine Driver","select1":1},"second":{"product":"HSQL Database Engine","driver":"HSQL Database Engine Driver","select1":1}}}
+== one process, many backends (add 20, then remove 20)
+{"backends":2,"heapUsedKb":33091,"rssKb":156956,"mode":"jvm"}
+hi from b7
+{"backends":22,"heapUsedKb":84816,"rssKb":301372,"mode":"jvm"}
+ping after remove: 404
+{"removedLoaders":20,"unloaded":20}
+{"backends":2,"heapUsedKb":13006,"rssKb":233632,"mode":"jvm"}

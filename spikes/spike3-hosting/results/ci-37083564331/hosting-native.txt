@@ -1,0 +1,4 @@
+== datasources from backend.yaml, native
+{"backend":"pg","datasources":{"main":{"product":"PostgreSQL","driver":"PostgreSQL JDBC Driver","select1":1}}}
+{"backend":"hsql","datasources":{"main":{"product":"HSQL Database Engine","driver":"HSQL Database Engine Driver","select1":1},"second":{"product":"HSQL Database Engine","driver":"HSQL Database Engine Driver","select1":1}}}
+{"backends":2,"heapUsedKb":15360,"rssKb":76348,"mode":"native"}

@@ -1,0 +1,3 @@
+native processes=1 all_ready_after_ms=122 total_rss_kb=56460 avg_rss_kb=56460
+native processes=5 all_ready_after_ms=76 total_rss_kb=276884 avg_rss_kb=55376
+native processes=20 all_ready_after_ms=301 total_rss_kb=1099916 avg_rss_kb=54995

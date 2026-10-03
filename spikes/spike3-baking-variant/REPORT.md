@@ -1,50 +1,46 @@
 # Spike 3, question C: the baking variant (build-time object model, Camel Quarkus pattern)
 
-Quarkus 3.40.1, JDK 17.0.17 (Temurin), Maven 3.9.16, H2 2.x in memory, Windows 10. Code: `quarkus-mq/` (extension) and `app/` (sample) in this folder. THROWAWAY. Per the brief this is a production-only comparison variant: dev mode and the default design keep runtime parsing.
+THROWAWAY. A production-only comparison variant, per the brief: dev mode and the default design keep runtime parsing. Code: `quarkus-mq/` (extension: runtime + deployment modules) and `app/` (sample that bakes the 20 shared valid resources).
+JVM numbers: Quarkus 3.40.1, JDK 17.0.17, Windows 10 (dev-mode measurements) and Temurin 25 on `ubuntu-latest` (CI). Native: Mandrel 25.0.4.1 on `ubuntu-latest`, 4 vCPU, 15,989 MB RAM.
 
 ## 1. Outcome
 
-**Partial.** The build-time-model design works on the JVM: the deployment module parses the R2 resource XML at build time, the recorder bakes the object model into generated startup bytecode, and the routes are created on the Vert.x `Router` at startup with no XML in the runtime path. **The native binary was not built or run: this machine has no GraalVM/Mandrel, no MSVC Build Tools, no Docker/Podman.** The native claim is therefore unverified.
+**Pass as a technique, not recommended as the default.** A deployment-module build step parses the XML with the **shared** StAX parser and validator, converts it into a recordable object model, and a `@Recorder` builds the routes on the Vert.x `Router` at startup. The native binary starts, serves the baked routes, and contains almost none of the XML parser code. Boot time and memory are not measurably better than parsing 20 resources at boot (Spike 2), and in dev mode baking breaks the in-place reload requirement.
 
-## 2. What was built
+## 2. Numbers (observed)
 
-- `quarkus-mq/runtime`: recordable model (`MqModel`, `MqResource`, `MqRequest`, `MqStep`: public fields, no-arg constructors), `MqRecorder` (`@Recorder`, builds routes on the `Router`), `MqHandler` (executes steps with JDBC via Arc/Agroal on a worker thread). Depends on `quarkus-vertx-http` and `quarkus-agroal` only. 
-- `quarkus-mq/deployment`: `MqProcessor` with `@BuildStep @Record(RUNTIME_INIT)`: reads `mq/*.xml` from the application root archive, parses with StAX, fills `MqModel`, calls `recorder.registerRoutes(VertxWebRouterBuildItem.getHttpRouter(), model)`. Also a `HotDeploymentWatchedFileBuildItem` (`mq/*.xml`, `restartNeeded=true`).
-- `app`: `mq/movie.xml` (R2 syntax: list, item, POST 201, PUT 202, DELETE 410) and `mq/hello.xml` (`Text`), `quarkus-reactive-routes` + `quarkus-jdbc-h2`.
-- Supported steps in the spike: `Sql` (query/update, `$param` bound as `?`, from path/query/form), `Text`, request `status`. Not supported: `when`, `Script`, `XRequest`, `Transaction`, typed binding (H2 coerces strings).
+Boot comparison with the same 20 resources (CI run `37082823615`; the apps differ, so only boot and memory are comparable, not binary size or build time):
 
-## 3. Numbers (observed)
+| | Parse at boot (Spike 2 app) | Baked (this variant) |
+|---|---|---|
+| Native "started in" | 0.021-0.031 s | 0.021 s |
+| Native process start to first response | 66-70 ms | 74 ms |
+| Native resident memory after boot | 62.4-63.1 MB | 62.4 MB |
+| JVM "started in" | 0.883 s | 0.788-0.806 s |
+| JVM resident memory | 123.7-123.9 MB | 135.2-135.7 MB |
+| `XMLStreamReader`/`xerces` strings in the native binary | 598 | 33 |
+| Native build | 1:41-2:37, 2.9-3.0 GB | 2:47-2:54, 3.5 GB |
 
-| Measure | Result |
-|---|---|
-| JVM startup (`java -jar quarkus-run.jar`) | 1.287 s ("started in") |
-| Routes served correctly | GET list/item, POST (201), PUT (202), DELETE (410), unknown path 404, `Text` route |
-| Classes loaded, whole run incl. requests | 6,111; **XML classes loaded: 0** (no `javax.xml`, `com.sun.xml`, Xerces, SAX, DOM); MQ classes loaded: `MqRecorder, MqModel, MqResource, MqRequest, MqStep, MqHandler` |
-| XML references in runtime module bytecode (javap) | 0 (deployment module: 23 `javax/xml/stream` references) |
-| Deployment module on the runtime classpath | no (`quarkus-app-dependencies.txt`) |
-| `<Resource` text in generated startup bytecode | 0 files; the class `io/quarkus/runner/recorded/MqProcessor$routes361063519` builds the model with `new MqModel()`, `new MqResource()`, `putfield name="hello"` ... |
-| Dev mode, change a resource XML (edit / create / delete) | 1.8-2.1 s each (all three work; Quarkus logs "Live reload total time" 0.40-0.54 s of that) |
-| Dev mode, invalid XML | the running app answers HTTP 500 "Error restarting Quarkus" (no old model kept); recovers 2.1 s after the file is fixed |
+Dev mode with the baked model (Windows, JVM 17, `restartNeeded=true`): change a resource: 1.8-2.1 s (Quarkus "Live reload total time" 0.40-0.54 s, plus the 2 s scan throttle from Spike 1); invalid XML: the running app answers HTTP 500 "Error restarting Quarkus" and recovers about 2.1 s after the file is fixed (`logs/dev-mode.log`).
+JVM run: routes (GET, POST 201, PUT 202, DELETE 410) work; of 6,111 classes loaded, none were XML parser/stream classes; the runtime module has no XML references (`javap`); the deployment module (parser) is not on the runtime classpath.
 
-## 4. Evidence
+## 3. Evidence
 
-Read: `HotDeploymentWatchedFileBuildItem.java`, `RuntimeUpdatesProcessor.java` (lines ~470-630 `doScan`, ~1088-1230 `checkForFileChange`, ~1517 `isRestartNeeded`), `VertxHttpHotReplacementSetup.java:38` (`HOT_REPLACEMENT_INTERVAL = 2000`, request-triggered scan throttle at lines ~143-173), all at tag 3.40.1 (fetched from the quarkusio/quarkus tag, not copied here).
-Observed commands (run from this folder): `mvn package` then `java -verbose:class -jar quarkus-run.jar` plus curl (logs in `logs/`), `javap -c` on the runtime and generated classes, `node measure-dev.mjs` against `mvn quarkus:dev`.
+Observed: workflow job `spike3-baked-native` (artifact `spike3-baked-results`, files in `results/`); `javap -c` of the generated class `io/quarkus/runner/recorded/MqProcessor$routes<n>` (`new MqModel()`, `new MqResource()`, `putfield name`, ...; no XML text); `logs/jvm-verbose-class.log.gz` (class loading).
+First native run failed to serve (`evidence/run1-baked-native-no-init-sql.log`): the H2 `INIT=RUNSCRIPT FROM 'classpath:init.sql'` needs `quarkus.native.resources.includes=init.sql`; fixed in the sample app, unrelated to baking.
+Read: `RuntimeUpdatesProcessor.java`, `HotDeploymentWatchedFileBuildItem.java` (see Spike 1).
 
-## 5. Surprises
+## 4. Surprises
 
-1. **This design contradicts decisions in the brief.** Section 2 decided "StAX at boot, resource XML read from a folder, not compiled into the binary". With a build-time model, changing a resource in production means rebuilding the image (for native: a native compile), not updating a mounted folder and restarting a pod. Spike 2's "boot from a folder outside the binary" is not testable with this design.
-2. Dev reload becomes a Quarkus application restart. Quarkus's own reload took 0.40-0.54 s, but each change is only noticed on the next HTTP request after the 2 s throttle (`VertxHttpHotReplacementSetup.java:38`), hence ~2 s observed (the old Dev server loop was 0.45-0.9 s). `HotReplacementContext.doScan` is public and not throttled (read, not measured): a file watcher that calls it should remove the 2 s.
-3. In dev mode an invalid file takes the whole app down (Quarkus error page) instead of keeping the old model, which the brief asked for. Validation at build time fails the build instead (good for CI, bad for an agent loop).
-4. Spike 1 read-only finding that still matters: for no-restart reload of files created after start, Quarkus reports edits/creates but not deletes (`RuntimeUpdatesProcessor.java ~1190-1230`: deletes are reported only for paths known at (re)start). With `restartNeeded=true` (this design) all three were detected because the whole model is rebuilt.
-5. The extension API fit the Camel Quarkus pattern without friction: a recorded POJO model plus a `@Recorder` taking `RuntimeValue<Router>` compiled and worked first time.
+1. Baking gains only milliseconds: 4-8 ms of parsing in native, 45-76 ms cold on the JVM.
+2. The baked JVM variant used 11 MB more resident memory than parse-at-boot (different apps: this one carries Agroal, H2 and reactive routes). Treat as noise, not as a cost of baking.
+3. Baking cannot serve the cheap image route (prebuilt MQ image plus a thin layer of XML and config): the XML must be known when the image is built.
+4. A baked build fails on a bad file with the validator's messages, which is good for CI, but in dev it takes the whole app down.
 
-## 6. Open questions for a human
+## 5. Open questions for a human
 
-1. Native validation: install Mandrel/GraalVM plus Visual Studio Build Tools here (several GB), build in CI (a GitHub Actions ubuntu runner has GraalVM; needs the repo and licence decisions from the brief), or use a Linux machine?
-2. Build-time model (this spike) or runtime StAX (the brief)? Hybrid is possible: the build-time model for the packaged application and a runtime path for resources that change without a rebuild; that doubles the executor-facing surface.
-3. For the Dev server loop: accept restart-based reload (about 0.5 s plus the scan trigger) or add the watcher plus `doScan`?
+None beyond Spike 2's question 1 (is the parse time negligible?). By the brief's rule, baking is adopted only if boot parsing is not negligible; the numbers say it is, so I recommend not adopting it.
 
-## 7. Recommended change to the R2 Next spec
+## 6. Recommended change to the R2 Next spec
 
-None until questions 1 and 2 are answered. If the build-time model is chosen, replace the sentence "the binary reads the XML from a configured folder at boot" with "the resource XML is parsed at build time and compiled into the binary; changing a resource requires a rebuild".
+None.
