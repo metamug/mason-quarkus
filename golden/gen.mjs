@@ -205,6 +205,13 @@ X('param-unknown-attribute', 'unknown attribute on Param', res(req([`<Param name
 X('header-value-missing', 'Header needs a value', res(req([`<Header name="X-Total"/>`])));
 X('header-name-missing', 'Header needs a name', res(req([`<Header value="1"/>`])));
 
+// ---------- the when condition language ----------
+V('when-eq-string', 'when with a string comparison', one('<Sql id="a" when="$q eq \x27recent\x27">SELECT 1</Sql>'));
+V('when-and-or-not-empty', 'when with and, or, not, empty and parentheses', one('<Sql id="a" when="(not empty $customer_id or empty $status) and $n ge 1">SELECT 1</Sql>'));
+V('when-symbols', 'when with symbolic operators', one('<Sql id="a" when="$n &gt;= 1 and $n != 3 and $m == 2">SELECT 1</Sql>'));
+V('when-mpath-boolean', 'when comparing a step result with true', res(get([`<Script id="calc" file="c"/>`, `<Transaction when="$[calc].ok eq true"><Sql id="o" type="update">UPDATE t SET x = 1</Sql></Transaction>`])));
+S('when-unbalanced-paren', 'parenthesis not closed', one('<Sql id="a" when="($q eq 1">SELECT 1</Sql>'));
+
 // ---------- semantic checks of R2's Java code (mpath), the schema cannot see these ----------
 V('mpath-earlier-step', 'mpath to an earlier step', one('<Sql id="a">SELECT 1</Sql>\n  <Sql id="b">SELECT $[a].x</Sql>'));
 V('mpath-in-when-earlier', 'mpath in a when condition to an earlier step', res(get([`<Script id="calc" file="c"/>`, `<Sql id="b" when="$[calc].ok eq true">SELECT 1</Sql>`])));

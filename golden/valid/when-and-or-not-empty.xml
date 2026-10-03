@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Resource xmlns="http://xml.metamug.net/resource/1.0" v="1.0">
+  <Request method="GET">
+    <Sql id="a" when="(not empty $customer_id or empty $status) and $n ge 1">SELECT 1</Sql>
+  </Request>
+</Resource>

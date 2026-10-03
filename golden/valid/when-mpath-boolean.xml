@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Resource xmlns="http://xml.metamug.net/resource/1.0" v="1.0">
+  <Request method="GET">
+    <Script id="calc" file="c"/>
+    <Transaction when="$[calc].ok eq true"><Sql id="o" type="update">UPDATE t SET x = 1</Sql></Transaction>
+  </Request>
+</Resource>

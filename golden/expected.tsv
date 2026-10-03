@@ -163,6 +163,11 @@ transaction-two-sql	VALID
 transaction-unknown-attribute	INVALID	1	4	unknown attribute 'isolation' on <Transaction>
 transaction-with-script	INVALID	1	4	only <Sql> is allowed in <Transaction>, found <Script>
 transaction-with-text	INVALID	1	4	only <Sql> is allowed in <Transaction>, found <Text>
+when-and-or-not-empty	VALID
+when-eq-string	VALID
+when-mpath-boolean	VALID
+when-symbols	VALID
+when-unbalanced-paren	INVALID	1	4	attribute 'when' of <Sql> is not a valid condition: missing ')' (at character 8 of the expression)
 xrequest-all-attributes	VALID
 xrequest-header-empty-name	INVALID	1	4	attribute 'name' of <Header> must not be empty
 xrequest-header-without-name	INVALID	1	4	<Header> needs the attribute 'name'

@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.mq.core.expr.Expr;
 import io.mq.core.model.Model;
 
 /**
@@ -374,6 +375,20 @@ final class Checker {
         }
     }
 
+    /** a when attribute must be a valid condition, and its mpaths must name earlier steps */
+    private void whenCondition(Node n, String element, String when) {
+        if (when == null) {
+            return;
+        }
+        try {
+            Expr.parse(when);
+        } catch (Expr.ParseException e) {
+            err(n, "attribute 'when' of <" + element + "> is not a valid condition: " + e.getMessage());
+            return;
+        }
+        mpaths(n, "the when condition of <" + element + ">", when);
+    }
+
     private Model.Sql sql(Node n, boolean inTransaction) {
         Map<String, String> a = attributes(n, "Sql", SQL);
         String text = textOnly(n, "Sql");
@@ -384,18 +399,18 @@ final class Checker {
                 }
             }
         }
-        mpaths(n, "the when condition of <Sql>", a.get("when"));
+        whenCondition(n, "Sql", a.get("when"));
         mpaths(n, "the text of <Sql>", text);
         register(n, a.get("id"));
         return new Model.Sql(a.get("id"), a.get("type"), a.get("datasource"), a.get("requires"), a.get("ref"), a.get("when"), a.get("onblank"),
-                a.get("onerror"), a.containsKey("verbose") && bool(a.get("verbose")), a.containsKey("output") && bool(a.get("output")),
+                a.get("onerror"), a.containsKey("verbose") ? Boolean.valueOf(bool(a.get("verbose"))) : null, a.containsKey("output") ? Boolean.valueOf(bool(a.get("output"))) : null,
                 a.get("limit"), a.get("offset"), a.get("classname"), status(a), text, n.line);
     }
 
     private Model.Transaction transaction(Node n) {
         Map<String, String> a = attributes(n, "Transaction", TRANSACTION);
         noText(n, "Transaction");
-        mpaths(n, "the when condition of <Transaction>", a.get("when"));
+        whenCondition(n, "Transaction", a.get("when"));
         List<Model.Sql> statements = new ArrayList<>();
         for (Node k : n.kids) {
             if (!inNamespace(k, "Transaction")) {
@@ -413,7 +428,7 @@ final class Checker {
     private Model.XRequest xrequest(Node n) {
         Map<String, String> a = attributes(n, "XRequest", XREQUEST);
         noText(n, "XRequest");
-        mpaths(n, "the when condition of <XRequest>", a.get("when"));
+        whenCondition(n, "XRequest", a.get("when"));
         mpaths(n, "the url of <XRequest>", a.get("url"));
         List<Model.Header> params = new ArrayList<>();
         List<Model.Header> headers = new ArrayList<>();
@@ -453,7 +468,7 @@ final class Checker {
     private Model.Script script(Node n) {
         Map<String, String> a = attributes(n, "Script", SCRIPT);
         empty(n, "Script");
-        mpaths(n, "the when condition of <Script>", a.get("when"));
+        whenCondition(n, "Script", a.get("when"));
         register(n, a.get("id"));
         return new Model.Script(a.get("id"), a.get("file"), !a.containsKey("output") || bool(a.get("output")), a.get("when"), n.line);
     }
@@ -461,7 +476,7 @@ final class Checker {
     private Model.Text text(Node n) {
         Map<String, String> a = attributes(n, "Text", TEXT);
         String t = textOnly(n, "Text");
-        mpaths(n, "the when condition of <Text>", a.get("when"));
+        whenCondition(n, "Text", a.get("when"));
         mpaths(n, "the text of <Text>", t);
         register(n, a.get("id"));
         return new Model.Text(a.get("id"), a.get("when"), !a.containsKey("output") || bool(a.get("output")), t, n.line);
@@ -470,7 +485,7 @@ final class Checker {
     private Model.Execute execute(Node n) {
         Map<String, String> a = attributes(n, "Execute", EXECUTE);
         noText(n, "Execute");
-        mpaths(n, "the when condition of <Execute>", a.get("when"));
+        whenCondition(n, "Execute", a.get("when"));
         List<Model.Arg> args = new ArrayList<>();
         for (Node k : n.kids) {
             if (!inNamespace(k, "Execute")) {

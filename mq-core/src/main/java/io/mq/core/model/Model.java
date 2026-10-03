@@ -35,7 +35,7 @@ public final class Model {
     }
 
     public record Sql(String id, String type, String datasource, String requires, String ref, String when, String onblank,
-            String onerror, boolean verbose, boolean output, String limit, String offset, String classname, Integer status,
+            String onerror, Boolean verbose, Boolean output, String limit, String offset, String classname, Integer status,
             String text, int line) implements Step {
     }
 

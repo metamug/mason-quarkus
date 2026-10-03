@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Resource xmlns="http://xml.metamug.net/resource/1.0" v="1.0">
+  <Desc>Orders without scripts: a lookup, a guarded transaction that uses the lookup through mpath, a joined read of what was placed.</Desc>
+
+  <Request method="POST" status="201">
+    <Param name="customer_id" type="number" required="true"/>
+    <Param name="product_id" type="number" required="true"/>
+    <Param name="qty" type="number" required="true" min="1"/>
+    <Sql id="prod" output="false">SELECT id, price, stock FROM product WHERE id = $product_id</Sql>
+    <Transaction when="not empty $[prod][0].id and $[prod][0].stock ge $qty">
+      <Sql id="o" type="update">INSERT INTO orders (customer_id, total, status, token) VALUES ($customer_id, (SELECT price FROM product WHERE id = $product_id) * $qty, 'NEW', 'sql')</Sql>
+      <Sql id="l" type="update">INSERT INTO order_line (order_id, product_id, qty, price) VALUES ((SELECT MAX(id) FROM orders WHERE customer_id = $customer_id), $product_id, $qty, $[prod][0].price)</Sql>
+      <Sql id="s" type="update">UPDATE product SET stock = stock - $qty WHERE id = $product_id</Sql>
+    </Transaction>
+    <Sql id="placed" when="not empty $[prod][0].id and $[prod][0].stock ge $qty">SELECT o.id, o.total, o.status, c.name AS customer FROM orders o JOIN customer c ON c.id = o.customer_id WHERE o.id = (SELECT MAX(id) FROM orders WHERE customer_id = $customer_id)</Sql>
+    <Text id="rejected" when="empty $[prod][0].id or $[prod][0].stock lt $qty">insufficient stock or unknown product</Text>
+  </Request>
+
+  <Request method="GET">
+    <Sql id="byCustomer" when="not empty $customer_id">SELECT id, customer_id, total, status FROM orders WHERE customer_id = $customer_id ORDER BY id</Sql>
+    <Sql id="byStatus" when="not empty $status">SELECT id, customer_id, total, status FROM orders WHERE status = $status ORDER BY id</Sql>
+    <Sql id="all" when="empty $customer_id and empty $status">SELECT id, customer_id, total, status FROM orders ORDER BY id</Sql>
+  </Request>
+
+  <Request method="GET" item="true">
+    <Sql id="order">SELECT o.id, o.total, o.status, c.name AS customer, c.email FROM orders o JOIN customer c ON c.id = o.customer_id WHERE o.id = $id</Sql>
+    <Sql id="lines">SELECT p.sku, p.name, l.qty, l.price FROM order_line l JOIN product p ON p.id = l.product_id WHERE l.order_id = $id</Sql>
+  </Request>
+
+  <Request method="PUT" item="true" status="202">
+    <Param name="status" type="text" required="true"/>
+    <Sql id="apply" type="update">UPDATE orders SET status = $status WHERE id = $id</Sql>
+  </Request>
+</Resource>

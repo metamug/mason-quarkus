@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Resource xmlns="http://xml.metamug.net/resource/1.0" v="1.0">
+  <Desc>Products: read one and search with LIKE.</Desc>
+
+  <Request method="GET" item="true">
+    <Sql id="one">SELECT id, sku, name, price, stock FROM product WHERE id = $id</Sql>
+  </Request>
+
+  <Request method="GET">
+    <Sql id="found" when="not empty $name">SELECT id, sku, name, price FROM product WHERE name LIKE '%$name%' ORDER BY id</Sql>
+    <Sql id="all" when="empty $name">SELECT id, sku, name, price FROM product ORDER BY id</Sql>
+  </Request>
+</Resource>

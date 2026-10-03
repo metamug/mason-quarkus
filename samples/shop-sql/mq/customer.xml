@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Resource xmlns="http://xml.metamug.net/resource/1.0" v="1.0">
+  <Desc>Customers: register (typed parameters), list with a branch on ?q=recent, read one.</Desc>
+
+  <Request method="POST" status="201">
+    <Param name="name" type="text" required="true" maxlength="100"/>
+    <Param name="email" type="email" required="true"/>
+    <Sql id="ins" type="update" output="false">INSERT INTO customer (name, email, pw_hash) VALUES ($name, $email, 'none')</Sql>
+    <Sql id="created">SELECT id, name, email FROM customer WHERE email = $email</Sql>
+  </Request>
+
+  <Request method="GET">
+    <Sql id="all" when="$q ne 'recent'">SELECT id, name, email FROM customer ORDER BY id</Sql>
+    <Sql id="recent" when="$q eq 'recent'">SELECT id, name, email FROM customer ORDER BY id DESC LIMIT 2</Sql>
+  </Request>
+
+  <Request method="GET" item="true">
+    <Sql id="one">SELECT id, name, email FROM customer WHERE id = $id</Sql>
+  </Request>
+</Resource>

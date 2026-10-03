@@ -167,6 +167,11 @@ param-required-not-boolean	invalid-xsd	required must be a boolean
 param-unknown-attribute	invalid-xsd	unknown attribute on Param
 header-value-missing	invalid-xsd	Header needs a value
 header-name-missing	invalid-xsd	Header needs a name
+when-eq-string	valid	when with a string comparison
+when-and-or-not-empty	valid	when with and, or, not, empty and parentheses
+when-symbols	valid	when with symbolic operators
+when-mpath-boolean	valid	when comparing a step result with true
+when-unbalanced-paren	invalid-semantic	parenthesis not closed
 mpath-earlier-step	valid	mpath to an earlier step
 mpath-in-when-earlier	valid	mpath in a when condition to an earlier step
 mpath-in-xrequest-body	valid	mpath in an XRequest body

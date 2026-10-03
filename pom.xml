@@ -9,6 +9,7 @@
     <name>MQ</name>
     <modules>
         <module>mq-core</module>
+        <module>mq-engine</module>
         <module>quarkus-mq</module>
         <module>examples/reload</module>
     </modules>
