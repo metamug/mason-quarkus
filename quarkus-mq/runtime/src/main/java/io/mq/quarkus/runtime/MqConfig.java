@@ -18,6 +18,9 @@ public interface MqConfig {
     @WithDefault("scripts")
     String scriptsDir();
 
+    /** EXPERIMENTAL: url of a shared scripting host that compiles scripts for many backends, so this backend needs no Kotlin compiler (empty: none) */
+    java.util.Optional<String> scriptHost();
+
     /** folder with ordinary Kotlin files shared by the scripts (compiled before them) */
     @WithDefault("lib")
     String libDir();

@@ -55,7 +55,14 @@ public class MqHttp {
                     String mode = config.scripts();
                     boolean interpret = mode.equals("interpreted") || (mode.equals("auto") && LaunchMode.current() == LaunchMode.DEVELOPMENT);
                     ScriptLoader chosen = null;
-                    if (interpret) {
+                    if (config.scriptHost().isPresent()) {
+                        java.util.List<java.io.File> cp = applicationClasspath();
+                        chosen = new io.mq.script.RemoteScriptLoader(config.scriptHost().get(), java.nio.file.Path.of(config.scriptsDir()),
+                                java.nio.file.Path.of(config.libDir()),
+                                (cp != null ? cp.stream().map(java.io.File::getAbsolutePath).toList()
+                                        : java.util.Arrays.asList(System.getProperty("java.class.path").split(java.io.File.pathSeparator))));
+                        LOG.infof("MQ compiles scripts at the shared host %s", config.scriptHost().get());
+                    } else if (interpret) {
                         try {
                             Class<?> c = Class.forName(ScriptLoader.class.getPackageName() + ".DevScriptLoader");
                             chosen = (ScriptLoader) c.getConstructor(java.nio.file.Path.class, java.util.List.class, java.nio.file.Path.class)

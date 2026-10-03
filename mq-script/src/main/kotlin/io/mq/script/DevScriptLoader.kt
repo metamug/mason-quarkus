@@ -22,6 +22,11 @@ import kotlin.script.experimental.jvm.jvm
 import kotlin.script.experimental.jvmhost.BasicJvmScriptingHost
 import kotlin.script.experimental.jvmhost.createJvmCompilationConfigurationFromTemplate
 import kotlinx.coroutines.runBlocking
+import java.util.jar.JarFile
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
+import kotlin.script.experimental.jvm.impl.KJvmCompiledScript
+import kotlin.script.experimental.jvmhost.saveToJar
 import org.jetbrains.kotlin.cli.common.ExitCode
 import org.jetbrains.kotlin.cli.jvm.K2JVMCompiler
 
@@ -87,6 +92,41 @@ class DevScriptLoader @JvmOverloads constructor(
                 }
             }
             is ResultWithDiagnostics.Failure -> throw RuntimeException("script '$name' could not run: " + messages(name, result.reports))
+        }
+    }
+
+    /**
+     * For the shared scripting host: compiles the script (and the lib folder) and returns one jar with the script classes and the lib
+     * classes, to be loaded by a backend that has no compiler. The script jar keeps its manifest (Main-Class is the script class).
+     */
+    fun exportJar(name: String): ByteArray {
+        val current = refreshLib()
+        val file = dir.resolve("$name.kts")
+        val compiled = compile(name, file, current) as KJvmCompiledScript
+        val tmp = Files.createTempFile("mq-script", ".jar").toFile()
+        try {
+            compiled.saveToJar(tmp)
+            val out = ByteArrayOutputStream()
+            ZipOutputStream(out).use { zip ->
+                JarFile(tmp).use { jar ->
+                    for (e in jar.entries()) {
+                        zip.putNextEntry(ZipEntry(e.name))
+                        jar.getInputStream(e).use { it.copyTo(zip) }
+                        zip.closeEntry()
+                    }
+                }
+                val libOut = current.out
+                if (libOut != null) {
+                    libOut.walkTopDown().filter { it.isFile }.forEach { f ->
+                        zip.putNextEntry(ZipEntry(libOut.toPath().relativize(f.toPath()).toString().replace(File.separatorChar, '/')))
+                        f.inputStream().use { it.copyTo(zip) }
+                        zip.closeEntry()
+                    }
+                }
+            }
+            return out.toByteArray()
+        } finally {
+            tmp.delete()
         }
     }
 

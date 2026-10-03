@@ -1,0 +1,70 @@
+name: shared-host (measurement spike)
+
+# Question: is one shared scripting host process cheaper than a Kotlin compiler in every backend, and what does it cost in latency?
+on:
+  workflow_dispatch:
+  push:
+    paths: ['spikes/shared-host/**', '.github/workflows/shared-host.yml', 'mq-script/**']
+
+jobs:
+  measure:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: mqtest
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Runner
+        run: nproc; free -m
+      - name: Build everything
+        run: |
+          echo "JAVA=$JAVA_HOME/bin/java" >> "$GITHUB_ENV"
+          mvn -B -ntp -q install -DskipTests
+      - name: Application with the compiler inside (in-process) and without (remote)
+        run: |
+          mvn -q -B -f examples/shop-kt/pom.xml clean package -Pinterpreted
+          cp -r examples/shop-kt/target/quarkus-app out-inprocess
+          mvn -q -B -f examples/shop-kt/pom.xml clean package -Premote
+          cp -r examples/shop-kt/target/quarkus-app out-remote
+          du -sh out-inprocess/lib out-remote/lib
+          mvn -q -B -f mq-script/pom.xml dependency:build-classpath -Dmdep.outputFile="$RUNNER_TEMP/hostcp.txt"
+          echo "HOST_CP=$(cat "$RUNNER_TEMP/hostcp.txt"):$PWD/mq-script/target/mq-script-0.1.0-SNAPSHOT.jar" >> "$GITHUB_ENV"
+      - name: In-process, 1 and 5 backends, default JVM flags and capped
+        run: |
+          export APP_JAR=$PWD/out-inprocess/quarkus-run.jar
+          node spikes/shared-host/measure.mjs inprocess-1-default inprocess 1 default
+          node spikes/shared-host/measure.mjs inprocess-1-capped inprocess 1 capped
+          node spikes/shared-host/measure.mjs inprocess-5-default inprocess 5 default
+          node spikes/shared-host/measure.mjs inprocess-5-capped inprocess 5 capped
+      - name: Remote (shared host), 1, 5 and 20 backends
+        run: |
+          export APP_JAR=$PWD/out-remote/quarkus-run.jar
+          node spikes/shared-host/measure.mjs remote-1-default remote 1 default
+          node spikes/shared-host/measure.mjs remote-1-capped remote 1 capped
+          node spikes/shared-host/measure.mjs remote-5-default remote 5 default
+          node spikes/shared-host/measure.mjs remote-5-capped remote 5 capped
+          node spikes/shared-host/measure.mjs remote-20-capped remote 20 capped
+      - name: In-process, 20 backends, capped (the case the shared host is meant to fix)
+        continue-on-error: true
+        run: |
+          export APP_JAR=$PWD/out-inprocess/quarkus-run.jar
+          node spikes/shared-host/measure.mjs inprocess-20-capped inprocess 20 capped
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: shared-host-results
+          path: spikes/shared-host/results/*.json

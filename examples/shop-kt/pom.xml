@@ -80,6 +80,17 @@
                 </dependency>
             </dependencies>
         </profile>
+        <!-- EXPERIMENTAL: scripts compiled by a shared scripting host process; this application carries no Kotlin compiler -->
+        <profile>
+            <id>remote</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-text</artifactId>
+                    <version>1.13.1</version>
+                </dependency>
+            </dependencies>
+        </profile>
         <!-- the Dev server: the Kotlin scripting host on the class path, scripts compiled from the .kts files at run time -->
         <profile>
             <id>interpreted</id>
