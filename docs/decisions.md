@@ -24,3 +24,12 @@ Decisions taken by the owner after the spikes and Phase 3. Newest at the bottom 
 ## CI
 
 - Windows is part of CI for `mq-core`, `mq-engine` and the reload scenarios (the owner's development machine is Windows). Status: all three run green on `windows-latest`.
+
+## Owner decisions after the planning summary (v2)
+
+- **Script modules.** Start with option 1: no cross-script use; shared code goes in a declared jar. Then option 2: a shared `lib/*.kt` source folder, for interdependent scripts. Option 3 (`@file:Import`) is skipped. Test library for script imports: `org.apache.commons:commons-text`.
+- **One project file.** `mq.yaml` **replaces** `backend.yaml`. `backend.yaml` existed only as the datasource file of the hosting spike (`datasources:` with `kind`, `url`, `user`, `password: ${ENV}`); that section moves into `mq.yaml` unchanged, so an existing file can be pasted in. For one release, if there is no `mq.yaml`, a `backend.yaml` is read as its `datasources` section with a deprecation warning. New sections: `scripts`, `lib`, `plugins`, `libs`, `drivers`, `properties`. The Dev server and the CLI read the same file with the same reader.
+- **Plugin return types.** A plugin that returns anything outside JSON-ready types (String, Number, Boolean, null, List, Map with String keys) is an error naming the step, the class and the offending path. Implemented and tested.
+- **R2 plugin adapter.** Not now. Check done: of the 35 distinct real resources, one contains an `Execute` (`execute.xml`, a parser test fixture, not an application) and one more (`persist.xml`, rejected old dialect). No real application resource uses `Execute`, so there is no evidence for an adapter.
+- **Provisional semantics accepted** (Sql output default, `requires`, item requests, error mapping), including the 0-based mpath row index. No real resource uses a numeric index.
+- **Memory.** About 600 MB per Dev-server backend with interpreted scripts is too heavy at 20 backends (about 12 GB). Build a shared scripting host across backends, but **measure first** (see `docs/reports/shared-host.md`).

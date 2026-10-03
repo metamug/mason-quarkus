@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The libraries this project declares for its scripts (until mq.yaml has a reader: the "libs" section). The CLI turns this list into the
+     compile and native-build class path; the Dev server application has the same dependencies on its class path. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>io.mq.example</groupId>
+    <artifactId>shop-libs</artifactId>
+    <version>1</version>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.13.1</version>
+        </dependency>
+    </dependencies>
+</project>

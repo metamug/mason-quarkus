@@ -67,6 +67,11 @@
                     <artifactId>shop-scripts</artifactId>
                     <version>1</version>
                 </dependency>
+                <dependency>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-text</artifactId>
+                    <version>1.13.1</version>
+                </dependency>
                 <!-- a plugin jar (Execute classes) compiled into the application: registered services, found without reflection -->
                 <dependency>
                     <groupId>io.mq.example</groupId>
@@ -79,6 +84,11 @@
         <profile>
             <id>interpreted</id>
             <dependencies>
+                <dependency>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-text</artifactId>
+                    <version>1.13.1</version>
+                </dependency>
                 <dependency>
                     <groupId>org.jetbrains.kotlin</groupId>
                     <artifactId>kotlin-scripting-jvm-host</artifactId>

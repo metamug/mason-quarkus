@@ -83,5 +83,12 @@ check("the Sql step stays hidden (output=false)", !("p" in (disc.json ?? {})), d
 const noPercent = await call("GET", "/v1.0/discount/1");
 check("a plugin failure is a clean 500 with an errorId", noPercent.status === 500 && noPercent.json?.errorId, noPercent.text);
 
+console.log("== a script that imports a Java library (commons-text) ==");
+const fmt = await call("GET", "/v1.0/format", { query: { name: "ada loVELACE" } });
+check("WordUtils.capitalizeFully", fmt.json?.fmt?.title === "Ada Lovelace", fmt.text);
+check("StringEscapeUtils.escapeHtml4", fmt.json?.fmt?.html === "&lt;b&gt;ada loVELACE&lt;/b&gt;", fmt.text);
+check("LevenshteinDistance", fmt.json?.fmt?.distance === 3, fmt.text);
+check("StringSubstitutor", fmt.json?.fmt?.letter === "Dear ada loVELACE,", fmt.text);
+
 console.log(passed + " passed, " + failed + " failed");
 process.exit(failed ? 1 : 0);

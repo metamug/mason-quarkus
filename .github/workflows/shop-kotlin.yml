@@ -44,6 +44,8 @@ jobs:
       - name: Compile the shop scripts ahead of time (the CLI's script step)
         run: |
           mvn -q -B -f mq-script/pom.xml dependency:build-classpath -Dmdep.outputFile="$RUNNER_TEMP/cp.txt"
+          mvn -q -B -f samples/shop/libs-pom.xml dependency:build-classpath -Dmdep.outputFile="$RUNNER_TEMP/libs.txt"
+          export LIBS="$(cat "$RUNNER_TEMP/libs.txt")"
           export MQ_JARS="$(cat "$RUNNER_TEMP/cp.txt"):$PWD/mq-script/target/mq-script-0.1.0-SNAPSHOT.jar"
           mkdir -p out
           bash tools/mq-compile-scripts/compile-scripts.sh samples/shop/scripts out/shop-scripts.jar

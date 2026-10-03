@@ -79,6 +79,40 @@ public final class ExecuteHandler implements Engine.StepHandler {
                 return ds;
             }
         };
-        return plugin.process(request, args);
+        Object result = plugin.process(request, args);
+        checkJsonReady(result, e, "the result");
+        return result;
+    }
+
+    /**
+     * A plugin result must be JSON-ready: null, String, Number, Boolean, a List of those or a Map with String keys of those. Writing any
+     * other object would need reflection, which a native binary does not have; a quiet toString() would hide the mistake.
+     */
+    static void checkJsonReady(Object v, Model.Execute e, String where) {
+        if (v == null || v instanceof String || v instanceof Number || v instanceof Boolean) {
+            return;
+        }
+        if (v instanceof Map<?, ?> m) {
+            for (Map.Entry<?, ?> en : m.entrySet()) {
+                if (!(en.getKey() instanceof String)) {
+                    throw notJson(e, where + " has a map key of type " + en.getKey().getClass().getName() + " (keys must be String)");
+                }
+                checkJsonReady(en.getValue(), e, where + "." + en.getKey());
+            }
+            return;
+        }
+        if (v instanceof Iterable<?> it) {
+            int i = 0;
+            for (Object o : it) {
+                checkJsonReady(o, e, where + "[" + i++ + "]");
+            }
+            return;
+        }
+        throw notJson(e, where + " is a " + v.getClass().getName());
+    }
+
+    private static MqException notJson(Model.Execute e, String what) {
+        return new MqException(500, "Execute '" + e.id() + "' (line " + e.line() + "): the plugin " + e.classname()
+                + " returned a value that is not JSON-ready: " + what + ". Return String, Number, Boolean, null, List or Map.");
     }
 }

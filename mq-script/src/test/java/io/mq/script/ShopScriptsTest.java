@@ -121,6 +121,16 @@ class ShopScriptsTest {
     }
 
     @Test
+    void aScriptImportsAJavaLibraryDeclaredForTheProject() {
+        Reply r = call("GET", "/v1.0/format", "name=ada+loVELACE", null);
+        Map<String, Object> f = map(r, "fmt");
+        assertEquals("Ada Lovelace", f.get("title"));
+        assertEquals("&lt;b&gt;ada loVELACE&lt;/b&gt;", f.get("html"));
+        assertEquals(3L, ((Number) f.get("distance")).longValue());
+        assertEquals("Dear ada loVELACE,", f.get("letter"));
+    }
+
+    @Test
     void stateMachineScriptDecidesWhetherTheUpdateRuns() throws Exception {
         call("POST", "/v1.0/customer", null, "{\"name\":\"Ada\",\"email\":\"ada@example.com\",\"password\":\"s\"}");
         try (Connection c = ds.getConnection(); Statement st = c.createStatement()) {

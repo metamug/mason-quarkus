@@ -72,6 +72,28 @@ class ExecuteTest {
         assertEquals("Hello Ada from the shop / Ada / 42", body(r).get("again"), "a later step reads the plugin result by mpath");
     }
 
+    public static final class Sloppy implements Plugin {
+        @Override
+        public Object process(PluginRequest request, Map<String, Object> args) {
+            Map<String, Object> out = new LinkedHashMap<>();
+            out.put("fine", 1);
+            out.put("when", java.time.LocalDate.of(2026, 1, 2));
+            return out;
+        }
+    }
+
+    @Test
+    void aResultThatIsNotJsonReadyIsAnErrorNotAToString(@TempDir Path dir) throws IOException {
+        Dispatcher d = mq(dir, () -> Map.of(Sloppy.class.getName(), new Sloppy()), """
+                <Request method="GET">
+                  <Execute id="run" classname="io.mq.engine.ExecuteTest$Sloppy" output="true"/>
+                </Request>""");
+        Reply r = d.handle("GET", "/v1.0/api", null, null, null);
+        assertEquals(500, r.status());
+        String detail = d.engine().errorDetail(String.valueOf(body(r).get("errorId")));
+        assertTrue(detail.contains("not JSON-ready") && detail.contains("LocalDate") && detail.contains("result.when"), detail);
+    }
+
     @Test
     void anUndeclaredClassIsAnErrorThatNamesIt(@TempDir Path dir) throws IOException {
         Dispatcher d = mq(dir, () -> Map.of(), """
