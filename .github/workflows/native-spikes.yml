@@ -68,6 +68,10 @@ jobs:
           ps -o rss= -p "$NATIVE_PID" | tee ../../out/native-rss-kb.txt
           kill "$NATIVE_PID" || true
 
+      - name: XML parser code in the native binary (rough, from strings)
+        run: |
+          echo "runtime-parse: $(strings -a spikes/spike2-native-parse/target/spike2-native-parse-1.0.0-SNAPSHOT-runner | grep -c 'XMLStreamReader|xerces') matching strings" | tee out/runtime-xml-strings.txt
+
       - name: Compare JVM and native
         run: |
           cd out
@@ -89,4 +93,65 @@ jobs:
           path: |
             out/
             spikes/spike2-native-parse/target/*-native-image-source-jar/reports/
+          if-no-files-found: warn
+
+  spike3-baked-native:
+    # Spike 2 second boot measurement / Spike 3 question C: the same 20 resources baked into the image at build time
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          distribution: mandrel
+          java-version: '25'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build shared parser, extension, app (JVM)
+        run: |
+          mkdir -p out
+          mvn -B -q -f spikes/shared-parser install
+          mvn -B -q -f spikes/spike3-baking-variant/quarkus-mq install -DskipTests
+          mvn -B -q -f spikes/spike3-baking-variant/app package -DskipTests
+
+      - name: Run baked on the JVM
+        working-directory: spikes/spike3-baking-variant/app
+        run: |
+          java -Dquarkus.http.port=8081 -jar target/quarkus-app/quarkus-run.jar > ../../../out/baked-jvm-run.log 2>&1 &
+          PID=$!
+          for i in $(seq 1 100); do curl -sf localhost:8081/v1.0/hello > ../../../out/baked-jvm-hello.txt && break; sleep 0.1; done
+          ps -o rss= -p "$PID" | tee ../../../out/baked-jvm-rss-kb.txt
+          grep -o "started in [0-9.]*s" ../../../out/baked-jvm-run.log | tee ../../../out/baked-jvm-started.txt
+          kill "$PID" || true
+
+      - name: Build the baked native image
+        working-directory: spikes/spike3-baking-variant/app
+        run: |
+          /usr/bin/time -v mvn -B package -Dnative -DskipTests > ../../../out/baked-native-build.log 2> ../../../out/baked-native-build-time.txt
+          grep -E "Elapsed \(wall clock\)|Maximum resident" ../../../out/baked-native-build-time.txt | tee ../../../out/baked-native-build-summary.txt
+          ls -l target/*-runner | tee ../../../out/baked-native-size.txt
+
+      - name: Run the baked native binary
+        working-directory: spikes/spike3-baking-variant/app
+        run: |
+          START=$(date +%s%N)
+          ./target/app-1.0.0-SNAPSHOT-runner -Dquarkus.http.port=8081 > ../../../out/baked-native-run.log 2>&1 &
+          PID=$!
+          for i in $(seq 1 200); do curl -sf localhost:8081/v1.0/hello > ../../../out/baked-native-hello.txt && break; sleep 0.05; done
+          END=$(date +%s%N)
+          echo "process start to first successful response: $(( (END-START)/1000000 )) ms" | tee ../../../out/baked-native-first-response.txt
+          ps -o rss= -p "$PID" | tee ../../../out/baked-native-rss-kb.txt
+          grep -o "started in [0-9.]*s" ../../../out/baked-native-run.log | tee ../../../out/baked-native-started.txt
+          cat ../../../out/baked-native-hello.txt
+          kill "$PID" || true
+
+      - name: XML parser code in the native binary (rough, from strings)
+        run: |
+          echo "baked    : $(strings -a spikes/spike3-baking-variant/app/target/app-1.0.0-SNAPSHOT-runner | grep -c 'XMLStreamReader\|xerces') matching strings" | tee out/baked-xml-strings.txt
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: spike3-baked-results
+          path: out/
           if-no-files-found: warn
