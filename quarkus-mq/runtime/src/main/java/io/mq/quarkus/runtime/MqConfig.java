@@ -25,6 +25,14 @@ public interface MqConfig {
     @WithDefault("auto")
     String scripts();
 
+    /** folder with plugin jars (custom classes of Execute steps); the Dev server loads them from here and notices changes */
+    @WithDefault("plugins")
+    String pluginsDir();
+
+    /** where plugins come from: classpath (registered services of the application; production and native), directory (jars in plugins-dir) or auto (directory in dev mode) */
+    @WithDefault("auto")
+    String plugins();
+
     /** backend properties: {{name}} in an XRequest url is replaced by quarkus.mq.properties.name */
     java.util.Map<String, String> properties();
 

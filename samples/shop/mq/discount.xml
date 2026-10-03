@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Resource xmlns="http://xml.metamug.net/resource/1.0" v="1.0">
+  <Desc>Execute: a custom Java class (a plugin) gets a price found by Sql, through mpath, and a percentage from the request.</Desc>
+  <Request method="GET" item="true">
+    <Sql id="p" output="false">SELECT id, name, price FROM product WHERE id = $id</Sql>
+    <Execute id="d" classname="io.mq.sample.Discount" output="true">
+      <Arg name="price" path="$[p][0].price"/>
+      <Arg name="percent" value="$percent"/>
+    </Execute>
+  </Request>
+</Resource>

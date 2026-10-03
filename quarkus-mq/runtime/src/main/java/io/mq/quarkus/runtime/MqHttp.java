@@ -102,6 +102,25 @@ public class MqHttp {
         return out;
     }
 
+    private volatile io.mq.plugin.PluginLoader pluginLoader;
+
+    private io.mq.plugin.PluginLoader plugins() {
+        io.mq.plugin.PluginLoader l = pluginLoader;
+        if (l == null) {
+            synchronized (this) {
+                if (pluginLoader == null) {
+                    String mode = config.plugins();
+                    boolean directory = mode.equals("directory") || (mode.equals("auto") && LaunchMode.current() == LaunchMode.DEVELOPMENT);
+                    pluginLoader = directory ? new io.mq.plugin.PluginDirectory(java.nio.file.Path.of(config.pluginsDir()), getClass().getClassLoader())
+                            : new io.mq.plugin.ClassPathPlugins();
+                    LOG.infof("MQ plugins from %s", directory ? "the folder " + config.pluginsDir() : "the application class path");
+                }
+                l = pluginLoader;
+            }
+        }
+        return l;
+    }
+
     private volatile Dispatcher dispatcher;
 
     private Dispatcher dispatcher() {
@@ -111,7 +130,8 @@ public class MqHttp {
                 if (dispatcher == null) {
                     // the default datasource of the application; a step with a datasource name is not supported yet
                     Engine engine = new Engine(name -> dataSource.isResolvable() ? dataSource.get() : null, new ScriptHandler(this::loader),
-                            new io.mq.engine.XRequestHandler(config.properties(), java.time.Duration.ofSeconds(config.xrequestTimeoutSeconds())), null);
+                            new io.mq.engine.XRequestHandler(config.properties(), java.time.Duration.ofSeconds(config.xrequestTimeoutSeconds())),
+                            new io.mq.engine.ExecuteHandler(this::plugins, name -> dataSource.isResolvable() ? dataSource.get() : null));
                     engine.onError((id, t) -> LOG.errorf(t, "MQ request failed, errorId %s", id));
                     dispatcher = new Dispatcher(resources::current, engine);
                 }

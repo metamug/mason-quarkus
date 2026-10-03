@@ -67,6 +67,12 @@
                     <artifactId>shop-scripts</artifactId>
                     <version>1</version>
                 </dependency>
+                <!-- a plugin jar (Execute classes) compiled into the application: registered services, found without reflection -->
+                <dependency>
+                    <groupId>io.mq.example</groupId>
+                    <artifactId>shop-plugin</artifactId>
+                    <version>1</version>
+                </dependency>
             </dependencies>
         </profile>
         <!-- the Dev server: the Kotlin scripting host on the class path, scripts compiled from the .kts files at run time -->

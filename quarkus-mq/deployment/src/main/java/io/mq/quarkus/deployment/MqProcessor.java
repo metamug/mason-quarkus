@@ -29,6 +29,12 @@ class MqProcessor {
         return ServiceProviderBuildItem.allProvidersFromClassPath(ScriptLoader.class.getName());
     }
 
+    /** plugin classes register as services; the native binary needs them registered at build time */
+    @BuildStep
+    ServiceProviderBuildItem plugins() {
+        return ServiceProviderBuildItem.allProvidersFromClassPath(io.mq.plugin.Plugin.class.getName());
+    }
+
     /**
      * The JDK's StAX parser reads its error messages from this bundle. Without it a native binary dies with
      * MissingResourceException on the first malformed XML file instead of reporting a validation error (Spike 2).

@@ -75,5 +75,13 @@ const xf = await call("GET", "/v1.0/xfail");
 check("external API 500: the request completes quickly (no hang)", Date.now() - t0 < 15000, (Date.now() - t0) + " ms");
 check("...and the SQL step after it ran", xf.status === 200 && rows(xf, "after").length === 1, xf.text);
 
+console.log("== Execute: a custom Java class (plugin) fed by Sql through mpath ==");
+const disc = await call("GET", "/v1.0/discount/1", { query: { percent: "10" } });
+check("plugin applied 10% to the price Sql found (4.50 -> 4.05)", Number(disc.json?.d?.discounted) === 4.05 && Number(disc.json?.d?.price) === 4.5, disc.text);
+check("plugin used the datasource (catalog size 2)", disc.json?.d?.catalogSize === 2, disc.text);
+check("the Sql step stays hidden (output=false)", !("p" in (disc.json ?? {})), disc.text);
+const noPercent = await call("GET", "/v1.0/discount/1");
+check("a plugin failure is a clean 500 with an errorId", noPercent.status === 500 && noPercent.json?.errorId, noPercent.text);
+
 console.log(passed + " passed, " + failed + " failed");
 process.exit(failed ? 1 : 0);

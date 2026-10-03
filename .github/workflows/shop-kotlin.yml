@@ -48,6 +48,11 @@ jobs:
           mkdir -p out
           bash tools/mq-compile-scripts/compile-scripts.sh samples/shop/scripts out/shop-scripts.jar
           mvn -q -B install:install-file -Dfile=out/shop-scripts.jar -DgroupId=io.mq.example -DartifactId=shop-scripts -Dversion=1 -Dpackaging=jar
+      - name: Build the sample plugin (an Execute class) and install it
+        run: |
+          mvn -q -B -f samples/shop-plugin/pom.xml install
+          mkdir -p out/plugins
+          cp samples/shop-plugin/target/shop-plugin-1.jar out/plugins/
       - name: Schema and one order for the state machine checks
         run: |
           cat > out/reset.sh <<'EOF'
@@ -63,7 +68,7 @@ jobs:
           node examples/shop-kt/stub.mjs 9999 &
           sleep 1
           mvn -q -B -f examples/shop-kt/pom.xml clean package -Pinterpreted
-          "$TEMURIN/bin/java" -Dquarkus.http.port=8080 -Dquarkus.mq.properties.self=http://127.0.0.1:8080 -Dquarkus.mq.properties.stub=http://127.0.0.1:9999 -Dquarkus.mq.scripts=interpreted -Dquarkus.mq.scripts-dir=samples/shop/scripts -jar examples/shop-kt/target/quarkus-app/quarkus-run.jar > out/interpreted-run.log 2>&1 &
+          "$TEMURIN/bin/java" -Dquarkus.http.port=8080 -Dquarkus.mq.properties.self=http://127.0.0.1:8080 -Dquarkus.mq.properties.stub=http://127.0.0.1:9999 -Dquarkus.mq.scripts=interpreted -Dquarkus.mq.scripts-dir=samples/shop/scripts -Dquarkus.mq.plugins=directory -Dquarkus.mq.plugins-dir=out/plugins -jar examples/shop-kt/target/quarkus-app/quarkus-run.jar > out/interpreted-run.log 2>&1 &
           PID=$!
           for i in $(seq 1 120); do curl -s -o /dev/null http://localhost:8080/v1.0/product && break; sleep 0.3; done
           node examples/shop-kt/http-test.mjs http://localhost:8080 | tee out/interpreted-result.txt
