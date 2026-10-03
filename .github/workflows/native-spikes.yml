@@ -214,7 +214,7 @@ jobs:
       - name: Question A option 1 on the JVM (N separate processes)
         working-directory: spikes/spike3-hosting
         run: |
-          for n in 1 5 20; do ci/processes.sh jvm $n; done | tee ../../out/processes-jvm.txt
+          for n in 1 5 20; do bash ci/processes.sh jvm $n; done | tee ../../out/processes-jvm.txt
 
       - name: Build the native image
         working-directory: spikes/spike3-hosting
@@ -242,7 +242,7 @@ jobs:
         working-directory: spikes/spike3-hosting
         run: |
           if [ ! -x target/spike3-hosting-1.0.0-SNAPSHOT-runner ]; then echo "no native binary"; exit 0; fi
-          for n in 1 5 20; do ci/processes.sh native $n; done | tee ../../out/processes-native.txt
+          for n in 1 5 20; do bash ci/processes.sh native $n; done | tee ../../out/processes-native.txt
 
       - uses: actions/upload-artifact@v4
         if: always()

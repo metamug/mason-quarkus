@@ -22,6 +22,7 @@ public class HostingResource {
         try {
             return backends.probe(backend);
         } catch (Exception e) {
+            e.printStackTrace(); // the cause is needed in the native run log (Spike 3, question B)
             return "{\"error\":\"" + e.toString().replace("\"", "'") + "\"}";
         }
     }
