@@ -37,9 +37,9 @@ jobs:
         run: |
           echo "TEMURIN=$JAVA_HOME" >> "$GITHUB_ENV"
           mvn -B -ntp install
-      - name: Kotlin compiler 2.2.20
+      - name: Kotlin compiler 2.4.10 (the version the Quarkus 3.40.1 BOM manages)
         run: |
-          curl -sL -o kc.zip https://github.com/JetBrains/kotlin/releases/download/v2.2.20/kotlin-compiler-2.2.20.zip
+          curl -sL -o kc.zip https://github.com/JetBrains/kotlin/releases/download/v2.4.10/kotlin-compiler-2.4.10.zip
           unzip -q kc.zip
       - name: Compile the shop scripts ahead of time (the CLI's script step)
         run: |
