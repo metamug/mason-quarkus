@@ -32,7 +32,8 @@ MQ runs R2 resource XML (REST APIs described as `Resource > Request > Sql | Tran
 | Script, mpath, Sql chains (test 2) | 18/18 in three modes (Dev loader, compiled JVM, native) |
 | XRequest (test 3) | Pass, including `https` in native |
 | Execute + declarations (test 4) | Pass with a plugin API; declaration proposal made |
-| Script modules and libraries (test 5) | Proposal written, **waiting for a choice** |
+| Script modules and libraries (test 5) | Options 1 and 2 built and pass in all three modes; commons-text works in native undeclared |
+| Shared scripting host | Measured: -61 % memory at 20 backends (10.2 GB to 4.0 GB), break-even about 2 backends |
 | Real R2 resources (test 6) | 31 accepted, 4 rejected for stated reasons; Transaction id rule stays |
 
 Current full acceptance: the shop scenario, 34 HTTP checks, identical on the Dev server loader (JVM), compiled scripts (JVM) and the native binary. Native build with scripts and a plugin: 2:00 wall, 3.47 GB peak, 64.8 MB binary, 77 MB resident after the run. JVM: 189 MB compiled, 612 MB with the Dev loader (the Kotlin compiler is in the process).
@@ -108,9 +109,29 @@ Modules: `mq-core` (parser, validator, model, `Expr` for `when`/mpath, store, wa
 
 **Declaration proposal (partly tested):** one project file (`mq.yaml`) read by both products with `scripts`, `plugins`, `libs` (Maven coordinates or jars) and `drivers` (known names, each a recipe: `postgresql` = the Quarkus extension, tested; `hsqldb` = plain driver + resource include, observed in Spike 3). Maven resolution and driver recipes beyond PostgreSQL are untested.
 
-## 10. Test 5 (script modules and libraries): proposal, no code
+## 10. Script modules and libraries (test 5): options 1 and 2 built and tested
 
-Options: (1) no cross-script use, shared code in a declared jar; (2) a shared `lib/*.kt` source folder compiled first (Dev server recompiles dependents on change, assumed a few seconds, not measured; CLI compiles lib then scripts then native); (3) `@file:Import` between scripts (surprising top-level execution, host and command-line compiler behave differently, highest risk). The `libs` declaration is the same in all three. **Recommendation: start with 1, add 2 if needed, skip 3.** Waiting for the owner choice of option and the test library (`kotlinx-datetime` or `commons-text` proposed).
+Owner decision: option 1 (no cross-script use; shared code in a declared jar), then option 2 (a shared `lib/` folder of ordinary Kotlin files for interdependent scripts); option 3 (`@file:Import`) skipped; test library commons-text.
+**Result (M):** both pass in all three modes (Dev loader, compiled JVM, native), 40/40 HTTP checks each. A script importing commons-text (`WordUtils`, `StringEscapeUtils`, `LevenshteinDistance`, `StringSubstitutor`) works in native with **no native declaration**. Two scripts use `shop.Money` from `lib/`: the Dev loader compiles the lib folder when any file in it changes and recompiles each script on its next call (new lib file, new script, broken lib reported with file and line, fix picked up); the CLI compiles the lib first, then the scripts against it, and the lib classes ship in the same jar. Native build with scripts, lib, commons-text and a plugin: 1:40, 3.37 GB peak, 64.8 MB, 77 MB resident. Rules: lib code is ordinary Kotlin (no `params`/`steps`/`response`: pass arguments); a lib change recompiles every script; a lib that does not compile stops every script until fixed. Both products must compile with the same class path, which is what `mq.yaml` declares. Report: `docs/reports/script-modules.md`.
+
+## 10b. Shared scripting host across backends (measured first, as decided)
+
+**Result (M, 4 vCPU runner, each backend its own project copy):** with the compiler in every backend (today) a backend is 510 to 660 MB after running its scripts (idle: 116 to 163 MB); capping the JVM heap barely helps (662 to 514 MB). With one shared host that holds the compiler and backends that load the compiled classes, a backend is 148 to 170 MB and the host 470 to 930 MB (capped at 700 MB heap; 1.4 GB uncapped at 5 projects).
+
+| Backends | In-process (compiler in each) | Shared host (backend + host) |
+|---|---|---|
+| 1 | 662 MB (514 capped) | 624 to 646 MB |
+| 5 | 3,466 MB (2,577 capped) | 1,752 to 2,160 MB |
+| 20 | 10,245 MB (capped) | **3,994 MB** (-61 %) |
+
+Break-even about 2 backends. Warm script calls are 3 to 5 times faster remote (2 to 5 ms vs 10 to 17 ms); the first call of the first script is 4.6 to 5.2 s either way (compiler warm-up); with 20 backends starting at once the first call took 80 s in-process and 7 to 9 s with the shared host. Backends keep running their loaded version if the host is down. Recommended: host as a managed child process of the Dev server, started on demand, capped, stopped when idle; compile all scripts of a project in the background when it opens. Code is experimental (`ScriptHost`, `RemoteScriptLoader`, `quarkus.mq.script-host`). Report: `docs/reports/shared-host.md`.
+
+## 10c. Owner decisions taken after the v2 summary (docs/decisions.md)
+
+- **One project file.** `mq.yaml` replaces `backend.yaml` (which existed only as the datasource file of the hosting spike): its `datasources:` section moves in unchanged; for one release a lone `backend.yaml` is read as that section with a warning. Sections: `datasources`, `properties`, `scripts`, `lib`, `plugins`, `libs`, `drivers`. Same reader in both products. **Reader not built yet.**
+- **Plugin results** outside JSON-ready types (String, Number, Boolean, null, List, Map with String keys) are an error naming the step, class and path (implemented, tested).
+- **R2 plugin adapter:** not now. Check done: of 35 distinct real resources only `execute.xml` (a parser test fixture) uses `Execute`; no real application resource does.
+- **Provisional semantics accepted**, including the 0-based mpath row index.
 
 ## 11. Real resources (test 6)
 
@@ -119,28 +140,25 @@ Options: (1) no cross-script use, shared code in a declared jar; (2) a shared `l
 ## 12. Risks and cautions for planning
 
 - **Version coupling:** the Kotlin version in the Dev server, the CLI compiler and the app must equal the Quarkus BOM Kotlin; a Quarkus upgrade moves all three.
-- **Memory:** Dev loader about 600 MB per backend with the compiler loaded; a shared scripting host across backends would cut it (untested).
+- **Memory:** the Dev loader costs 510 to 800 MB per backend; the shared scripting host measured at -61 % for 20 backends (section 10b); until it is built, 20 backends do not fit comfortably on a 16 GB machine.
 - **CLI toolchain:** native build needs Mandrel, about 3.5 GB RAM, 2 to 2.5 minutes; macOS/Windows need a builder container and produce Linux binaries only. Distribution of the Kotlin compiler (80 MB) with the CLI.
 - **Silent native differences:** locales, reflection, resources; the CLI smoke test must compare values against JVM results, not just run.
 - **Unmeasured:** compile latency of the first script request in the Dev server, native behaviour of third-party libraries other than those tested, `drivers` recipes beyond PostgreSQL, failure isolation with many backends in one process, Maven resolution of declared libraries.
 
 ## 13. Recommended next steps
 
-1. Owner chooses the script modules option (and the test library); then test one extra library in Dev loader, compiled JVM and native.
-2. Build the project file (`mq.yaml`) reading, shared by Dev server and CLI; wire `backend.yaml` datasources and datasource names.
-3. CLI prototype end to end: validate, compile scripts, declared libs, plugin jars, driver recipes, Mandrel container build, value-checking smoke test; fail on any error.
-4. Dev server: launcher/proxy with port reservation and parallel-start limit, idle stop 10 to 15 minutes, background start on project open, class-path handoff to the script loader.
+1. Build the `mq.yaml` reader (one module, SnakeYAML, used by Dev server and CLI): `datasources` (Agroal programmatic, per Spike 3), `properties`, `scripts`, `lib`, `plugins`, `libs` with Maven resolution, `drivers` recipes. Today `libs` is a pom file and the paths are system properties.
+2. Productise the shared scripting host in the Dev server: managed child process, on-demand start, heap cap, idle stop, background compile of all scripts when a project opens, project class path handed over from `mq.yaml`.
+3. CLI prototype end to end: validate (refuse on any error), compile scripts and lib, declared libs, plugin jars, driver recipes, Mandrel container build, value-checking smoke test against JVM results.
+4. Dev server launcher/proxy: port reservation and parallel-start limit, idle stop 10 to 15 minutes, background start on project open.
 5. Keep the JVM-vs-native conformance matrix (shop acceptance, HSQLDB and PostgreSQL) as the gate for every executor; add every real resource as a golden case.
 6. Remaining engine gaps (`onblank`, `ref`, `Param exists`, `Upload`) once real resources need them.
 
 ## 14. Open questions for the owner
 
-1. Script modules option (1, 2 or 3) and the test library.
-2. Is `mq.yaml` the right place for `plugins`, `libs`, `drivers`, shared by both products?
-3. Should a plugin return outside JSON-ready types be an error (recommended) instead of `toString()`?
-4. Wanted: an adapter for existing R2 `RequestProcessable` plugins?
-5. Are the provisional semantics in section 7 accepted, especially the 0-based mpath row index?
-6. Is about 600 MB per Dev-server backend with interpreted scripts acceptable, or should a shared scripting host be built?
+1. Host lifecycle: managed child process of the Dev server, started with the first backend that has scripts, stopped when idle (recommended)? Compile all scripts when a project opens (recommended: removes the 5 s first call)?
+2. Host heap cap: 700 MB worked for 20 projects; tune with real projects.
+3. Should `mq.yaml` allow a per-project override of the Kotlin version? (Recommendation: no; one version, the Quarkus BOM one.)
 
 ## 15. Where things are
 
