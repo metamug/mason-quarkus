@@ -35,6 +35,12 @@ public class MqResources {
         return store.current();
     }
 
+    /** "jdk", "native-events" or "none" (production, or watch=false) */
+    public String watcherKind() {
+        FolderWatcher w = watcher;
+        return w == null ? "none" : w.kind();
+    }
+
     public ResourceStore store() {
         return store;
     }
@@ -54,7 +60,7 @@ public class MqResources {
         if (LaunchMode.current() == LaunchMode.DEVELOPMENT && config.watch()) {
             try {
                 watcher = FolderWatcher.start(dir, () -> store.reload(dir), config.debounceMillis());
-                LOG.infof("MQ watches %s", dir.toAbsolutePath());
+                LOG.infof("MQ watches %s (%s)", dir.toAbsolutePath(), watcher.kind());
             } catch (IOException | RuntimeException ex) {
                 LOG.warnf("MQ cannot watch %s: %s", dir, ex);
             }

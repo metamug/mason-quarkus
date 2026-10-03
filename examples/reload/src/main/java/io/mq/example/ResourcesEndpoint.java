@@ -39,7 +39,7 @@ public class ResourcesEndpoint {
     public String status() {
         ResourceSet s = mq.current();
         String names = s.resources().keySet().stream().map(n -> "\"" + n + "\"").collect(Collectors.joining(","));
-        return "{\"appStartId\":\"" + APP_START_ID + "\",\"generation\":" + s.generation() + ",\"resources\":[" + names
+        return "{\"appStartId\":\"" + APP_START_ID + "\",\"watcher\":\"" + mq.watcherKind() + "\",\"generation\":" + s.generation() + ",\"resources\":[" + names
                 + "],\"lastReloadMicros\":" + s.reloadMicros() + ",\"lastError\":\""
                 + s.problemSummary().replace("\\", "/").replace("\"", "'").replace("\n", " ") + "\"}";
     }

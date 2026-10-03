@@ -45,7 +45,7 @@ const sameApp = async () => (await status()).appStartId === s0.appStartId;
     const r = await until(async () => (await get('/r/first')).text === `first-e${i}`);
     times.push(Math.round(r.ms));
   }
-  console.log('trigger mode:', trigger);
+  console.log('watcher:', s0.watcher);
   rec('1 edit existing', { ms: times, restarted: !(await sameApp()) });
 }
 // 2. create a new file (5 runs, new names)

@@ -15,6 +15,13 @@
     </properties>
 
     <dependencies>
+        <!-- optional: file-system events on macOS, where the JDK watcher polls. Used only in development, found by name at run time. -->
+        <dependency>
+            <groupId>io.methvin</groupId>
+            <artifactId>directory-watcher</artifactId>
+            <version>0.18.0</version>
+            <optional>true</optional>
+        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>

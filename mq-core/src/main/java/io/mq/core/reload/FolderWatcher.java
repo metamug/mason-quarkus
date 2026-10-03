@@ -1,61 +1,41 @@
 package io.mq.core.reload;
 
 import java.io.IOException;
-import java.nio.file.ClosedWatchServiceException;
 import java.nio.file.Path;
-import java.nio.file.StandardWatchEventKinds;
-import java.nio.file.WatchKey;
-import java.nio.file.WatchService;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Calls a callback after any change in a folder, once per burst: events are debounced, so writing 20 files produces one call
  * (or very few) after the last write. The callback is expected to re-read the whole folder; the kind of change does not matter.
- * Uses the JDK {@link WatchService}. Meant for development; a production process does not watch.
+ * Meant for development; a production process does not watch.
+ *
+ * <p>Which implementation: the JDK {@link java.nio.file.WatchService} on Linux and Windows (native file events). On macOS the JDK
+ * service polls (about 2 s measured on GitHub's macOS runners), so there the file-system-events implementation is used when the optional
+ * library {@code io.methvin:directory-watcher} is on the classpath. Force one with {@code -Dmq.watcher=jdk} or {@code -Dmq.watcher=native}.
  */
-public final class FolderWatcher implements AutoCloseable {
-
-    private final WatchService service;
-    private final Thread thread;
-
-    private FolderWatcher(Path dir, Runnable onChange, long debounceMillis) throws IOException {
-        this.service = dir.getFileSystem().newWatchService();
-        dir.register(service, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_MODIFY, StandardWatchEventKinds.ENTRY_DELETE);
-        this.thread = new Thread(() -> run(onChange, debounceMillis), "mq-watcher");
-        this.thread.setDaemon(true);
-    }
+public interface FolderWatcher extends AutoCloseable {
 
     /** starts watching; the folder must exist */
-    public static FolderWatcher start(Path dir, Runnable onChange, long debounceMillis) throws IOException {
-        FolderWatcher w = new FolderWatcher(dir, onChange, debounceMillis);
-        w.thread.start();
-        return w;
+    static FolderWatcher start(Path dir, Runnable onChange, long debounceMillis) throws IOException {
+        String choice = System.getProperty("mq.watcher", "auto");
+        boolean mac = System.getProperty("os.name", "").toLowerCase().contains("mac");
+        if (choice.equals("native") || (choice.equals("auto") && mac)) {
+            try {
+                // by name, so that code which never watches (a native production binary) does not pull the library into the image
+                Class<?> c = Class.forName("io.mq.core.reload.NativeEventsFolderWatcher");
+                return (FolderWatcher) c.getMethod("start", Path.class, Runnable.class, long.class).invoke(null, dir, onChange, debounceMillis);
+            } catch (ReflectiveOperationException | LinkageError e) {
+                if (choice.equals("native")) {
+                    throw new IOException("native file events requested but not available: " + e, e);
+                }
+                // fall through to the JDK watcher
+            }
+        }
+        return JdkFolderWatcher.start(dir, onChange, debounceMillis);
     }
 
-    private void run(Runnable onChange, long debounceMillis) {
-        try {
-            for (;;) {
-                WatchKey key = service.take();
-                // wait until the folder has been quiet for the debounce time
-                while (key != null) {
-                    key.pollEvents();
-                    key.reset();
-                    key = service.poll(debounceMillis, TimeUnit.MILLISECONDS);
-                }
-                try {
-                    onChange.run();
-                } catch (RuntimeException e) {
-                    // keep watching
-                }
-            }
-        } catch (ClosedWatchServiceException | InterruptedException e) {
-            // closed
-        }
-    }
+    /** which implementation is running, for logs and results: "jdk" or "native-events" */
+    String kind();
 
     @Override
-    public void close() throws IOException {
-        service.close();
-        thread.interrupt();
-    }
+    void close() throws IOException;
 }
