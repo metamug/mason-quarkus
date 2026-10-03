@@ -3,6 +3,10 @@ resource-minimal	valid	smallest valid resource
 resource-empty-request	valid	a Request may be empty
 resource-xml-declaration-latin1	valid	xml declaration with another encoding
 resource-no-xml-declaration	valid	the xml declaration is optional
+resource-xsi-schema-location	valid	xsi:schemaLocation is allowed on any element (R2 shop resources use it)
+resource-xsi-no-namespace-schema-location	valid	xsi:noNamespaceSchemaLocation is allowed
+request-xsi-schema-location	valid	xsi attributes are allowed on a child element too
+resource-xsi-nil	invalid-xsd	xsi:nil on an element that is not nillable
 resource-comments	valid	comments and processing instructions anywhere
 resource-sql-cdata	valid	CDATA in Sql
 resource-sql-entities	valid	predefined entities in Sql

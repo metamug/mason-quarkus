@@ -22,6 +22,9 @@ final class Checker {
 
     static final String NS = "http://xml.metamug.net/resource/1.0";
 
+    /** the schema-instance attributes that any element may carry (R2 shop resources use xsi:schemaLocation) */
+    private static final String XSI = "{http://www.w3.org/2001/XMLSchema-instance}";
+
     private static final Pattern MPATH = Pattern.compile("\\$\\[([^\\]\\.\\[\\s]+)");
     private static final Pattern DOUBLE = Pattern.compile("[+-]?(\\d+(\\.\\d*)?|\\.\\d+)([eE][+-]?\\d+)?|[+-]?INF|NaN");
     private static final Pattern INTEGER = Pattern.compile("[+-]?\\d+");
@@ -228,6 +231,9 @@ final class Checker {
     private Map<String, String> attributes(Node n, String element, Spec[] specs) {
         Map<String, String> found = new HashMap<>();
         for (Map.Entry<String, String> e : n.attrs.entrySet()) {
+            if (e.getKey().equals(XSI + "schemaLocation") || e.getKey().equals(XSI + "noNamespaceSchemaLocation")) {
+                continue;
+            }
             Spec s = null;
             for (Spec c : specs) {
                 if (c.name.equals(e.getKey())) {
