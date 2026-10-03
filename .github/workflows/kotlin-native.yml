@@ -1,0 +1,54 @@
+name: kotlin-native (throwaway spike)
+
+on:
+  workflow_dispatch:
+  push:
+    paths: ['spikes/kotlin-native/**', '.github/workflows/kotlin-native.yml']
+
+jobs:
+  kotlin-native:
+    runs-on: ubuntu-latest
+    env:
+      KOTLINC_HOME: ${{ github.workspace }}/kotlinc
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Runner
+        run: |
+          nproc; free -m; docker --version
+      - name: Install mq-core and mq-engine (the scripts use Json)
+        run: mvn -B -ntp -q install -DskipTests -pl mq-core,mq-engine -am
+      - name: Kotlin compiler 2.2.20
+        run: |
+          curl -sL -o kc.zip https://github.com/JetBrains/kotlin/releases/download/v2.2.20/kotlin-compiler-2.2.20.zip
+          unzip -q kc.zip
+          ls kotlinc/lib | head -3
+      - name: Compile the scripts ahead of time (Kotlin to JVM classes)
+        working-directory: spikes/kotlin-native
+        run: bash build-classes.sh
+      - name: Selftest on the JVM
+        working-directory: spikes/kotlin-native
+        run: |
+          mkdir -p results
+          java -cp "build/classes:build/template:resources:build/lib/*" MainKt selftest smoke.json | tee results/jvm-selftest.txt
+      - name: Native build A, no declarations (baseline)
+        continue-on-error: true
+        working-directory: spikes/kotlin-native
+        run: bash build-native.sh A
+      - name: Native build B, declared resources, reflection, serialization and proxy configuration
+        working-directory: spikes/kotlin-native
+        run: |
+          cp -r native-config/META-INF build/classes/
+          bash build-native.sh B
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: kotlin-native-results
+          path: spikes/kotlin-native/results/*

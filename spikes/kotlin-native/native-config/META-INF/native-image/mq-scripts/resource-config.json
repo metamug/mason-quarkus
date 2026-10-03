@@ -1,0 +1,4 @@
+{
+  "resources": { "includes": [ { "pattern": "greeting[.]txt" }, { "pattern": "messages[.]properties" } ] },
+  "bundles": [ { "name": "messages" } ]
+}

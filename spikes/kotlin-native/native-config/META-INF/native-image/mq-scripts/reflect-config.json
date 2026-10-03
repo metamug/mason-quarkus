@@ -1,0 +1,5 @@
+[
+  { "name": "B_reflection$Point", "allDeclaredFields": true, "allDeclaredMethods": true, "allDeclaredConstructors": true },
+  { "name": "java.util.ArrayList" },
+  { "name": "java.lang.String", "methods": [ { "name": "length", "parameterTypes": [] } ] }
+]

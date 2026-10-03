@@ -1,0 +1,36 @@
+[
+  {"script": "hashpw", "params": {"password": "secret"},
+   "expect": {"hash": "^[0-9a-f]{8}[$][0-9a-f]{64}$", "salt": "^[0-9a-f]{8}$"}},
+  {"script": "ordercalc",
+   "params": {"qty": "3", "customer_id": "1", "product_id": "1"},
+   "steps": {"prod": {"one": [{"ID": 1, "PRICE": 4.5, "STOCK": 100}]}},
+   "expect": {"ok": "^true$", "total": "^13[.]5", "price": "^4[.]5", "token": "^[0-9a-f]{40}$"}},
+  {"script": "ordercalc", "params": {"qty": "1000"},
+   "steps": {"prod": {"one": [{"ID": 1, "PRICE": 4.5, "STOCK": 100}]}},
+   "expect": {"ok": "^false$", "reason": "^insufficient stock$"}},
+  {"script": "ordercalc", "params": {"qty": "1"}, "steps": {"prod": {"one": []}},
+   "expect": {"ok": "^false$", "reason": "^unknown product$"}},
+  {"script": "transition", "params": {"status": "SHIPPED"}, "steps": {"cur": [{"STATUS": "NEW"}]},
+   "expect": {"ok": "^false$", "reason": "cannot go from NEW to SHIPPED"}},
+  {"script": "transition", "params": {"status": "paid"}, "steps": {"cur": [{"STATUS": "NEW"}]},
+   "expect": {"ok": "^true$", "from": "^NEW$", "to": "^PAID$"}},
+  {"script": "tokens", "request": {"id": "hello"},
+   "expect": {"sha256": "^2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824$", "md5": "^5d41402abc4b2a76b9719d911017c592$",
+              "base64": "^aGVsbG8=$", "uuid": "^[0-9a-f-]{36}$"}},
+  {"script": "tokens", "params": {"count": "5"}, "expect": {"count": "^5$", "items": "^[\\[]([\"][0-9a-f-]{36}[\"],?){5}[\\]]$"}},
+  {"script": "legacy", "params": {"who": "R2"}, "expect": {"message": "^Hello R2$", "length": "^2$"}},
+
+  {"script": "b_reflection", "boundary": true, "expect": {
+    "forName_jdk_class": "^ArrayList$", "getMethod_invoke_jdk": "^4$", "declaredFields_user_class": "^x,y$",
+    "kotlin_reflect_members": "^[a-z]", "kotlin_class_name": "^Point$", "dynamic_proxy": "^true$"}},
+  {"script": "b_crypto", "boundary": true, "expect": {
+    "sha256": "^ba7816bf8f01cfea", "hmac_sha256": "^[0-9a-f]{16}$", "aes_gcm_roundtrip": "^secret$", "pbkdf2": "^32$",
+    "secure_random": "^8$", "rsa_sign_verify": "^true$"}},
+  {"script": "b_serialization", "boundary": true, "expect": {
+    "kotlinx_json_encode": "name.*pen.*qty.*3", "kotlinx_json_decode": "^7$", "kotlinx_json_tree": "a.*1.*2.*3",
+    "java_serialization_roundtrip": "^5$"}},
+  {"script": "b_resources_misc", "boundary": true, "expect": {
+    "classpath_resource": "^hello from a bundled file$", "resource_bundle": "^hello from a bundle$", "time_zone": "^[+]05:30$",
+    "locale_format": "1[.]234,50", "regex": "^abc$", "coroutines": "^42$", "http_client_object": "^HTTP_",
+    "bigdecimal": "^13[.]50$", "uuid_random": "^36$"}}
+]
